@@ -2,28 +2,74 @@ import os
 
 import environ
 
+# Set the project base directory
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 env = environ.Env(
     # set casting, default value
-    DEBUG=(bool, False)
+    DEBUG=(str, ""),
+    # NEODB DB
+    NEODB_DB_NAME=(str, "test_neodb"),
+    NEODB_DB_USER=(str, "testuser"),
+    NEODB_DB_PASSWORD=(str, "testpass"),
+    NEODB_DB_HOST=(str, "127.0.0.1"),
+    NEODB_DB_PORT=(int, 5432),
+    # TAKAHE DB
+    TAKAHE_DB_NAME=(str, "test_neodb_takahe"),
+    TAKAHE_DB_USER=(str, "testuser"),
+    TAKAHE_DB_PASSWORD=(str, "testpass"),
+    TAKAHE_DB_HOST=(str, "127.0.0.1"),
+    TAKAHE_DB_PORT=(int, 5432),
+    # REDIS
+    NEODB_REDIS_HOST=(str, "127.0.0.1"),
+    NEODB_REDIS_PORT=(int, 6379),
+    NEODB_REDIS_DB=(int, 0),
+    # TYPESENSE
+    NEODB_TYPESENSE_ENABLE=(str, ""),
+    NEODB_TYPESENSE_KEY=(str, "insecure"),
+    NEODB_TYPESENSE_HOST=(str, "127.0.0.1"),
+    NEODB_TYPESENSE_PORT=(str, "8108"),
+    # SITE INFO
+    NEODB_SITE_LOGO=(str, "/s/img/logo.svg"),
+    NEODB_SITE_ICON=(str, "/s/img/logo.svg"),
+    NEODB_USER_ICON=(str, "/s/img/avatar.svg"),
+    # ADMIN_USERS
+    NEODB_ADMIN_USERNAMES=(str, ""),
+    # THIRD PARTY CREDENTIALS
+    SPOTIFY_CREDENTIAL=(str, "***REMOVED***"),
+    TMDB_API3_KEY=(str, "***REMOVED***"),
+    GOOGLE_API_KEY=(str, "***REMOVED***"),
+    DISCOGS_API_KEY=(str, "***REMOVED***"),
+    IGDB_CLIENT_ID=(str, "deadbeef"),
+    IGDB_CLIENT_SECRET=(str, "***REMOVED***"),
+    # PROXY
+    NEODB_DOWNLOADER_PROXY_LIST=(str, ""),
+    NEODB_DOWNLOADER_BACKUP_PROXY=(str, ""),
+    # STATIC/MEDIA ROOT & URL
+    NEODB_STATIC_ROOT=(str, os.path.join(BASE_DIR, "static/")),
+    TAKAHE_MEDIA_URL=(str, "/media/"),
+    TAKAHE_MEDIA_ROOT=(str, "media"),
+    NEODB_MEDIA_ROOT=(str, os.path.join(BASE_DIR, "media"))  # this is defined but not used ,
 )
-# TODO: use django-environ or similar package for env parsing
+
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # ====== USER CONFIGUTRATION START ======
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env("NEODB_DEBUG")
 
 # SECURITY WARNING: use your own secret key and keep it!
-SECRET_KEY = os.environ.get("NEODB_SECRET_KEY", "insecure")
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("NEODB_DEBUG", "") != ""
+SECRET_KEY = env("NEODB_SECRET_KEY")
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("NEODB_DB_NAME", "test_neodb"),
-        "USER": os.environ.get("NEODB_DB_USER", "testuser"),
-        "PASSWORD": os.environ.get("NEODB_DB_PASSWORD", "testpass"),
-        "HOST": os.environ.get("NEODB_DB_HOST", "127.0.0.1"),
-        "PORT": int(os.environ.get("NEODB_DB_PORT", 5432)),
+        "NAME": env("NEODB_DB_NAME"),
+        "USER": env("NEODB_DB_USER"),
+        "PASSWORD": env("NEODB_DB_PASSWORD"),
+        "HOST": env("NEODB_DB_HOST"),
+        "PORT": int(env("NEODB_DB_PORT")),
         "OPTIONS": {
             "client_encoding": "UTF8",
             # 'isolation_level': psycopg2.extensions.ISOLATION_LEVEL_DEFAULT,
@@ -34,11 +80,11 @@ DATABASES = {
     },
     "takahe": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("TAKAHE_DB_NAME", "test_neodb_takahe"),
-        "USER": os.environ.get("TAKAHE_DB_USER", "testuser"),
-        "PASSWORD": os.environ.get("TAKAHE_DB_PASSWORD", "testpass"),
-        "HOST": os.environ.get("TAKAHE_DB_HOST", "127.0.0.1"),
-        "PORT": os.environ.get("TAKAHE_DB_PORT", 15432),
+        "NAME": env("TAKAHE_DB_NAME"),
+        "USER": env("TAKAHE_DB_USER"),
+        "PASSWORD": env("TAKAHE_DB_PASSWORD"),
+        "HOST": env("TAKAHE_DB_HOST"),
+        "PORT": int(env("TAKAHE_DB_PORT")),
         "OPTIONS": {
             "client_encoding": "UTF8",
             # 'isolation_level': psycopg2.extensions.ISOLATION_LEVEL_DEFAULT,
@@ -49,48 +95,46 @@ DATABASES = {
     },
 }
 
-REDIS_HOST = os.environ.get("NEODB_REDIS_HOST", "127.0.0.1")
-REDIS_PORT = int(os.environ.get("NEODB_REDIS_PORT", 6379))
-REDIS_DB = int(os.environ.get("NEODB_REDIS_DB", 0))
-
-if os.environ.get("NEODB_TYPESENSE_ENABLE", ""):
-    SEARCH_BACKEND = "TYPESENSE"
+REDIS_HOST = env("NEODB_REDIS_HOST")
+REDIS_PORT = int(env("NEODB_REDIS_PORT"))
+REDIS_DB = int(env("NEODB_REDIS_DB"))
 
 SEARCH_BACKEND = None
+if env("NEODB_TYPESENSE_ENABLE"):
+    SEARCH_BACKEND = "TYPESENSE"
 
 # SEARCH_BACKEND = 'MEILISEARCH'
 # MEILISEARCH_SERVER = 'http://127.0.0.1:7700'
 # MEILISEARCH_KEY = 'deadbeef'
 
 TYPESENSE_CONNECTION = {
-    "api_key": os.environ.get("NEODB_TYPESENSE_KEY", "insecure"),
+    "api_key": env("NEODB_TYPESENSE_KEY"),
     "nodes": [
         {
-            "host": os.environ.get("NEODB_TYPESENSE_HOST", "127.0.0.1"),
-            "port": os.environ.get("NEODB_TYPESENSE_PORT", "8108"),
+            "host": env("NEODB_TYPESENSE_HOST"),
+            "port": env("NEODB_TYPESENSE_PORT"),
             "protocol": "http",
         }
     ],
     "connection_timeout_seconds": 2,
 }
 
-SITE_DOMAIN = os.environ.get("NEODB_SITE_DOMAIN", "nicedb.org")
+SITE_DOMAIN = env("NEODB_SITE_DOMAIN")
 SITE_INFO = {
-    "site_name": os.environ.get("NEODB_SITE_NAME", "NiceDB"),
+    "site_name": env("NEODB_SITE_NAME"),
     "site_domain": SITE_DOMAIN,
-    "site_url": os.environ.get("NEODB_SITE_URL", "https://" + SITE_DOMAIN),
-    "site_logo": os.environ.get("NEODB_SITE_LOGO", "/s/img/logo.svg"),
-    "site_icon": os.environ.get("NEODB_SITE_ICON", "/s/img/logo.svg"),
-    "user_icon": os.environ.get("NEODB_USER_ICON", "/s/img/avatar.svg"),
+    "site_url": "https://" + SITE_DOMAIN,
+    "site_logo": env("NEODB_SITE_LOGO"),
+    "site_icon": env("NEODB_SITE_ICON"),
+    "user_icon": env("NEODB_USER_ICON"),
     "social_link": "https://donotban.com/@testie",
     "support_link": "https://github.com/doubaniux/boofilsic/issues",
     "donation_link": "https://patreon.com/tertius",
 }
 
 SETUP_ADMIN_USERNAMES = [
-    u for u in os.environ.get("NEODB_ADMIN_USERNAMES", "").split(",") if u
+    u for u in env("NEODB_ADMIN_USERNAMES").split(",") if u
 ]
-
 
 # Mastodon/Pleroma instance allowed to login, keep empty to allow any instance to login
 MASTODON_ALLOWED_SITES = []
@@ -116,30 +160,30 @@ STAR_EMPTY = ":star_empty:"
 DISCORD_WEBHOOKS = {"user-report": None}
 
 # Spotify credentials
-SPOTIFY_CREDENTIAL = "***REMOVED***"
+SPOTIFY_CREDENTIAL = env("SPOTIFY_CREDENTIAL")
 
 # The Movie Database (TMDB) API Keys
-TMDB_API3_KEY = "***REMOVED***"
+TMDB_API3_KEY = env("TMDB_API3_KEY")
 # TMDB_API4_KEY = "deadbeef.deadbeef.deadbeef"
 
 # Google Books API Key
-GOOGLE_API_KEY = "***REMOVED***"
+GOOGLE_API_KEY = env("GOOGLE_API_KEY")
 
 # Discogs API Key
 # How to get: a personal access token from https://www.discogs.com/settings/developers
-DISCOGS_API_KEY = "***REMOVED***"
+DISCOGS_API_KEY = env("DISCOGS_API_KEY")
 
 # IGDB
-IGDB_CLIENT_ID = "deadbeef"
-IGDB_CLIENT_SECRET = ""
+IGDB_CLIENT_ID = env("IGDB_CLIENT_ID")
+IGDB_CLIENT_SECRET = env("IGDB_CLIENT_SECRET")
 
 # List of available proxies for proxy downloader, in format of ["http://x.y:port?url=__URL__", ...]
 DOWNLOADER_PROXY_LIST = [
-    u for u in os.environ.get("NEODB_DOWNLOADER_PROXY_LIST", "").split(",") if u
+    u for u in env("NEODB_DOWNLOADER_PROXY_LIST").split(",") if u
 ]
 
 # Backup proxy for proxy downloader, in format of "http://xyz:port?url=__URL__"
-DOWNLOADER_BACKUP_PROXY = os.environ.get("NEODB_DOWNLOADER_BACKUP_PROXY", "")
+DOWNLOADER_BACKUP_PROXY = env("NEODB_DOWNLOADER_BACKUP_PROXY")
 
 # Timeout of downloader requests, in seconds
 DOWNLOADER_REQUEST_TIMEOUT = 90
@@ -152,9 +196,6 @@ DOWNLOADER_RETRIES = 3
 
 NEODB_VERSION = "0.8"
 DATABASE_ROUTERS = ["takahe.db_routes.TakaheRouter"]
-
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # for legacy deployment:
@@ -286,7 +327,7 @@ if os.getenv("NEODB_SSL", "") != "":
     SECURE_HSTS_SECONDS = 31536000
 
 STATIC_URL = "/s/"
-STATIC_ROOT = os.environ.get("NEODB_STATIC_ROOT", os.path.join(BASE_DIR, "static/"))
+STATIC_ROOT = env("NEODB_STATIC_ROOT")
 if DEBUG:
     # django-sass-processor will generate neodb.css on-the-fly when DEBUG
     # NEODB_STATIC_ROOT is readonly in docker mode, so we give it a writable place
@@ -306,10 +347,10 @@ SILENCED_SYSTEM_CHECKS = [
     "fields.W344",  # Required by takahe: identical table name in different database
 ]
 
-TAKAHE_MEDIA_URL = os.environ.get("TAKAHE_MEDIA_URL", "/media/")
-TAKAHE_MEDIA_ROOT = os.environ.get("TAKAHE_MEDIA_ROOT", "media")
+TAKAHE_MEDIA_URL = env("TAKAHE_MEDIA_URL")
+TAKAHE_MEDIA_ROOT = env("TAKAHE_MEDIA_ROOT")
 MEDIA_URL = "/m/"
-MEDIA_ROOT = os.environ.get("NEODB_MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
+MEDIA_ROOT = env("NEODB_MEDIA_ROOT")
 STORAGES = {  # TODO: support S3
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
