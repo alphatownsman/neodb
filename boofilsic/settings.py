@@ -7,7 +7,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 env = environ.Env(
     # set casting, default value
-    DEBUG=(str, ""),
+    NEODB_DEBUG=(str, ""),
     # DB
     NEODB_DB_URL=(str, "postgres://neodb:aubergine@127.0.0.1:5432/neodb"),
     TAKAHE_DB_URL=(str, "postgres://takahe:takahepass@127.0.0.1:5432/takahe"),
@@ -88,7 +88,7 @@ SITE_DOMAIN = env("NEODB_SITE_DOMAIN")
 SITE_INFO = {
     "site_name": env("NEODB_SITE_NAME"),
     "site_domain": SITE_DOMAIN,
-    "site_url": "https://" + SITE_DOMAIN,
+    "site_url": f"https://{SITE_DOMAIN}",
     "site_logo": env("NEODB_SITE_LOGO"),
     "site_icon": env("NEODB_SITE_ICON"),
     "user_icon": env("NEODB_USER_ICON"),
