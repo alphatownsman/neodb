@@ -8,18 +8,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env = environ.Env(
     # set casting, default value
     DEBUG=(str, ""),
-    # NEODB DB
-    NEODB_DB_NAME=(str, "test_neodb"),
-    NEODB_DB_USER=(str, "testuser"),
-    NEODB_DB_PASSWORD=(str, "testpass"),
-    NEODB_DB_HOST=(str, "127.0.0.1"),
-    NEODB_DB_PORT=(int, 5432),
-    # TAKAHE DB
-    TAKAHE_DB_NAME=(str, "test_neodb_takahe"),
-    TAKAHE_DB_USER=(str, "testuser"),
-    TAKAHE_DB_PASSWORD=(str, "testpass"),
-    TAKAHE_DB_HOST=(str, "127.0.0.1"),
-    TAKAHE_DB_PORT=(int, 5432),
+    # DB
+    NEODB_DB_URL=(str, "postgres://neodb:aubergine@127.0.0.1:5432/neodb"),
+    TAKAHE_DB_URL=(str, "postgres://takahe:takahepass@127.0.0.1:5432/takahe"),
     # REDIS
     NEODB_REDIS_HOST=(str, "127.0.0.1"),
     NEODB_REDIS_PORT=(int, 6379),
@@ -49,11 +40,11 @@ env = environ.Env(
     NEODB_STATIC_ROOT=(str, os.path.join(BASE_DIR, "static/")),
     TAKAHE_MEDIA_URL=(str, "/media/"),
     TAKAHE_MEDIA_ROOT=(str, "media"),
-    NEODB_MEDIA_ROOT=(str, os.path.join(BASE_DIR, "media"))  # this is defined but not used ,
+    NEODB_MEDIA_ROOT=(str, os.path.join(BASE_DIR, "media")),
 )
 
 # Take environment variables from .env file
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # ====== USER CONFIGUTRATION START ======
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -64,40 +55,14 @@ SECRET_KEY = env("NEODB_SECRET_KEY")
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("NEODB_DB_NAME"),
-        "USER": env("NEODB_DB_USER"),
-        "PASSWORD": env("NEODB_DB_PASSWORD"),
-        "HOST": env("NEODB_DB_HOST"),
-        "PORT": int(env("NEODB_DB_PORT")),
-        "OPTIONS": {
-            "client_encoding": "UTF8",
-            # 'isolation_level': psycopg2.extensions.ISOLATION_LEVEL_DEFAULT,
-        },
         "TEST": {
             "DEPENDENCIES": ["takahe"],
         },
+        **env.db("NEODB_DB_URL"),
     },
-    "takahe": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("TAKAHE_DB_NAME"),
-        "USER": env("TAKAHE_DB_USER"),
-        "PASSWORD": env("TAKAHE_DB_PASSWORD"),
-        "HOST": env("TAKAHE_DB_HOST"),
-        "PORT": int(env("TAKAHE_DB_PORT")),
-        "OPTIONS": {
-            "client_encoding": "UTF8",
-            # 'isolation_level': psycopg2.extensions.ISOLATION_LEVEL_DEFAULT,
-        },
-        "TEST": {
-            "DEPENDENCIES": [],
-        },
-    },
+    "takahe": env.db("TAKAHE_DB_URL"),
 }
 
-REDIS_HOST = env("NEODB_REDIS_HOST")
-REDIS_PORT = int(env("NEODB_REDIS_PORT"))
-REDIS_DB = int(env("NEODB_REDIS_DB"))
 
 SEARCH_BACKEND = None
 if env("NEODB_TYPESENSE_ENABLE"):
@@ -132,9 +97,7 @@ SITE_INFO = {
     "donation_link": "https://patreon.com/tertius",
 }
 
-SETUP_ADMIN_USERNAMES = [
-    u for u in env("NEODB_ADMIN_USERNAMES").split(",") if u
-]
+SETUP_ADMIN_USERNAMES = [u for u in env("NEODB_ADMIN_USERNAMES").split(",") if u]
 
 # Mastodon/Pleroma instance allowed to login, keep empty to allow any instance to login
 MASTODON_ALLOWED_SITES = []
@@ -178,9 +141,7 @@ IGDB_CLIENT_ID = env("IGDB_CLIENT_ID")
 IGDB_CLIENT_SECRET = env("IGDB_CLIENT_SECRET")
 
 # List of available proxies for proxy downloader, in format of ["http://x.y:port?url=__URL__", ...]
-DOWNLOADER_PROXY_LIST = [
-    u for u in env("NEODB_DOWNLOADER_PROXY_LIST").split(",") if u
-]
+DOWNLOADER_PROXY_LIST = [u for u in env("NEODB_DOWNLOADER_PROXY_LIST").split(",") if u]
 
 # Backup proxy for proxy downloader, in format of "http://xyz:port?url=__URL__"
 DOWNLOADER_BACKUP_PROXY = env("NEODB_DOWNLOADER_BACKUP_PROXY")
@@ -419,6 +380,10 @@ THUMBNAIL_ALIASES = {
 # THUMBNAIL_PRESERVE_EXTENSIONS = ('svg',)
 if DEBUG:
     THUMBNAIL_DEBUG = True
+
+REDIS_HOST = env("NEODB_REDIS_HOST")
+REDIS_PORT = int(env("NEODB_REDIS_PORT"))
+REDIS_DB = int(env("NEODB_REDIS_DB"))
 
 CACHES = {
     "default": {

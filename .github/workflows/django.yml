@@ -8,27 +8,38 @@ on:
 jobs:
   django:
     runs-on: ubuntu-latest
+    env:
+      NEODB_DB_USER: neodb
+      NEODB_DB_PASSWORD: aubergine
+      NEODB_DB_NAME: neodb
+      NEODB_DB_PORT: 5432
+      NEODB_REDIS_PORT: 6379
+      TAKAHE_DB_NAME: takahe
+      TAKAHE_DB_USER: takahe
+      TAKAHE_DB_PASSWORD: aubergine
+      TAKAHE_DB_PORT: 5432
+
     services:
       redis:
         image: redis
         ports:
-          - 6379:6379
+          - ${{ env.NEODB_REDIS_PORT }}:6379
       db:
         image: postgres
         env:
-          POSTGRES_USER: testuser
-          POSTGRES_PASSWORD: testpass
-          POSTGRES_DB: test_neodb
+          POSTGRES_USER: ${{ env.NEODB_DB_USER }}
+          POSTGRES_PASSWORD: ${{ env.NEODB_DB_PASSWORD }}
+          POSTGRES_DB: ${{ env.NEODB_DB_NAME }}
         ports:
-          - 5432:5432
+          - ${{ env.NEODB_DB_PORT }}:5432
       db2:
         image: postgres
         env:
-          POSTGRES_USER: testuser
-          POSTGRES_PASSWORD: testpass
-          POSTGRES_DB: test_neodb_takahe
+          POSTGRES_USER: ${{ env.TAKAHE_DB_USER }}
+          POSTGRES_PASSWORD: ${{ env.TAKAHE_DB_PASSWORD }}
+          POSTGRES_DB: ${{ env.TAKAHE_DB_NAME }}
         ports:
-          - 15432:5432
+          - ${{ env.TAKAHE_DB_PORT }}:5432
     strategy:
       max-parallel: 4
       matrix:
