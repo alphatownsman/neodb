@@ -16,6 +16,7 @@ jobs:
       - id: version
         run: |
           echo "neodb=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          ls
           echo "takahe=$(cd neodb-takahe && git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
       - name: Check outputs
         run: echo ${{ steps.version.outputs.neodb }}-${{ steps.version.outputs.takahe }}
