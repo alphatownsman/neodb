@@ -16,9 +16,10 @@ jobs:
       - id: version
         run: |
           echo "neodb=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-          echo "takahe=$(cd /neodb/neodb-takahe && git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          cd neodb-takahe
+          echo "takahe=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
       - name: Check outputs
-        run: echo ${{ steps.version.outputs.neodb }} - ${{ steps.version.outputs.takahe }}
+        run: echo ${{ steps.version.outputs.neodb }}-${{ steps.version.outputs.takahe }}
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
