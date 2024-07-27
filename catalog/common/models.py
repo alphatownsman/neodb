@@ -397,6 +397,10 @@ class Item(PolymorphicModel):
         schema=LOCALIZED_DESCRIPTION_SCHEMA,
     )
 
+    verified_creators = models.ManyToManyField(
+        related_name="verified_works", to="users.apidentity"
+    )
+
     class Meta:
         index_together = [
             [
