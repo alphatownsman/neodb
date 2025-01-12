@@ -397,7 +397,7 @@ class Item(PolymorphicModel):
         schema=LOCALIZED_DESCRIPTION_SCHEMA,
     )
 
-    class Meta:
+    class Meta(PolymorphicModel.Meta):
         index_together = [
             [
                 "primary_lookup_id_type",

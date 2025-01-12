@@ -31,7 +31,7 @@ class List(Piece):
     edited_time = models.DateTimeField(auto_now=True)
     metadata = models.JSONField(default=dict)
 
-    class Meta:
+    class Meta(Piece.Meta):
         abstract = True
 
     # MEMBER_CLASS = None  # subclass must override this
@@ -166,7 +166,7 @@ class ListMember(Piece):
         m = Mark(self.owner, self.item)
         return m
 
-    class Meta:
+    class Meta(Piece.Meta):
         abstract = True
 
     def __str__(self):

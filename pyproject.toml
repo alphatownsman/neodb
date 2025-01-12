@@ -68,6 +68,7 @@ dev-dependencies = [
     "pyright>=1.1.389",
     "ruff>=0.9.1",
     "mkdocs-material>=9.5.42",
+    "basedpyright>=1.23.2",
 ]
 
 [tool.pyright]
@@ -82,7 +83,8 @@ exclude = [
     "**/migrations",
     "neodb-takahe",
 ]
-reportIncompatibleVariableOverride = false
+# reportIncompatibleVariableOverride = false
+typeCheckingMode = "standard"
 
 [tool.djlint]
 ignore = "T002,T003,H005,H006,H019,H020,H021,H023,H030,H031,D018"

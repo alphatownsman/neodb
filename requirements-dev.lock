@@ -28,6 +28,7 @@ attrs==24.3.0
     # via aiohttp
 babel==2.16.0
     # via mkdocs-material
+basedpyright==1.23.2
 beautifulsoup4==4.12.3
     # via markdownify
 bleach==5.0.1
@@ -178,6 +179,8 @@ multidict==6.1.0
 nodeenv==1.9.1
     # via pre-commit
     # via pyright
+nodejs-wheel-binaries==22.13.0
+    # via basedpyright
 openpyxl==3.1.5
 packaging==24.2
     # via gunicorn

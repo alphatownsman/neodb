@@ -318,7 +318,7 @@ class ShelfMember(ListMember):
         "Shelf", related_name="members", on_delete=models.CASCADE
     )
 
-    class Meta:
+    class Meta(ListMember.Meta):
         unique_together = [["owner", "item"]]
         indexes = [
             models.Index(fields=["parent_id", "visibility", "created_time"]),

@@ -536,7 +536,7 @@ class Content(Piece):
     def brief_description(self) -> str:
         raise NotImplementedError("subclass should override this")
 
-    class Meta:
+    class Meta(Piece.Meta):
         abstract = True
 
 

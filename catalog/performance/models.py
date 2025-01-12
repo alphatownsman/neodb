@@ -381,7 +381,7 @@ class PerformanceProduction(Item):
         return [(i.value, i.label) for i in id_types]
 
     @property
-    def display_title(self):
+    def display_title(self):  # type:ignore
         return (
             f"{self.show.display_title if self.show else '♢'} {super().display_title}"
         )

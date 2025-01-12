@@ -47,7 +47,7 @@ class CollectionMember(ListMember):
 
 class Collection(List):
     if TYPE_CHECKING:
-        members: models.QuerySet[CollectionMember]
+        members: models.QuerySet[CollectionMember]  # type: ignore
     url_path = "collection"
     MEMBER_CLASS = CollectionMember
     catalog_item = models.OneToOneField(
@@ -199,11 +199,11 @@ class FeaturedCollection(Piece):
     created_time = models.DateTimeField(auto_now_add=True)
     edited_time = models.DateTimeField(auto_now=True)
 
-    class Meta:
+    class Meta(Piece.Meta):
         unique_together = [["owner", "target"]]
 
     @property
-    def visibility(self):
+    def visibility(self):  # type: ignore
         return self.target.visibility
 
     @cached_property

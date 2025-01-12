@@ -29,7 +29,7 @@ class Task(TypedModel):
     created_time = models.DateTimeField(auto_now_add=True)
     edited_time = models.DateTimeField(auto_now=True)
 
-    class Meta:
+    class Meta(TypedModel.Meta):
         indexes = [models.Index(fields=["user", "type"])]
 
     @property

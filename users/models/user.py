@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, ClassVar
 import django_rq
 import httpx
 from django.conf import settings
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser, UserManager as BaseUserManager
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
@@ -61,11 +61,12 @@ class UsernameValidator(UnicodeUsernameValidator):
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, username, email, password=None):
+    def create_user(self, username, email=None, password=None, **extra_fields):
         from mastodon.models import Email
 
         Takahe.get_domain()  # ensure configuration is complete
-
+        if not email:
+            raise ValueError("Email is required")
         user = User.register(username=username)
         e = Email.new_account(email)
         if not e:
@@ -74,11 +75,13 @@ class UserManager(BaseUserManager):
         e.save()
         return user
 
-    def create_superuser(self, username, email, password=None):
+    def create_superuser(self, username, email=None, password=None, **extra_fields):
         from mastodon.models import Email
         from takahe.models import User as TakaheUser
 
         Takahe.get_domain()  # ensure configuration is complete
+        if not email:
+            raise ValueError("Email is required")
         user = User.register(username=username, is_superuser=True)
         e = Email.new_account(email)
         if not e:
@@ -95,7 +98,7 @@ class User(AbstractUser):
     identity: "APIdentity"
     preference: "Preference"
     social_accounts: "models.QuerySet[SocialAccount]"
-    objects: ClassVar[UserManager] = UserManager()
+    objects: ClassVar[BaseUserManager] = UserManager()
     username_validator = UsernameValidator()
     username = models.CharField(
         _("username"),

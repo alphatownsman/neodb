@@ -224,11 +224,6 @@ class User(AbstractBaseUser):
     last_seen = models.DateTimeField(auto_now_add=True)
     USERNAME_FIELD = "email"
     EMAIL_FIELD = "email"
-    REQUIRED_FIELDS: list[str] = []
-
-    @property
-    def is_active(self):
-        return not (self.deleted or self.banned)
 
     @property
     def is_superuser(self):

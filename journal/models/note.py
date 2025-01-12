@@ -66,7 +66,7 @@ class Note(Content):
         ProgressType.TIMESTAMP: "{value}",
     }
 
-    class Meta:
+    class Meta(Content.Meta):
         indexes = [models.Index(fields=["owner", "item", "created_time"])]
 
     @property

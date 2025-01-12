@@ -50,7 +50,7 @@ class SocialAccount(TypedModel):
     #     json_field_name="preference_data", default=True
     # )
 
-    class Meta:
+    class Meta(TypedModel.Meta):
         indexes = [
             models.Index(fields=["type", "handle"], name="index_social_type_handle"),
             models.Index(

@@ -135,7 +135,7 @@ class PodcastEpisode(Item):
         self.program = value
 
     @property
-    def display_title(self) -> str:
+    def display_title(self) -> str:  # type:ignore
         return f"{self.program.title} - {self.title}" if self.program else self.title
 
     @property

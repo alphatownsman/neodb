@@ -23,7 +23,7 @@ gr_rating = {
 
 
 class GoodreadsImporter(Task):
-    class Meta:
+    class Meta(Task.Meta):
         app_label = "journal"  # workaround bug in TypedModel
 
     TaskQueue = "import"

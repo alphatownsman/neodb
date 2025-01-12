@@ -16,7 +16,7 @@ RATING_INCLUDES_CHILD_ITEMS = ["tvshow", "performance"]
 
 
 class Rating(Content):
-    class Meta:
+    class Meta(Content.Meta):
         unique_together = [["owner", "item"]]
 
     grade = models.PositiveSmallIntegerField(
