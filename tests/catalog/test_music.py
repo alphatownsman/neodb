@@ -300,6 +300,10 @@ class TestYouTubeMusic:
         assert site.resource.metadata["release_date"] == "1983-01-01"
         assert site.resource.metadata["album_type"] == "Album"
         assert site.resource.metadata["duration"] == 2675000
+        assert site.resource.metadata["youtube_video_id"] == "Si5CSpUCDGY"
         assert site.resource.item is not None
         assert isinstance(site.resource.item, Album)
         assert str(site.resource.item.release_date) == "1983-01-01"
+        assert site.resource.item.get_embed_link() == (
+            f"https://www.youtube.com/embed/Si5CSpUCDGY?list={self.t_id}"
+        )

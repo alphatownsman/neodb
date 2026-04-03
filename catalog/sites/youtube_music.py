@@ -75,8 +75,8 @@ def _largest_thumbnail_url(thumbnails: list) -> str | None:
     return re.sub(r"=w\d+-h\d+.*", "=w576-h576-l90-rj", url)
 
 
-def _get_mpreb_id(playlist_id: str) -> str | None:
-    """Browse VL{OLAK5uy_} and extract the MPREb_ album browse ID from track data."""
+def _get_mpreb_id(playlist_id: str) -> tuple[str | None, str | None]:
+    """Browse VL{OLAK5uy_} and extract the MPREb_ album browse ID and first video ID."""
     data = _innertube_browse("VL" + playlist_id)
     two_col = data.get("contents", {}).get("twoColumnBrowseResultsRenderer", {})
     sec_contents = (
@@ -89,31 +89,49 @@ def _get_mpreb_id(playlist_id: str) -> str | None:
         if sec_contents
         else []
     )
+    mpreb_id = None
+    first_video_id = None
     for track in tracks:
         renderer = track.get("musicResponsiveListItemRenderer", {})
-        for col in renderer.get("flexColumns", []):
-            for run in (
-                col.get("musicResponsiveListItemFlexColumnRenderer", {})
-                .get("text", {})
-                .get("runs", [])
-            ):
-                ep = run.get("navigationEndpoint", {}).get("browseEndpoint", {})
-                page_type = (
-                    ep.get("browseEndpointContextSupportedConfigs", {})
-                    .get("browseEndpointContextMusicConfig", {})
-                    .get("pageType", "")
-                )
-                bid = ep.get("browseId", "")
-                if page_type == "MUSIC_PAGE_TYPE_ALBUM" and bid.startswith("MPREb_"):
-                    return bid
-    logger.warning(
-        f"YouTubeMusic: could not extract MPREb_ from VL{playlist_id}; "
-        f"top-level keys: {list(data.get('contents', {}).keys())}"
-    )
-    return None
+        if first_video_id is None:
+            first_video_id = (
+                renderer.get("overlay", {})
+                .get("musicItemThumbnailOverlayRenderer", {})
+                .get("content", {})
+                .get("musicPlayButtonRenderer", {})
+                .get("playNavigationEndpoint", {})
+                .get("watchEndpoint", {})
+                .get("videoId")
+            )
+        if mpreb_id is None:
+            for col in renderer.get("flexColumns", []):
+                for run in (
+                    col.get("musicResponsiveListItemFlexColumnRenderer", {})
+                    .get("text", {})
+                    .get("runs", [])
+                ):
+                    ep = run.get("navigationEndpoint", {}).get("browseEndpoint", {})
+                    page_type = (
+                        ep.get("browseEndpointContextSupportedConfigs", {})
+                        .get("browseEndpointContextMusicConfig", {})
+                        .get("pageType", "")
+                    )
+                    bid = ep.get("browseId", "")
+                    if page_type == "MUSIC_PAGE_TYPE_ALBUM" and bid.startswith(
+                        "MPREb_"
+                    ):
+                        mpreb_id = bid
+        if mpreb_id and first_video_id:
+            break
+    if not mpreb_id:
+        logger.warning(
+            f"YouTubeMusic: could not extract MPREb_ from VL{playlist_id}; "
+            f"top-level keys: {list(data.get('contents', {}).keys())}"
+        )
+    return mpreb_id, first_video_id
 
 
-def _parse_mpreb_data(data: dict) -> ResourceContent:
+def _parse_mpreb_data(data: dict, first_video_id: str | None = None) -> ResourceContent:
     """Parse a MPREb_ browse API response into ResourceContent."""
     two_col = data.get("contents", {}).get("twoColumnBrowseResultsRenderer", {})
 
@@ -170,6 +188,19 @@ def _parse_mpreb_data(data: dict) -> ResourceContent:
         sec2[0].get("musicShelfRenderer", {}).get("contents", []) if sec2 else []
     )
 
+    first_video_id = first_video_id or (
+        tracks_raw[0]
+        .get("musicResponsiveListItemRenderer", {})
+        .get("overlay", {})
+        .get("musicItemThumbnailOverlayRenderer", {})
+        .get("content", {})
+        .get("musicPlayButtonRenderer", {})
+        .get("playNavigationEndpoint", {})
+        .get("watchEndpoint", {})
+        .get("videoId")
+        if tracks_raw
+        else None
+    )
     track_list = []
     total_ms = 0
     for t in tracks_raw:
@@ -199,18 +230,19 @@ def _parse_mpreb_data(data: dict) -> ResourceContent:
         track_list.append(f"{idx}. {name}" if idx else name)
 
     lang = detect_language(title)
-    return ResourceContent(
-        metadata={
-            "title": title,
-            "localized_title": [{"lang": lang, "text": title}],
-            "artist": artist,
-            "release_date": release_date,
-            "album_type": album_type,
-            "track_list": "\n".join(track_list),
-            "duration": total_ms if total_ms else None,
-            "cover_image_url": cover_url,
-        }
-    )
+    metadata: dict = {
+        "title": title,
+        "localized_title": [{"lang": lang, "text": title}],
+        "artist": artist,
+        "release_date": release_date,
+        "album_type": album_type,
+        "track_list": "\n".join(track_list),
+        "duration": total_ms if total_ms else None,
+        "cover_image_url": cover_url,
+    }
+    if first_video_id:
+        metadata["youtube_video_id"] = first_video_id
+    return ResourceContent(metadata=metadata)
 
 
 @SiteManager.register
@@ -236,7 +268,7 @@ class YouTubeMusic(AbstractSite):
             return _parse_mpreb_data(data)
 
         try:
-            mpreb_id = _get_mpreb_id(self.id_value)
+            mpreb_id, first_video_id = _get_mpreb_id(self.id_value)
         except requests.exceptions.RequestException as e:
             raise ParseError(self, f"Innertube VL browse failed: {e}") from e
         if not mpreb_id:
@@ -248,7 +280,7 @@ class YouTubeMusic(AbstractSite):
             data = _innertube_browse(mpreb_id)
         except requests.exceptions.RequestException as e:
             raise ParseError(self, f"Innertube MPREb_ browse failed: {e}") from e
-        return _parse_mpreb_data(data)
+        return _parse_mpreb_data(data, first_video_id)
 
     def scrape_additional_data(self) -> bool:
         # Skip in mock/test mode — Wikidata SPARQL makes live network calls.

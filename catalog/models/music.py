@@ -104,9 +104,11 @@ class Album(Item):
             ):
                 bandcamp_link = f"https://bandcamp.com/EmbeddedPlayer/album={res.metadata.get('bandcamp_album_id')}/size=large/bgcol=ffffff/linkcol=19A2CA/artwork=small/transparent=true/"
             elif res.id_type == IdType.YouTubeMusic.value and not youtube_link:
-                youtube_link = (
-                    f"https://www.youtube.com/embed/videoseries?list={res.id_value}"
-                )
+                video_id = res.metadata.get("youtube_video_id")
+                if video_id:
+                    youtube_link = (
+                        f"https://www.youtube.com/embed/{video_id}?list={res.id_value}"
+                    )
             elif res.id_type == IdType.Spotify_Album.value and not spotify_link:
                 spotify_link = res.url.replace(
                     "open.spotify.com/", "open.spotify.com/embed/"
