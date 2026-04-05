@@ -157,10 +157,15 @@ def mark_list(request, item_path, item_uuid, following_only=False):
         queryset = queryset.filter(q_piece_in_home_feed_of_user(request.user))
     else:
         queryset = queryset.filter(q_piece_visible_to_user(request.user))
+    queryset = queryset.select_related("owner", "parent")
     paginator = CustomPaginator(queryset, request)
     page_number = request.GET.get("page", default=1)
     marks = paginator.get_page(page_number)
     pagination = PageLinksGenerator(page_number, paginator.num_pages, request.GET)
+    marks_list = list(marks)
+    for m in marks_list:
+        m.item = item
+    _prefetch_mark_list(marks_list, request.user)
     return render(
         request,
         "item_mark_list.html",
@@ -190,6 +195,61 @@ def review_list(request, item_path, item_uuid):
             "pagination": pagination,
         },
     )
+
+
+def _prefetch_mark_list(members: list["ShelfMember"], user) -> None:
+    """Batch-prefetch latest_post, comments, and interaction flags for mark_list."""
+    if not members:
+        return
+    from journal.models import Comment, Mark, Rating
+    from journal.models.common import prefetch_latest_posts
+
+    # Prefetch latest_post for ShelfMembers
+    prefetch_latest_posts(members)
+    # Batch-fetch Comments for all (owner, item) pairs
+    pairs = [(m.owner_id, m.item_id) for m in members]
+    from django.db.models import Q
+
+    q = Q()
+    for owner_id, item_id in pairs:
+        q |= Q(owner_id=owner_id, item_id=item_id)
+    comments_by_key: dict[tuple[int, int], Comment] = {}
+    ratings_by_key: dict[tuple[int, int], Rating | None] = {}
+    owner_map = {m.owner_id: m.owner for m in members}
+    item_map = {m.item_id: m.item for m in members}
+    if q:
+        for c in Comment.objects.filter(q):
+            c.owner = owner_map.get(c.owner_id)
+            c.item = item_map.get(c.item_id)
+            comments_by_key[(c.owner_id, c.item_id)] = c
+        for r in Rating.objects.filter(q):
+            r.owner = owner_map.get(r.owner_id)
+            r.item = item_map.get(r.item_id)
+            ratings_by_key[(r.owner_id, r.item_id)] = r
+    # Prefetch latest_post for Comments
+    comment_list = list(comments_by_key.values())
+    if comment_list:
+        prefetch_latest_posts(comment_list)
+    # Build pre-populated Mark objects on each ShelfMember
+    for m in members:
+        key = (m.owner_id, m.item_id)
+        mark = Mark(m.owner, m.item)
+        mark.shelfmember = m
+        mark.__dict__["comment"] = comments_by_key.get(key)
+        mark.__dict__["rating"] = ratings_by_key.get(key)
+        m.__dict__["mark"] = mark
+    # Prefetch interaction flags for all posts
+    if user.is_authenticated:
+        posts = []
+        for m in members:
+            mark = m.__dict__["mark"]
+            if mark.shelfmember and mark.shelfmember.__dict__.get("latest_post"):
+                posts.append(mark.shelfmember.__dict__["latest_post"])
+            comment = mark.__dict__.get("comment")
+            if comment and comment.__dict__.get("latest_post"):
+                posts.append(comment.__dict__["latest_post"])
+        if posts:
+            Takahe.prefetch_interaction_flags(posts, user.identity.pk)
 
 
 def _prefetch_comments(comments_list: list["Comment"]):
@@ -437,7 +497,10 @@ def discover_popular_posts(request):
                 order_by="-published",
             )
         ).filter(author_row__lte=3)
-    posts = popular_posts.not_blocked_by(request.user.identity.takahe_identity)[:20]
+    posts = list(
+        popular_posts.not_blocked_by(request.user.identity.takahe_identity)[:20]
+    )
+    Takahe.prefetch_interaction_flags(posts, request.user.identity.pk)
     return render(
         request,
         "_discover_popular_posts.html",
