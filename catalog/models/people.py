@@ -115,8 +115,7 @@ class People(Item):
 
     schema = PeopleSchema
     category = ItemCategory.People
-    url_path = "people"
-    url_path_person = "person"
+    url_path = "person"
     url_path_organization = "company"
     type = ItemType.People
 
@@ -188,7 +187,7 @@ class People(Item):
     def url(self):
         if self.is_organization:
             return f"/{self.url_path_organization}/{self.uuid}"
-        return f"/{self.url_path_person}/{self.uuid}"
+        return f"/{self.url_path}/{self.uuid}"
 
     def get_localized_name(self) -> str | None:
         if self.localized_name:
