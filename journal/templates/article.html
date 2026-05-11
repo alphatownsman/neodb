@@ -91,9 +91,17 @@
           </div>
           <footer>
             {% if article.normalized_tags %}
-              <p class="tags">
-                {% for tag in article.normalized_tags %}<span class="tag">#{{ tag }}</span>{% endfor %}
-              </p>
+              <div class="tag-list">
+                {% for tag in article.normalized_tags %}
+                  <span>
+                    {% if request.user.is_authenticated and request.user.identity == article.owner %}
+                      <a href="{% url 'common:search' %}?c=journal&amp;q=tag:&quot;{{ tag }}&quot;">#{{ tag }}</a>
+                    {% else %}
+                      <a>#{{ tag }}</a>
+                    {% endif %}
+                  </span>
+                {% endfor %}
+              </div>
             {% endif %}
             {% if request.user.is_authenticated %}
               <span class="action">
