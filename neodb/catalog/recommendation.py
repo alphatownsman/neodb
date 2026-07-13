@@ -330,8 +330,10 @@ def from_your_circles(
     """Items recently marked by people the viewer follows, ranked by distinct shelvers.
 
     Per-request query (no precompute). Respects visibility via
-    ``q_piece_visible_to_user`` and excludes items the viewer has already
-    shelved.
+    ``q_piece_visible_to_user``. Unlike the personalised surfaces, items the
+    viewer has already shelved are NOT excluded: the exclusion inlined one
+    bind parameter per shelved item into the aggregation query, bloating the
+    SQL for heavy users (Sentry EGGPLANT-1GE).
     """
     if not viewer or not viewer.is_authenticated:
         return []
@@ -351,16 +353,11 @@ def from_your_circles(
     eligible_followees = [f for f in following if f not in not_discoverable]
     if not eligible_followees:
         return []
-    shelved = _user_shelved_item_ids(identity.pk)
     excluded_ctypes = excluded_target_ctype_ids()
-    qs = (
-        ShelfMember.objects.filter(q_piece_visible_to_user(viewer))
-        .filter(
-            owner_id__in=eligible_followees,
-            edited_time__gte=since,
-            parent__shelf_type__in=SHELF_TYPES_AS_SEED,
-        )
-        .exclude(item_id__in=shelved)
+    qs = ShelfMember.objects.filter(q_piece_visible_to_user(viewer)).filter(
+        owner_id__in=eligible_followees,
+        edited_time__gte=since,
+        parent__shelf_type__in=SHELF_TYPES_AS_SEED,
     )
     if excluded_ctypes:
         qs = qs.exclude(item__polymorphic_ctype_id__in=excluded_ctypes)
@@ -390,9 +387,10 @@ def from_your_circles(
 def blended_for_discover(viewer, limit: int = 30) -> list[Item]:
     """Mix personalised and circles results for the discover top row.
 
-    Strategy: interleave by rank; dedup by item id; exclude items the viewer
-    has already shelved; preserve order of first appearance. Returned list
-    may be empty if neither source has data.
+    Strategy: interleave by rank; dedup by item id; preserve order of first
+    appearance. The for-you half excludes items the viewer has already
+    shelved; the circles half does not (see ``from_your_circles``). Returned
+    list may be empty if neither source has data.
     """
     pref = (
         getattr(viewer, "preference", None)
