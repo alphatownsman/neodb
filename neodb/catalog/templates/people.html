@@ -70,7 +70,6 @@
     {% for work in items %}
       <li class="card">
         <a href="{{ work.url }}" title="{{ work.display_title }}">
-          {% if work.mark.shelf_type %}<span class="status-badge">{{ work.mark.status_label }}</span>{% endif %}
           <img src="{{ work.cover|thumb:'normal' }}"
                alt="{{ work.display_title }}"
                loading="lazy">
