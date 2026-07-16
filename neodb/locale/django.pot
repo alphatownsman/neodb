@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-13 03:55-0400\n"
+"POT-Creation-Date: 2026-07-15 20:22-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,21 +59,25 @@ msgstr ""
 msgid "Traditional Chinese"
 msgstr ""
 
-#: catalog/forms.py:29 catalog/models/item.py:252
+#: catalog/forms.py:35 catalog/models/item.py:260
 msgid "Primary ID Type"
 msgstr ""
 
-#: catalog/forms.py:34 catalog/models/item.py:255
+#: catalog/forms.py:40 catalog/models/item.py:263
 msgid "Primary ID Value"
 msgstr ""
 
+#: catalog/forms.py:181
+msgid "Invalid date, expecting YYYY, YYYY-MM or YYYY-MM-DD."
+msgstr ""
+
 #: catalog/models/book.py:136 catalog/models/book.py:155
-#: catalog/models/common.py:207 catalog/models/common.py:225
+#: catalog/models/common.py:211 catalog/models/common.py:229
 msgid "locale"
 msgstr ""
 
 #: catalog/models/book.py:139 catalog/models/book.py:158
-#: catalog/models/common.py:210 catalog/models/common.py:230
+#: catalog/models/common.py:214 catalog/models/common.py:234
 msgid "text content"
 msgstr ""
 
@@ -97,473 +101,485 @@ msgstr ""
 msgid "Web Fiction"
 msgstr ""
 
-#: catalog/models/book.py:180 catalog/models/game.py:33
+#: catalog/models/book.py:180 catalog/models/game.py:35
 msgid "Other"
 msgstr ""
 
-#: catalog/models/book.py:250
+#: catalog/models/book.py:254
 msgid "subtitle"
 msgstr ""
 
-#: catalog/models/book.py:260 catalog/models/movie.py:101
-#: catalog/models/performance.py:385 catalog/models/tv.py:176
-#: catalog/models/tv.py:418
+#: catalog/models/book.py:264 catalog/models/movie.py:129
+#: catalog/models/performance.py:385 catalog/models/tv.py:219
+#: catalog/models/tv.py:441
 msgid "original title"
 msgstr ""
 
-#: catalog/models/book.py:264
+#: catalog/models/book.py:268
 msgid "other title"
 msgstr ""
 
-#: catalog/models/book.py:270 catalog/models/book.py:554
-#: catalog/models/item.py:114
+#: catalog/models/book.py:274 catalog/models/book.py:558
+#: catalog/models/item.py:122
 msgid "author"
 msgstr ""
 
-#: catalog/models/book.py:277 catalog/models/item.py:115
+#: catalog/models/book.py:281 catalog/models/item.py:123
 msgid "translator"
 msgstr ""
 
-#: catalog/models/book.py:284 catalog/templates/edition.html:26
+#: catalog/models/book.py:288 catalog/templates/edition.html:26
 msgid "book format"
 msgstr ""
 
-#: catalog/models/book.py:291 catalog/models/game.py:123
-#: catalog/models/item.py:129 catalog/models/music.py:95
+#: catalog/models/book.py:295 catalog/models/game.py:132
+#: catalog/models/item.py:137 catalog/models/music.py:131
 msgid "publisher"
 msgstr ""
 
-#: catalog/models/book.py:298
+#: catalog/models/book.py:302
 msgid "publication year"
 msgstr ""
 
-#: catalog/models/book.py:304
+#: catalog/models/book.py:308
 msgid "publication month"
 msgstr ""
 
-#: catalog/models/book.py:309 catalog/templates/edition.html:50
+#: catalog/models/book.py:313 catalog/templates/edition.html:50
 msgid "binding"
 msgstr ""
 
-#: catalog/models/book.py:310
+#: catalog/models/book.py:314
 msgid "pages"
 msgstr ""
 
-#: catalog/models/book.py:311 catalog/templates/edition.html:44
+#: catalog/models/book.py:315 catalog/templates/edition.html:44
 msgid "series"
 msgstr ""
 
-#: catalog/models/book.py:312 catalog/templates/edition.html:69
+#: catalog/models/book.py:316 catalog/templates/edition.html:69
 msgid "contents"
 msgstr ""
 
-#: catalog/models/book.py:313 catalog/templates/edition.html:55
+#: catalog/models/book.py:317 catalog/templates/edition.html:55
 msgid "price"
 msgstr ""
 
-#: catalog/models/book.py:314 catalog/templates/edition.html:33
+#: catalog/models/book.py:318 catalog/templates/edition.html:33
 msgid "imprint"
 msgstr ""
 
-#: catalog/models/common.py:15 common/models/lang.py:249
+#: catalog/models/common.py:19 common/models/lang.py:249
 msgid "Unknown"
 msgstr ""
 
-#: catalog/models/common.py:16
+#: catalog/models/common.py:20
 msgid "Douban"
 msgstr ""
 
-#: catalog/models/common.py:17 catalog/models/common.py:66
+#: catalog/models/common.py:21 catalog/models/common.py:70
 msgid "Goodreads"
 msgstr ""
 
-#: catalog/models/common.py:18 catalog/models/common.py:68
+#: catalog/models/common.py:22 catalog/models/common.py:72
 msgid "Google Books"
 msgstr ""
 
-#: catalog/models/common.py:19
+#: catalog/models/common.py:23
 msgid "BooksTW"
 msgstr ""
 
-#: catalog/models/common.py:20 catalog/models/common.py:77
-#: catalog/models/common.py:79
+#: catalog/models/common.py:24 catalog/models/common.py:81
+#: catalog/models/common.py:83
 msgid "Bibliotek.dk"
 msgstr ""
 
-#: catalog/models/common.py:21 catalog/models/common.py:78
+#: catalog/models/common.py:25 catalog/models/common.py:82
 msgid "eReolen.dk"
 msgstr ""
 
-#: catalog/models/common.py:22 catalog/models/common.py:61
-#: catalog/templates/movie.html:51 catalog/templates/people.html:37
-#: catalog/templates/tvseason.html:68 catalog/templates/tvshow.html:63
+#: catalog/models/common.py:26 catalog/models/common.py:65
+#: catalog/templates/movie.html:46 catalog/templates/people.html:37
+#: catalog/templates/tvseason.html:63 catalog/templates/tvshow.html:58
 msgid "IMDb"
 msgstr ""
 
-#: catalog/models/common.py:23
+#: catalog/models/common.py:27
 msgid "TMDB"
 msgstr ""
 
-#: catalog/models/common.py:24 catalog/models/common.py:80
+#: catalog/models/common.py:28 catalog/models/common.py:84
 msgid "Bandcamp"
 msgstr ""
 
-#: catalog/models/common.py:25
+#: catalog/models/common.py:29
 msgid "Spotify"
 msgstr ""
 
-#: catalog/models/common.py:26
+#: catalog/models/common.py:30
 msgid "IGDB"
 msgstr ""
 
-#: catalog/models/common.py:27
+#: catalog/models/common.py:31
 msgid "Steam"
 msgstr ""
 
-#: catalog/models/common.py:28 catalog/models/common.py:100
+#: catalog/models/common.py:32 catalog/models/common.py:104
 msgid "itch.io"
 msgstr ""
 
-#: catalog/models/common.py:29 catalog/models/common.py:101
+#: catalog/models/common.py:33 catalog/models/common.py:105
 msgid "Bangumi"
 msgstr ""
 
-#: catalog/models/common.py:30
+#: catalog/models/common.py:34
 msgid "BGG"
 msgstr ""
 
-#: catalog/models/common.py:31 catalog/models/common.py:102
+#: catalog/models/common.py:35 catalog/models/common.py:106
 msgid "Apple Podcast"
 msgstr ""
 
-#: catalog/models/common.py:32
+#: catalog/models/common.py:36
 msgid "RSS"
 msgstr ""
 
-#: catalog/models/common.py:33
+#: catalog/models/common.py:37
 msgid "Discogs"
 msgstr ""
 
-#: catalog/models/common.py:34 catalog/models/common.py:103
+#: catalog/models/common.py:38 catalog/models/common.py:107
 msgid "Apple Music"
 msgstr ""
 
-#: catalog/models/common.py:35 catalog/models/common.py:105
+#: catalog/models/common.py:39 catalog/models/common.py:109
 msgid "Fediverse"
 msgstr ""
 
-#: catalog/models/common.py:36 catalog/models/common.py:106
+#: catalog/models/common.py:40 catalog/models/common.py:110
 msgid "Qidian"
 msgstr ""
 
-#: catalog/models/common.py:37 catalog/models/common.py:107
+#: catalog/models/common.py:41 catalog/models/common.py:111
 msgid "Ypshuo"
 msgstr ""
 
-#: catalog/models/common.py:38 catalog/models/common.py:108
+#: catalog/models/common.py:42 catalog/models/common.py:112
 msgid "Archive of Our Own"
 msgstr ""
 
-#: catalog/models/common.py:39 catalog/models/common.py:109
+#: catalog/models/common.py:43 catalog/models/common.py:113
 msgid "JinJiang"
 msgstr ""
 
-#: catalog/models/common.py:40 catalog/models/common.py:51
+#: catalog/models/common.py:44 catalog/models/common.py:55
 msgid "WikiData"
 msgstr ""
 
-#: catalog/models/common.py:41 catalog/models/common.py:110
+#: catalog/models/common.py:45 catalog/models/common.py:114
 msgid "Open Library"
 msgstr ""
 
-#: catalog/models/common.py:42
+#: catalog/models/common.py:46
 msgid "MusicBrainz"
 msgstr ""
 
-#: catalog/models/common.py:43
+#: catalog/models/common.py:47
 msgid "WorldCat"
 msgstr ""
 
-#: catalog/models/common.py:44 catalog/models/common.py:112
+#: catalog/models/common.py:48 catalog/models/common.py:116
 msgid "MobyGames"
 msgstr ""
 
-#: catalog/models/common.py:45 catalog/models/common.py:113
+#: catalog/models/common.py:49 catalog/models/common.py:117
 msgid "StoryGraph"
 msgstr ""
 
-#: catalog/models/common.py:46 catalog/models/common.py:104
+#: catalog/models/common.py:50 catalog/models/common.py:108
 msgid "YouTube Music"
 msgstr ""
 
-#: catalog/models/common.py:47
+#: catalog/models/common.py:51
 msgid "RateYourMusic"
 msgstr ""
 
-#: catalog/models/common.py:52
+#: catalog/models/common.py:56
 msgid "ISBN10"
 msgstr ""
 
-#: catalog/models/common.py:53 catalog/templates/edition.html:19
+#: catalog/models/common.py:57 catalog/templates/edition.html:19
 msgid "ISBN"
 msgstr ""
 
-#: catalog/models/common.py:54
+#: catalog/models/common.py:58
 msgid "ASIN"
 msgstr ""
 
-#: catalog/models/common.py:55
+#: catalog/models/common.py:59
 msgid "ISSN"
 msgstr ""
 
-#: catalog/models/common.py:56
+#: catalog/models/common.py:60
 msgid "CUBN"
 msgstr ""
 
-#: catalog/models/common.py:57
+#: catalog/models/common.py:61
 msgid "ISRC"
 msgstr ""
 
-#: catalog/models/common.py:58
+#: catalog/models/common.py:62
 msgid "GTIN UPC EAN"
 msgstr ""
 
-#: catalog/models/common.py:59
+#: catalog/models/common.py:63
 msgid "OCLC Number"
 msgstr ""
 
-#: catalog/models/common.py:60
+#: catalog/models/common.py:64
 msgid "RSS Feed URL"
 msgstr ""
 
-#: catalog/models/common.py:62
+#: catalog/models/common.py:66
 msgid "TMDB TV Series"
 msgstr ""
 
-#: catalog/models/common.py:63
+#: catalog/models/common.py:67
 msgid "TMDB TV Season"
 msgstr ""
 
-#: catalog/models/common.py:64
+#: catalog/models/common.py:68
 msgid "TMDB TV Episode"
 msgstr ""
 
-#: catalog/models/common.py:65
+#: catalog/models/common.py:69
 msgid "TMDB Movie"
 msgstr ""
 
-#: catalog/models/common.py:67
+#: catalog/models/common.py:71
 msgid "Goodreads Work"
 msgstr ""
 
-#: catalog/models/common.py:69
+#: catalog/models/common.py:73
 msgid "Douban Book"
 msgstr ""
 
-#: catalog/models/common.py:70
+#: catalog/models/common.py:74
 msgid "Douban Book Work"
 msgstr ""
 
-#: catalog/models/common.py:71
+#: catalog/models/common.py:75
 msgid "Douban Movie"
 msgstr ""
 
-#: catalog/models/common.py:72
+#: catalog/models/common.py:76
 msgid "Douban Music"
 msgstr ""
 
-#: catalog/models/common.py:73
+#: catalog/models/common.py:77
 msgid "Douban Game"
 msgstr ""
 
-#: catalog/models/common.py:74
+#: catalog/models/common.py:78
 msgid "Douban Drama"
 msgstr ""
 
-#: catalog/models/common.py:75
+#: catalog/models/common.py:79
 msgid "Douban Drama Version"
 msgstr ""
 
-#: catalog/models/common.py:76
+#: catalog/models/common.py:80
 msgid "BooksTW Book"
 msgstr ""
 
-#: catalog/models/common.py:81
+#: catalog/models/common.py:85
 msgid "Spotify Album"
 msgstr ""
 
-#: catalog/models/common.py:82
+#: catalog/models/common.py:86
 msgid "Spotify Podcast"
 msgstr ""
 
-#: catalog/models/common.py:83
+#: catalog/models/common.py:87
 msgid "Discogs Release"
 msgstr ""
 
-#: catalog/models/common.py:84
+#: catalog/models/common.py:88
 msgid "Discogs Master"
 msgstr ""
 
-#: catalog/models/common.py:87
+#: catalog/models/common.py:91
 msgid "MusicBrainz Release Group"
 msgstr ""
 
-#: catalog/models/common.py:89
+#: catalog/models/common.py:93
 msgid "MusicBrainz Release"
 msgstr ""
 
-#: catalog/models/common.py:90
+#: catalog/models/common.py:94
 msgid "MusicBrainz Artist"
 msgstr ""
 
-#: catalog/models/common.py:91
+#: catalog/models/common.py:95
 msgid "Douban Personage"
 msgstr ""
 
-#: catalog/models/common.py:92
+#: catalog/models/common.py:96
 msgid "Goodreads Author"
 msgstr ""
 
-#: catalog/models/common.py:93
+#: catalog/models/common.py:97
 msgid "Spotify Artist"
 msgstr ""
 
-#: catalog/models/common.py:94
+#: catalog/models/common.py:98
 msgid "TMDB Person"
 msgstr ""
 
-#: catalog/models/common.py:95
+#: catalog/models/common.py:99
 msgid "Open Library Author"
 msgstr ""
 
-#: catalog/models/common.py:96
+#: catalog/models/common.py:100
 msgid "IGDB Company"
 msgstr ""
 
-#: catalog/models/common.py:97
+#: catalog/models/common.py:101
 msgid "IGDB Game"
 msgstr ""
 
-#: catalog/models/common.py:98
+#: catalog/models/common.py:102
 msgid "BGG Boardgame"
 msgstr ""
 
-#: catalog/models/common.py:99
+#: catalog/models/common.py:103
 msgid "Steam Game"
 msgstr ""
 
-#: catalog/models/common.py:111
+#: catalog/models/common.py:115
 msgid "Open Library Work"
 msgstr ""
 
-#: catalog/models/common.py:114
+#: catalog/models/common.py:118
 msgid "RateYourMusic Release"
 msgstr ""
 
-#: catalog/models/common.py:135
+#: catalog/models/common.py:139
 msgid "Edition"
 msgstr ""
 
-#: catalog/models/common.py:136 catalog/templates/_sidebar_edit.html:249
+#: catalog/models/common.py:140 catalog/templates/_sidebar_edit.html:249
 msgid "Work"
 msgstr ""
 
-#: catalog/models/common.py:137
+#: catalog/models/common.py:141
 msgid "TV Series"
 msgstr ""
 
-#: catalog/models/common.py:138 catalog/templates/_sidebar_edit.html:170
+#: catalog/models/common.py:142 catalog/templates/_sidebar_edit.html:170
 msgid "TV Season"
 msgstr ""
 
-#: catalog/models/common.py:139
+#: catalog/models/common.py:143
 msgid "TV Episode"
 msgstr ""
 
-#: catalog/models/common.py:140 catalog/models/common.py:156
-#: catalog/models/common.py:170 catalog/templates/_sidebar_edit.html:163
+#: catalog/models/common.py:144 catalog/models/common.py:160
+#: catalog/models/common.py:174 catalog/templates/_sidebar_edit.html:163
 #: journal/templates/_sidebar_user_mark_list.html:35
 #: journal/templates/_sidebar_user_tag_filter.html:27
 msgid "Movie"
 msgstr ""
 
-#: catalog/models/common.py:141
+#: catalog/models/common.py:145
 msgid "Album"
 msgstr ""
 
-#: catalog/models/common.py:142 catalog/models/common.py:159
-#: catalog/models/common.py:173 common/templates/_header.html:41
+#: catalog/models/common.py:146 catalog/models/common.py:163
+#: catalog/models/common.py:177 common/templates/_header.html:43
 #: journal/templates/_sidebar_user_mark_list.html:48
 #: journal/templates/_sidebar_user_tag_filter.html:39
 msgid "Game"
 msgstr ""
 
-#: catalog/models/common.py:143
+#: catalog/models/common.py:147
 msgid "Podcast Program"
 msgstr ""
 
-#: catalog/models/common.py:144
+#: catalog/models/common.py:148
 msgid "Podcast Episode"
 msgstr ""
 
-#: catalog/models/common.py:145 catalog/models/common.py:161
-#: catalog/models/common.py:175 common/templates/_header.html:45
+#: catalog/models/common.py:149 catalog/models/common.py:165
+#: catalog/models/common.py:179 common/templates/_header.html:47
 #: journal/templates/_sidebar_user_mark_list.html:52
 #: journal/templates/_sidebar_user_tag_filter.html:43
 msgid "Performance"
 msgstr ""
 
-#: catalog/models/common.py:146
+#: catalog/models/common.py:150
 msgid "Production"
 msgstr ""
 
-#: catalog/models/common.py:147
+#: catalog/models/common.py:151
 msgid "Exhibition"
 msgstr ""
 
-#: catalog/models/common.py:148 catalog/models/common.py:165
-#: journal/templates/collection.html:23 journal/templates/collection.html:34
+#: catalog/models/common.py:152 catalog/models/common.py:169
+#: journal/templates/collection.html:29 journal/templates/collection.html:40
 #: journal/templates/collection_edit.html:10
 #: journal/templates/collection_share.html:12
 msgid "Collection"
 msgstr ""
 
-#: catalog/models/common.py:151 catalog/models/common.py:164
+#: catalog/models/common.py:155 catalog/models/common.py:168
 msgid "Person / Organization"
 msgstr ""
 
-#: catalog/models/common.py:155 catalog/models/common.py:169
-#: common/templates/_header.html:25
+#: catalog/models/common.py:159 catalog/models/common.py:173
+#: common/templates/_header.html:27
 #: journal/templates/_sidebar_user_mark_list.html:32
 #: journal/templates/_sidebar_user_tag_filter.html:24
 msgid "Book"
 msgstr ""
 
-#: catalog/models/common.py:157 catalog/models/common.py:171
+#: catalog/models/common.py:161 catalog/models/common.py:175
 #: journal/templates/_sidebar_user_mark_list.html:38
 #: journal/templates/_sidebar_user_tag_filter.html:30
 msgid "TV"
 msgstr ""
 
-#: catalog/models/common.py:158 catalog/models/common.py:172
-#: common/templates/_header.html:37
+#: catalog/models/common.py:162 catalog/models/common.py:176
+#: common/templates/_header.html:39
 #: journal/templates/_sidebar_user_mark_list.html:45
 #: journal/templates/_sidebar_user_tag_filter.html:36
 msgid "Music"
 msgstr ""
 
-#: catalog/models/common.py:160 catalog/models/common.py:174
-#: catalog/templates/_sidebar_edit.html:182 common/templates/_header.html:33
+#: catalog/models/common.py:164 catalog/models/common.py:178
+#: catalog/templates/_sidebar_edit.html:182 common/templates/_header.html:35
 #: journal/templates/_sidebar_user_mark_list.html:42
 #: journal/templates/_sidebar_user_tag_filter.html:33
 msgid "Podcast"
 msgstr ""
 
-#: catalog/models/common.py:273 catalog/templates/_genre_list.html:5
+#: catalog/models/common.py:277 catalog/templates/_genre_list.html:5
 msgid "genre"
 msgstr ""
 
-#: catalog/models/common.py:284 catalog/templates/_language_list.html:5
+#: catalog/models/common.py:308
+msgid "origin country"
+msgstr ""
+
+#: catalog/models/common.py:337 catalog/templates/album.html:33
+msgid "album type"
+msgstr ""
+
+#: catalog/models/common.py:341
+msgid "media format"
+msgstr ""
+
+#: catalog/models/common.py:346 catalog/templates/_language_list.html:5
 #: users/models/user.py:142
 msgid "language"
 msgstr ""
@@ -596,274 +612,236 @@ msgstr ""
 msgid "no matching identity found in the feed or its linked website"
 msgstr ""
 
-#: catalog/models/game.py:25
+#: catalog/models/game.py:27
 msgid "Main Game"
 msgstr ""
 
-#: catalog/models/game.py:26
+#: catalog/models/game.py:28
 msgid "Expansion"
 msgstr ""
 
-#: catalog/models/game.py:27
+#: catalog/models/game.py:29
 msgid "Downloadable Content"
 msgstr ""
 
-#: catalog/models/game.py:28
+#: catalog/models/game.py:30
 msgid "Mod"
 msgstr ""
 
-#: catalog/models/game.py:29
+#: catalog/models/game.py:31
 msgid "Bundle"
 msgstr ""
 
-#: catalog/models/game.py:30
+#: catalog/models/game.py:32
 msgid "Remaster"
 msgstr ""
 
-#: catalog/models/game.py:31
+#: catalog/models/game.py:33
 msgid "Remake"
 msgstr ""
 
-#: catalog/models/game.py:32
+#: catalog/models/game.py:34
 msgid "Special Edition"
 msgstr ""
 
-#: catalog/models/game.py:99 catalog/models/item.py:121
+#: catalog/models/game.py:108 catalog/models/item.py:129
 msgid "designer"
 msgstr ""
 
-#: catalog/models/game.py:107 catalog/models/item.py:120
-#: catalog/models/music.py:87
+#: catalog/models/game.py:116 catalog/models/item.py:128
+#: catalog/models/music.py:123
 msgid "artist"
 msgstr ""
 
-#: catalog/models/game.py:115 catalog/models/item.py:130
+#: catalog/models/game.py:124 catalog/models/item.py:138
 msgid "developer"
 msgstr ""
 
-#: catalog/models/game.py:131
-msgid "year of publication"
-msgstr ""
-
-#: catalog/models/game.py:135 catalog/models/podcast.py:256
+#: catalog/models/game.py:140 catalog/models/podcast.py:256
 msgid "date of publication"
 msgstr ""
 
-#: catalog/models/game.py:140 catalog/models/music.py:81
-#: catalog/models/tv.py:221
-msgid "YYYY-MM-DD"
+#: catalog/models/game.py:144 catalog/models/movie.py:165
+#: catalog/models/music.py:117 catalog/models/tv.py:255
+#: catalog/models/tv.py:477
+msgid "YYYY, YYYY-MM or YYYY-MM-DD"
 msgstr ""
 
-#: catalog/models/game.py:144 catalog/templates/game.html:16
+#: catalog/models/game.py:164 catalog/templates/game.html:16
 msgid "release type"
 msgstr ""
 
-#: catalog/models/game.py:153
+#: catalog/models/game.py:173
 msgid "platform"
 msgstr ""
 
-#: catalog/models/game.py:159 catalog/models/movie.py:160
+#: catalog/models/game.py:179 catalog/models/movie.py:167
 #: catalog/models/people.py:158 catalog/models/performance.py:258
 #: catalog/models/performance.py:465 catalog/models/podcast.py:88
-#: catalog/models/tv.py:235 catalog/models/tv.py:478
-#: catalog/templates/game.html:34 catalog/templates/movie.html:58
+#: catalog/models/tv.py:257 catalog/models/tv.py:480
+#: catalog/templates/game.html:32 catalog/templates/movie.html:53
 #: catalog/templates/people.html:44 catalog/templates/performance.html:35
 #: catalog/templates/performanceproduction.html:35
-#: catalog/templates/podcast.html:30 catalog/templates/tvseason.html:75
-#: catalog/templates/tvshow.html:70
+#: catalog/templates/podcast.html:30 catalog/templates/tvseason.html:70
+#: catalog/templates/tvshow.html:65
 msgid "website"
 msgstr ""
 
-#: catalog/models/item.py:116 catalog/models/movie.py:104
+#: catalog/models/item.py:124 catalog/models/movie.py:132
 #: catalog/models/performance.py:182 catalog/models/performance.py:389
-#: catalog/models/tv.py:179 catalog/models/tv.py:421
+#: catalog/models/tv.py:222 catalog/models/tv.py:444
 msgid "director"
 msgstr ""
 
-#: catalog/models/item.py:117 catalog/models/movie.py:111
+#: catalog/models/item.py:125 catalog/models/movie.py:139
 #: catalog/models/performance.py:189 catalog/models/performance.py:396
-#: catalog/models/tv.py:186 catalog/models/tv.py:428
+#: catalog/models/tv.py:229 catalog/models/tv.py:451
 msgid "playwright"
 msgstr ""
 
-#: catalog/models/item.py:118 catalog/models/movie.py:118
+#: catalog/models/item.py:126 catalog/models/movie.py:146
 #: catalog/models/performance.py:217 catalog/models/performance.py:424
-#: catalog/models/tv.py:193 catalog/models/tv.py:435
+#: catalog/models/tv.py:236 catalog/models/tv.py:458
 msgid "actor"
 msgstr ""
 
-#: catalog/models/item.py:119 catalog/models/movie.py:125
-#: catalog/models/tv.py:200 catalog/models/tv.py:442
+#: catalog/models/item.py:127 catalog/models/movie.py:153
+#: catalog/models/tv.py:243 catalog/models/tv.py:465
 msgid "producer"
 msgstr ""
 
-#: catalog/models/item.py:122 catalog/models/performance.py:203
+#: catalog/models/item.py:130 catalog/models/performance.py:203
 #: catalog/models/performance.py:410
 msgid "composer"
 msgstr ""
 
-#: catalog/models/item.py:123 catalog/models/performance.py:210
+#: catalog/models/item.py:131 catalog/models/performance.py:210
 #: catalog/models/performance.py:417
 msgid "choreographer"
 msgstr ""
 
-#: catalog/models/item.py:124 catalog/models/performance.py:224
+#: catalog/models/item.py:132 catalog/models/performance.py:224
 #: catalog/models/performance.py:431
 msgid "performer"
 msgstr ""
 
-#: catalog/models/item.py:125 catalog/models/podcast.py:79
+#: catalog/models/item.py:133 catalog/models/podcast.py:79
 msgid "host"
 msgstr ""
 
-#: catalog/models/item.py:126 catalog/models/performance.py:196
+#: catalog/models/item.py:134 catalog/models/performance.py:196
 #: catalog/models/performance.py:403
 msgid "original creator"
 msgstr ""
 
-#: catalog/models/item.py:127 catalog/models/performance.py:238
+#: catalog/models/item.py:135 catalog/models/performance.py:238
 #: catalog/models/performance.py:445
 msgid "crew"
 msgstr ""
 
-#: catalog/models/item.py:131
+#: catalog/models/item.py:139
 msgid "production company"
 msgstr ""
 
-#: catalog/models/item.py:132
+#: catalog/models/item.py:140
 msgid "record label"
 msgstr ""
 
-#: catalog/models/item.py:133
+#: catalog/models/item.py:141
 msgid "distributor"
 msgstr ""
 
-#: catalog/models/item.py:134
+#: catalog/models/item.py:142
 msgid "studio"
 msgstr ""
 
-#: catalog/models/item.py:135 catalog/models/performance.py:231
+#: catalog/models/item.py:143 catalog/models/performance.py:231
 #: catalog/models/performance.py:438
 msgid "troupe"
 msgstr ""
 
-#: catalog/models/item.py:150 catalog/models/people.py:477
+#: catalog/models/item.py:158 catalog/models/people.py:477
 #: catalog/models/performance.py:115 catalog/models/performance.py:134
 msgid "role"
 msgstr ""
 
-#: catalog/models/item.py:151 catalog/models/people.py:135
+#: catalog/models/item.py:159 catalog/models/people.py:135
 #: catalog/models/performance.py:114 catalog/models/performance.py:129
 #: users/models/webauthn.py:14
 msgid "name"
 msgstr ""
 
-#: catalog/models/item.py:153 catalog/templates/_item_credits_list.html:138
+#: catalog/models/item.py:161 catalog/templates/_item_credits_list.html:138
 msgid "character name"
 msgstr ""
 
-#: catalog/models/item.py:249 catalog/models/item.py:281
-#: journal/models/collection.py:89
+#: catalog/models/item.py:257 catalog/models/item.py:289
+#: journal/models/collection.py:93
 msgid "title"
 msgstr ""
 
-#: catalog/models/item.py:250 catalog/models/item.py:289
-#: journal/models/collection.py:90
+#: catalog/models/item.py:258 catalog/models/item.py:297
+#: journal/models/collection.py:94
 msgid "description"
 msgstr ""
 
-#: catalog/models/item.py:261 catalog/models/people.py:485
+#: catalog/models/item.py:269 catalog/models/people.py:485
 msgid "metadata"
 msgstr ""
 
-#: catalog/models/item.py:263 catalog/templates/_item_card.html:34
+#: catalog/models/item.py:271 catalog/templates/_item_card.html:34
 msgid "cover"
 msgstr ""
 
-#: catalog/models/item.py:1367
+#: catalog/models/item.py:1410
 msgid "source site"
 msgstr ""
 
-#: catalog/models/item.py:1369
+#: catalog/models/item.py:1412
 msgid "ID on source site"
 msgstr ""
 
-#: catalog/models/item.py:1371
+#: catalog/models/item.py:1414
 msgid "source url"
 msgstr ""
 
-#: catalog/models/item.py:1387
+#: catalog/models/item.py:1430
 msgid "IdType of the source site"
 msgstr ""
 
-#: catalog/models/item.py:1393
+#: catalog/models/item.py:1436
 msgid "Primary Id on the source site"
 msgstr ""
 
-#: catalog/models/item.py:1396
+#: catalog/models/item.py:1439
 msgid "url to the resource"
 msgstr ""
 
-#: catalog/models/movie.py:133 catalog/models/music.py:81
+#: catalog/models/movie.py:161 catalog/models/music.py:113
+#: catalog/models/tv.py:251 catalog/models/tv.py:473
 #: catalog/templates/_item_card_metadata_album.html:16
 #: catalog/templates/album.html:17 catalog/templates/game.html:21
-#: catalog/templates/movie.html:40 catalog/templates/tvseason.html:57
-#: catalog/templates/tvshow.html:52
+#: catalog/templates/movie.html:41 catalog/templates/tvseason.html:58
+#: catalog/templates/tvshow.html:53
 msgid "release date"
 msgstr ""
 
-#: catalog/models/movie.py:145 catalog/models/tv.py:462
-#: journal/templates/_sidebar_user_mark_list.html:63
-msgid "date"
-msgstr ""
-
-#: catalog/models/movie.py:146 catalog/models/performance.py:130
-#: catalog/models/tv.py:463
-msgid "required"
-msgstr ""
-
-#: catalog/models/movie.py:150 catalog/models/tv.py:467
-msgid "region or event"
-msgstr ""
-
-#: catalog/models/movie.py:152 catalog/models/tv.py:227
-#: catalog/models/tv.py:469
-msgid "Germany or Toronto International Film Festival"
-msgstr ""
-
-#: catalog/models/movie.py:162 catalog/models/tv.py:237
-#: catalog/models/tv.py:481
-msgid "region"
-msgstr ""
-
-#: catalog/models/movie.py:173 catalog/models/tv.py:249
-#: catalog/models/tv.py:492
-msgid "year"
-msgstr ""
-
-#: catalog/models/movie.py:174 catalog/models/music.py:84
-#: catalog/templates/movie.html:20 catalog/templates/tvseason.html:52
-#: catalog/templates/tvshow.html:47
+#: catalog/models/movie.py:171 catalog/models/music.py:120
+#: catalog/templates/movie.html:21 catalog/templates/tvseason.html:53
+#: catalog/templates/tvshow.html:48
 msgid "length"
 msgstr ""
 
-#: catalog/models/music.py:84
-msgid "milliseconds"
+#: catalog/models/movie.py:171 catalog/models/music.py:120
+#: catalog/models/tv.py:265 catalog/models/tv.py:488
+msgid "seconds"
 msgstr ""
 
-#: catalog/models/music.py:101
+#: catalog/models/music.py:137
 msgid "tracks"
 msgstr ""
 
-#: catalog/models/music.py:102 catalog/templates/album.html:33
-msgid "album type"
-msgstr ""
-
-#: catalog/models/music.py:103
-msgid "media type"
-msgstr ""
-
-#: catalog/models/music.py:106 catalog/templates/album.html:43
+#: catalog/models/music.py:142 catalog/templates/album.html:51
 msgid "number of discs"
 msgstr ""
 
@@ -991,6 +969,10 @@ msgstr ""
 msgid "Character name for actor roles"
 msgstr ""
 
+#: catalog/models/performance.py:130
+msgid "required"
+msgstr ""
+
 #: catalog/models/performance.py:135
 msgid "optional"
 msgstr ""
@@ -1013,44 +995,36 @@ msgstr ""
 msgid "closing date"
 msgstr ""
 
-#: catalog/models/tv.py:150 catalog/templates/tvseason.html:37
-#: catalog/templates/tvshow.html:32
+#: catalog/models/tv.py:194 catalog/templates/tvseason.html:38
+#: catalog/templates/tvshow.html:33
 msgid "number of seasons"
 msgstr ""
 
-#: catalog/models/tv.py:153 catalog/models/tv.py:395
-#: catalog/templates/tvseason.html:42 catalog/templates/tvshow.html:37
+#: catalog/models/tv.py:197 catalog/models/tv.py:419
+#: catalog/templates/tvseason.html:43 catalog/templates/tvshow.html:38
 msgid "number of episodes"
 msgstr ""
 
-#: catalog/models/tv.py:208 catalog/models/tv.py:450
-msgid "show time"
-msgstr ""
-
-#: catalog/models/tv.py:220 users/templates/users/rym_import.html:60
-msgid "Date"
-msgstr ""
-
-#: catalog/models/tv.py:225
-msgid "Region or Event"
-msgstr ""
-
-#: catalog/models/tv.py:251 catalog/models/tv.py:494
+#: catalog/models/tv.py:262 catalog/models/tv.py:485
 msgid "episode length"
 msgstr ""
 
-#: catalog/models/tv.py:392 catalog/templates/tvseason.html:32
+#: catalog/models/tv.py:416 catalog/templates/tvseason.html:33
 msgid "season number"
 msgstr ""
 
-#: catalog/models/tv.py:527
+#: catalog/models/tv.py:530
 #, python-brace-format
 msgid "{show_title} Season {season_number}"
 msgstr ""
 
-#: catalog/models/tv.py:680
+#: catalog/models/tv.py:684
 #, python-brace-format
 msgid "{season_title} E{episode_number}"
+msgstr ""
+
+#: catalog/templates/_country_list.html:5
+msgid "region"
 msgstr ""
 
 #: catalog/templates/_fetch_failed.html:4
@@ -1067,12 +1041,12 @@ msgstr ""
 #: catalog/templates/_item_card_metadata_tvseason.html:7
 #: catalog/templates/_item_card_metadata_tvshow.html:7
 #: catalog/templates/_item_card_metadata_work.html:7
-#: catalog/templates/item_base.html:200
+#: catalog/templates/item_base.html:201
 msgid "ratings"
 msgstr ""
 
 #: catalog/templates/_item_card_metadata_base.html:34
-#: catalog/templates/item_base.html:255
+#: catalog/templates/item_base.html:256
 msgid "part of"
 msgstr ""
 
@@ -1090,14 +1064,14 @@ msgid "hide this tooltip"
 msgstr ""
 
 #: catalog/templates/_item_comments.html:58
-#: catalog/templates/item_mark_list.html:46 journal/templates/article.html:67
+#: catalog/templates/item_mark_list.html:46 journal/templates/article.html:73
 msgid "translate"
 msgstr ""
 
 #: catalog/templates/_item_comments.html:92
 #: catalog/templates/_item_comments_by_episode.html:80
 #: catalog/templates/_item_notes.html:88
-#: catalog/templates/_item_reviews.html:44 catalog/templates/item_base.html:283
+#: catalog/templates/_item_reviews.html:44 catalog/templates/item_base.html:284
 #: catalog/templates/podcast_episode_data.html:41
 msgid "show more"
 msgstr ""
@@ -1195,11 +1169,12 @@ msgstr ""
 #: catalog/templates/_item_user_pieces.html:86
 #: catalog/templates/catalog_edit.html:12
 #: journal/templates/action_edit_post.html:6
-#: journal/templates/action_edit_post.html:8 journal/templates/article.html:169
-#: journal/templates/collection.html:170
+#: journal/templates/action_edit_post.html:8 journal/templates/article.html:178
+#: journal/templates/collection.html:179 journal/templates/collection.html:187
 #: journal/templates/collection_edit.html:10
 #: journal/templates/collection_edit.html:26
 #: journal/templates/post_compose.html:16 journal/templates/tag_edit.html:16
+#: social/templates/_post_action_menu.html:12
 msgid "Edit"
 msgstr ""
 
@@ -1233,7 +1208,7 @@ msgstr ""
 #: catalog/templates/_sidebar_edit.html:19
 #: catalog/templates/catalog_verify.html:11
 #: catalog/templates/catalog_verify.html:17
-#: catalog/templates/item_base.html:181
+#: catalog/templates/item_base.html:182
 msgid "Creator verification"
 msgstr ""
 
@@ -1241,7 +1216,7 @@ msgstr ""
 msgid "Edit Options"
 msgstr ""
 
-#: catalog/templates/_sidebar_edit.html:27 catalog/templates/item_base.html:177
+#: catalog/templates/_sidebar_edit.html:27 catalog/templates/item_base.html:178
 #: catalog/views/edit.py:81 catalog/views/edit.py:141 catalog/views/edit.py:191
 #: catalog/views/edit.py:229 catalog/views/edit.py:295
 #: catalog/views/edit.py:299 catalog/views/edit.py:317
@@ -1390,7 +1365,7 @@ msgstr ""
 #: catalog/templates/_sidebar_edit.html:240
 #: catalog/templates/catalog_delete.html:12
 #: journal/templates/action_delete_post.html:10
-#: journal/templates/article.html:172 journal/templates/collection.html:173
+#: journal/templates/article.html:181 journal/templates/collection.html:182
 #: journal/templates/mark.html:157 journal/templates/note.html:45
 #: journal/templates/piece_delete.html:10
 #: journal/templates/piece_delete.html:34
@@ -1603,7 +1578,7 @@ msgstr ""
 msgid "barcode"
 msgstr ""
 
-#: catalog/templates/album.html:38
+#: catalog/templates/album.html:42
 msgid "album media"
 msgstr ""
 
@@ -1818,7 +1793,7 @@ msgstr ""
 
 #: catalog/templates/discover.html:229
 #: catalog/templates/discover_original_podcasts.html:25
-#: catalog/templates/item_base.html:281
+#: catalog/templates/item_base.html:282
 #: catalog/templates/item_mark_list.html:71
 #: catalog/templates/item_review_list.html:51
 #: catalog/templates/people_works.html:28
@@ -1884,71 +1859,67 @@ msgstr ""
 msgid "System busy, please try again in a minute."
 msgstr ""
 
-#: catalog/templates/game.html:23
-msgid "release year"
-msgstr ""
-
-#: catalog/templates/item_base.html:94
+#: catalog/templates/item_base.html:95
 msgid "select one of the seasons to comment"
 msgstr ""
 
-#: catalog/templates/item_base.html:128
+#: catalog/templates/item_base.html:129
 msgid "mark, comment and collect"
 msgstr ""
 
-#: catalog/templates/item_base.html:141
+#: catalog/templates/item_base.html:142
 msgid "Login or register to review or add this item to your collection."
 msgstr ""
 
-#: catalog/templates/item_base.html:150
+#: catalog/templates/item_base.html:151
 msgid "Related Collections"
 msgstr ""
 
-#: catalog/templates/item_base.html:165
+#: catalog/templates/item_base.html:166
 msgid "Unsupported item type."
 msgstr ""
 
-#: catalog/templates/item_base.html:175
+#: catalog/templates/item_base.html:176
 msgid "Edit this item"
 msgstr ""
 
-#: catalog/templates/item_base.html:186
+#: catalog/templates/item_base.html:187
 msgid "Last edited"
 msgstr ""
 
-#: catalog/templates/item_base.html:229
+#: catalog/templates/item_base.html:230
 msgid "No enough ratings"
 msgstr ""
 
-#: catalog/templates/item_base.html:273
+#: catalog/templates/item_base.html:274
 msgid "overview"
 msgstr ""
 
-#: catalog/templates/item_base.html:304
+#: catalog/templates/item_base.html:305
 msgid "comments"
 msgstr ""
 
-#: catalog/templates/item_base.html:307
+#: catalog/templates/item_base.html:308
 #: catalog/templates/item_mark_list.html:22
 #: catalog/templates/item_mark_list.html:25
 #: catalog/templates/item_review_list.html:21
 msgid "marks"
 msgstr ""
 
-#: catalog/templates/item_base.html:308
+#: catalog/templates/item_base.html:309
 #: catalog/templates/item_mark_list.html:23
 #: catalog/templates/item_mark_list.html:26
 #: catalog/templates/item_review_list.html:22
 msgid "marks from who you follow"
 msgstr ""
 
-#: catalog/templates/item_base.html:322
+#: catalog/templates/item_base.html:323
 #: catalog/templates/item_mark_list.html:28
 #: catalog/templates/item_review_list.html:23
 msgid "reviews"
 msgstr ""
 
-#: catalog/templates/item_base.html:332
+#: catalog/templates/item_base.html:333
 msgid "notes"
 msgstr ""
 
@@ -1963,16 +1934,16 @@ msgstr ""
 msgid "Reviews"
 msgstr ""
 
-#: catalog/templates/movie.html:25
+#: catalog/templates/movie.html:26
 msgid "number of Seasons"
 msgstr ""
 
-#: catalog/templates/movie.html:30
+#: catalog/templates/movie.html:31
 msgid "number of Episodes"
 msgstr ""
 
-#: catalog/templates/movie.html:35 catalog/templates/tvseason.html:47
-#: catalog/templates/tvshow.html:42
+#: catalog/templates/movie.html:36 catalog/templates/tvseason.html:48
+#: catalog/templates/tvshow.html:43
 msgid "episode Length"
 msgstr ""
 
@@ -2124,7 +2095,7 @@ msgstr ""
 msgid "No people matching your search query."
 msgstr ""
 
-#: catalog/templates/tvseason.html:15 catalog/templates/tvshow.html:21
+#: catalog/templates/tvseason.html:16 catalog/templates/tvshow.html:22
 msgid "all seasons"
 msgstr ""
 
@@ -2154,21 +2125,21 @@ msgstr ""
 #: journal/views/collection.py:318 journal/views/collection.py:342
 #: journal/views/collection.py:415 journal/views/collection.py:458
 #: journal/views/collection.py:496 journal/views/collection.py:508
-#: journal/views/collection.py:533 journal/views/collection.py:536
-#: journal/views/collection.py:577 journal/views/common.py:272
-#: journal/views/mark.py:245 journal/views/post.py:58 journal/views/post.py:78
-#: journal/views/post.py:100 journal/views/post.py:165
-#: journal/views/post.py:194 journal/views/post.py:267
-#: journal/views/post.py:282 journal/views/post.py:389
-#: journal/views/post.py:541 journal/views/review.py:52
-#: journal/views/review.py:69 journal/views/review.py:94
+#: journal/views/collection.py:533 journal/views/collection.py:575
+#: journal/views/common.py:272 journal/views/mark.py:245
+#: journal/views/post.py:58 journal/views/post.py:78 journal/views/post.py:100
+#: journal/views/post.py:165 journal/views/post.py:194
+#: journal/views/post.py:267 journal/views/post.py:282
+#: journal/views/post.py:389 journal/views/post.py:541
+#: journal/views/review.py:52 journal/views/review.py:69
+#: journal/views/review.py:94
 msgid "Insufficient permission"
 msgstr ""
 
 #: catalog/views/edit.py:275 catalog/views/edit.py:278
 #: catalog/views/verify.py:194 journal/views/collection.py:75
 #: journal/views/collection.py:100 journal/views/collection.py:513
-#: journal/views/collection.py:608 journal/views/common.py:193
+#: journal/views/collection.py:613 journal/views/common.py:193
 #: journal/views/mark.py:171 journal/views/post.py:112
 #: journal/views/post.py:114 journal/views/post.py:161
 #: journal/views/post.py:180 journal/views/post.py:182
@@ -3497,6 +3468,141 @@ msgstr ""
 msgid "Hakka Chinese"
 msgstr ""
 
+#: common/models/music_format.py:18
+msgctxt "album_type"
+msgid "Album"
+msgstr ""
+
+#: common/models/music_format.py:19
+msgctxt "album_type"
+msgid "Single"
+msgstr ""
+
+#: common/models/music_format.py:20
+msgctxt "album_type"
+msgid "EP"
+msgstr ""
+
+#: common/models/music_format.py:21
+msgctxt "album_type"
+msgid "Compilation"
+msgstr ""
+
+#: common/models/music_format.py:22
+msgctxt "album_type"
+msgid "Soundtrack"
+msgstr ""
+
+#: common/models/music_format.py:23
+msgctxt "album_type"
+msgid "Live"
+msgstr ""
+
+#: common/models/music_format.py:24
+msgctxt "album_type"
+msgid "Remix"
+msgstr ""
+
+#: common/models/music_format.py:25
+msgctxt "album_type"
+msgid "DJ-Mix"
+msgstr ""
+
+#: common/models/music_format.py:26
+msgctxt "album_type"
+msgid "Mixtape"
+msgstr ""
+
+#: common/models/music_format.py:27
+msgctxt "album_type"
+msgid "Demo"
+msgstr ""
+
+#: common/models/music_format.py:28
+msgctxt "album_type"
+msgid "Spoken Word"
+msgstr ""
+
+#: common/models/music_format.py:29
+msgctxt "album_type"
+msgid "Audiobook"
+msgstr ""
+
+#: common/models/music_format.py:30
+msgctxt "album_type"
+msgid "Audio Drama"
+msgstr ""
+
+#: common/models/music_format.py:31
+msgctxt "album_type"
+msgid "Interview"
+msgstr ""
+
+#: common/models/music_format.py:32
+msgctxt "album_type"
+msgid "Broadcast"
+msgstr ""
+
+#: common/models/music_format.py:33
+msgctxt "album_type"
+msgid "Field Recording"
+msgstr ""
+
+#: common/models/music_format.py:34
+msgctxt "album_type"
+msgid "Other"
+msgstr ""
+
+#: common/models/music_format.py:38
+msgctxt "media_format"
+msgid "CD"
+msgstr ""
+
+#: common/models/music_format.py:39
+msgctxt "media_format"
+msgid "Vinyl"
+msgstr ""
+
+#: common/models/music_format.py:40
+msgctxt "media_format"
+msgid "Cassette"
+msgstr ""
+
+#: common/models/music_format.py:41
+msgctxt "media_format"
+msgid "Digital"
+msgstr ""
+
+#: common/models/music_format.py:42
+msgctxt "media_format"
+msgid "SACD"
+msgstr ""
+
+#: common/models/music_format.py:43
+msgctxt "media_format"
+msgid "DVD"
+msgstr ""
+
+#: common/models/music_format.py:44
+msgctxt "media_format"
+msgid "Blu-ray"
+msgstr ""
+
+#: common/models/music_format.py:45
+msgctxt "media_format"
+msgid "MiniDisc"
+msgstr ""
+
+#: common/models/music_format.py:46
+msgctxt "media_format"
+msgid "VCD"
+msgstr ""
+
+#: common/models/music_format.py:47
+msgctxt "media_format"
+msgid "Other"
+msgstr ""
+
 #: common/templates/400.html:23
 msgid "You may have submitted invalid data, or the content may have been deleted by the author."
 msgstr ""
@@ -3547,96 +3653,96 @@ msgstr ""
 msgid "You are visiting an alternative domain for %(site_name)s, please always use <a href=\"%(site_url)s%(request.get_full_path)s\">original version</a> if possible."
 msgstr ""
 
-#: common/templates/_header.html:17 common/templates/_header.html:162
+#: common/templates/_header.html:19 common/templates/_header.html:164
 msgid "title, creator, ISBN, item url, @user, @user@instance"
 msgstr ""
 
-#: common/templates/_header.html:22
+#: common/templates/_header.html:24
 msgid "All Items"
 msgstr ""
 
-#: common/templates/_header.html:29
+#: common/templates/_header.html:31
 msgid "Movie & TV"
 msgstr ""
 
-#: common/templates/_header.html:48
+#: common/templates/_header.html:50
 msgid "People & Organizations"
 msgstr ""
 
-#: common/templates/_header.html:50
+#: common/templates/_header.html:52
 msgid "Journal"
 msgstr ""
 
-#: common/templates/_header.html:52 journal/templates/user_post_list.html:10
+#: common/templates/_header.html:54 journal/templates/user_post_list.html:10
 #: journal/templates/user_post_list.html:23
 msgid "Posts"
 msgstr ""
 
-#: common/templates/_header.html:87
+#: common/templates/_header.html:89
 msgid "Explore"
 msgstr ""
 
-#: common/templates/_header.html:91
+#: common/templates/_header.html:93
 msgid "Feed"
 msgstr ""
 
-#: common/templates/_header.html:96 journal/templates/profile.html:13
+#: common/templates/_header.html:98 journal/templates/profile.html:13
 #: users/templates/users/preferences.html:46
 msgid "Home"
 msgstr ""
 
-#: common/templates/_header.html:112 common/templates/common/scan.html:9
+#: common/templates/_header.html:114 common/templates/common/scan.html:9
 #: common/templates/common/scan.html:42
 msgid "Scan Barcode"
 msgstr ""
 
-#: common/templates/_header.html:116 social/templates/notification.html:12
+#: common/templates/_header.html:118 social/templates/notification.html:12
 #: social/templates/notification.html:53
 msgid "Notification"
 msgstr ""
 
-#: common/templates/_header.html:120 users/models/task.py:21
+#: common/templates/_header.html:122 users/models/task.py:21
 #: users/templates/users/account.html:228
 #: users/templates/users/crossposts.html:9
 msgid "Pending"
 msgstr ""
 
-#: common/templates/_header.html:123
+#: common/templates/_header.html:125
 msgid "Data"
 msgstr ""
 
-#: common/templates/_header.html:126 common/templates/_header.html:144
+#: common/templates/_header.html:128 common/templates/_header.html:146
 #: users/templates/users/preferences.html:12
 #: users/templates/users/preferences.html:23
 #: users/templates/users/preferences_anonymous.html:13
 msgid "Preferences"
 msgstr ""
 
-#: common/templates/_header.html:129
+#: common/templates/_header.html:131
 msgid "Account"
 msgstr ""
 
-#: common/templates/_header.html:133
+#: common/templates/_header.html:135
 msgid "Manage"
 msgstr ""
 
-#: common/templates/_header.html:137
+#: common/templates/_header.html:139
 msgid "Logout"
 msgstr ""
 
-#: common/templates/_header.html:141
+#: common/templates/_header.html:143
 msgid "Sign up or Login"
 msgstr ""
 
-#: common/templates/_header.html:158
+#: common/templates/_header.html:160
 msgid "title or content  category:tv  status:complete  rating:8..10  date:2021-09-11..2022-02"
 msgstr ""
 
-#: common/templates/_header.html:160
+#: common/templates/_header.html:162
 msgid "name of a person or company"
 msgstr ""
 
-#: common/templates/_header.html:177
+#: common/templates/_header.html:179
 msgid "Open"
 msgstr ""
 
@@ -3669,7 +3775,7 @@ msgstr ""
 msgid "Currently watching"
 msgstr ""
 
-#: common/templates/_sidebar.html:214 journal/forms.py:186
+#: common/templates/_sidebar.html:214 journal/forms.py:197
 #: journal/templates/user_tag_list.html:13
 #: journal/templates/user_tagmember_list.html:4
 msgid "Tags"
@@ -3849,7 +3955,7 @@ msgstr ""
 msgid "Database Admin"
 msgstr ""
 
-#: common/templatetags/duration.py:55
+#: common/templatetags/duration.py:58
 msgid "just now"
 msgstr ""
 
@@ -4563,7 +4669,7 @@ msgstr ""
 msgid "Content (Markdown)"
 msgstr ""
 
-#: journal/forms.py:41 journal/forms.py:195 journal/templates/comment.html:62
+#: journal/forms.py:41 journal/forms.py:206 journal/templates/comment.html:62
 #: journal/templates/mark.html:115 journal/views/note.py:29
 msgid "Crosspost to timeline"
 msgstr ""
@@ -4577,7 +4683,7 @@ msgid "When saving, replace leading spaces with full-width spaces"
 msgstr ""
 
 #: journal/forms.py:51 journal/forms.py:124 journal/forms.py:149
-#: journal/forms.py:188 journal/templates/collection_share.html:24
+#: journal/forms.py:199 journal/templates/collection_share.html:24
 #: journal/templates/wrapped_share.html:36 users/templates/users/data.html:45
 #: users/templates/users/data.html:98 users/templates/users/data.html:151
 #: users/templates/users/data.html:207 users/templates/users/data.html:258
@@ -4611,20 +4717,21 @@ msgstr ""
 msgid "owner and their local mutuals"
 msgstr ""
 
-#: journal/forms.py:156 journal/templates/collection.html:184
+#: journal/forms.py:156 journal/templates/collection.html:187
+#: journal/templates/collection.html:196
 msgid "Collaborative editing"
 msgstr ""
 
-#: journal/forms.py:180 users/templates/users/crossposts.html:51
+#: journal/forms.py:191 users/templates/users/crossposts.html:51
 #: users/templates/users/data.html:535
 msgid "Status"
 msgstr ""
 
-#: journal/forms.py:182 journal/templates/comment.html:16
+#: journal/forms.py:193 journal/templates/comment.html:16
 msgid "Comment"
 msgstr ""
 
-#: journal/forms.py:184
+#: journal/forms.py:195
 msgid "Rating"
 msgstr ""
 
@@ -4667,7 +4774,7 @@ msgstr ""
 msgid "(may contain sensitive content)"
 msgstr ""
 
-#: journal/models/collection.py:37 journal/templates/add_to_collection.html:39
+#: journal/models/collection.py:41 journal/templates/add_to_collection.html:39
 #: journal/templates/collection_edit.html:64
 #: journal/templates/collection_share.html:63
 #: journal/templates/collection_update_item_note.html:3
@@ -4675,60 +4782,60 @@ msgstr ""
 msgid "note"
 msgstr ""
 
-#: journal/models/collection.py:104
+#: journal/models/collection.py:108
 msgid "search query for dynamic collection"
 msgstr ""
 
-#: journal/models/collection.py:419 journal/templatetags/collection.py:35
+#: journal/models/collection.py:452 journal/templatetags/collection.py:35
 #, python-format
 msgid "%(count)d book"
 msgid_plural "%(count)d books"
 msgstr[0] ""
 msgstr[1] ""
 
-#: journal/models/collection.py:424 journal/templatetags/collection.py:43
+#: journal/models/collection.py:457 journal/templatetags/collection.py:43
 #, python-format
 msgid "%(count)d movie"
 msgid_plural "%(count)d movies"
 msgstr[0] ""
 msgstr[1] ""
 
-#: journal/models/collection.py:429 journal/templatetags/collection.py:51
+#: journal/models/collection.py:462 journal/templatetags/collection.py:51
 #, python-format
 msgid "%(count)d tv show"
 msgid_plural "%(count)d tv shows"
 msgstr[0] ""
 msgstr[1] ""
 
-#: journal/models/collection.py:434 journal/templatetags/collection.py:59
+#: journal/models/collection.py:467 journal/templatetags/collection.py:59
 #, python-format
 msgid "%(count)d album"
 msgid_plural "%(count)d albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: journal/models/collection.py:439 journal/templatetags/collection.py:67
+#: journal/models/collection.py:472 journal/templatetags/collection.py:67
 #, python-format
 msgid "%(count)d game"
 msgid_plural "%(count)d games"
 msgstr[0] ""
 msgstr[1] ""
 
-#: journal/models/collection.py:444 journal/templatetags/collection.py:75
+#: journal/models/collection.py:477 journal/templatetags/collection.py:75
 #, python-format
 msgid "%(count)d podcast"
 msgid_plural "%(count)d podcasts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: journal/models/collection.py:450 journal/templatetags/collection.py:83
+#: journal/models/collection.py:483 journal/templatetags/collection.py:83
 #, python-format
 msgid "%(count)d performance"
 msgid_plural "%(count)d performances"
 msgstr[0] ""
 msgstr[1] ""
 
-#: journal/models/collection.py:458 journal/templatetags/collection.py:91
+#: journal/models/collection.py:491 journal/templatetags/collection.py:91
 #, python-format
 msgid "%(count)d item"
 msgid_plural "%(count)d items"
@@ -5351,7 +5458,7 @@ msgstr ""
 msgid "Update note"
 msgstr ""
 
-#: journal/templates/_list_item.html:100 journal/templates/article.html:104
+#: journal/templates/_list_item.html:100 journal/templates/article.html:113
 #: journal/templates/review_edit.html:11
 #: journal/templates/user_review_list.html:7
 msgid "Review"
@@ -5408,6 +5515,10 @@ msgstr ""
 
 #: journal/templates/_sidebar_user_mark_list.html:62
 msgid "sorting"
+msgstr ""
+
+#: journal/templates/_sidebar_user_mark_list.html:63
+msgid "date"
 msgstr ""
 
 #: journal/templates/_sidebar_user_mark_list.html:64
@@ -5481,7 +5592,7 @@ msgid "View post"
 msgstr ""
 
 #: journal/templates/action_quote_post.html:3
-#: journal/templates/article.html:163 journal/templates/collection.html:159
+#: journal/templates/article.html:172 journal/templates/collection.html:168
 msgid "Quote"
 msgstr ""
 
@@ -5490,7 +5601,7 @@ msgid "reply"
 msgstr ""
 
 #: journal/templates/action_reply_post.html:3
-#: journal/templates/article.html:154 journal/templates/collection.html:150
+#: journal/templates/article.html:163 journal/templates/collection.html:159
 msgid "Reply"
 msgstr ""
 
@@ -5507,19 +5618,19 @@ msgstr ""
 msgid "Create a new collection"
 msgstr ""
 
-#: journal/templates/article.html:85 social/templates/_event_post.html:81
+#: journal/templates/article.html:94 social/templates/_event_post.html:81
 msgid "wrote a review"
 msgstr ""
 
-#: journal/templates/article.html:87 social/templates/_event_post.html:83
+#: journal/templates/article.html:96 social/templates/_event_post.html:83
 msgid "wrote an article"
 msgstr ""
 
-#: journal/templates/article.html:117
+#: journal/templates/article.html:126
 msgid "This article may contain sensitive content. Click to reveal."
 msgstr ""
 
-#: journal/templates/article.html:128
+#: journal/templates/article.html:137
 msgid "The author has set it to be viewable only by logged-in users."
 msgstr ""
 
@@ -5580,18 +5691,18 @@ msgstr ""
 msgid "DEC"
 msgstr ""
 
-#: journal/templates/collection.html:65
+#: journal/templates/collection.html:71
 #: journal/templates/collection_share.html:12
 #: journal/templates/collection_share.html:66
 #: journal/templates/wrapped_share.html:59
 msgid "Share"
 msgstr ""
 
-#: journal/templates/collection.html:77
+#: journal/templates/collection.html:86
 msgid "created a collection"
 msgstr ""
 
-#: journal/templates/collection.html:166
+#: journal/templates/collection.html:175
 msgid "Query"
 msgstr ""
 
@@ -5901,7 +6012,7 @@ msgid "shared {username}'s collection"
 msgstr ""
 
 #: journal/views/collection.py:460 journal/views/collection.py:498
-#: journal/views/collection.py:510 journal/views/collection.py:538
+#: journal/views/collection.py:510 journal/views/collection.py:536
 msgid "Dynamic collection is not editable"
 msgstr ""
 
@@ -6522,34 +6633,6 @@ msgstr ""
 
 #: social/templates/single_post.html:15
 msgid "Article"
-msgstr ""
-
-#: takahe/models.py:450
-msgid "Display Name"
-msgstr ""
-
-#: takahe/models.py:452
-msgid "Bio"
-msgstr ""
-
-#: takahe/models.py:454
-msgid "Manually approve new followers"
-msgstr ""
-
-#: takahe/models.py:458
-msgid "Include profile, marks and posts in discovery"
-msgstr ""
-
-#: takahe/models.py:461
-msgid "Include posts in search results"
-msgstr ""
-
-#: takahe/models.py:479
-msgid "Profile picture"
-msgstr ""
-
-#: takahe/models.py:486
-msgid "Header picture"
 msgstr ""
 
 #: users/models/task.py:22
@@ -7747,6 +7830,10 @@ msgstr ""
 
 #: users/templates/users/rym_import.html:59
 msgid "Shelf"
+msgstr ""
+
+#: users/templates/users/rym_import.html:60
+msgid "Date"
 msgstr ""
 
 #: users/templates/users/rym_import.html:71
