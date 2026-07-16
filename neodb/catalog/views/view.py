@@ -138,6 +138,17 @@ def retrieve(request, item_path, item_uuid):
     if request.user.is_authenticated:
         visible = q_piece_visible_to_user(request.user)
         mark = Mark(request.user.identity, item)
+        if isinstance(item, People):
+            # Show the viewer's shelf status on each work listed on the
+            # person page. Accessing the cached property here ensures the
+            # template iterates the same item instances the marks attach to.
+            works = [
+                work
+                for _, _, _, role_items in item.related_items_by_role
+                for work in role_items
+            ]
+            if works:
+                Mark.attach_to_items(request.user.identity, works, request.user)
         child_item_comments = Comment.objects.filter(
             owner=request.user.identity, item__in=item.child_items.all()
         )
@@ -243,6 +254,8 @@ def people_works(request, item_path, item_uuid, role):
         )
         Item.prefetch_parent_items(works_items)
         Rating.attach_to_items(works_items)
+        if request.user.is_authenticated:
+            Mark.attach_to_items(request.user.identity, works_items, request.user)
     return render(
         request,
         "people_works.html",

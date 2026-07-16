@@ -3,7 +3,9 @@ from django.test import Client
 
 from catalog.models import (
     Edition,
+    ItemCategory,
     ItemPeopleRelation,
+    Movie,
     People,
     PeopleRole,
     PeopleType,
@@ -12,7 +14,7 @@ from catalog.models import (
     TVShow,
 )
 from catalog.models.book import Work
-from journal.models import ShelfMember, ShelfType
+from journal.models import ShelfManager, ShelfMember, ShelfType
 from users.models import User
 
 
@@ -212,3 +214,62 @@ class TestPeopleWorksMergedAndDeleted:
 
         response = Client().get(f"{person1.url}/works/not_a_role")
         assert response.status_code == 404
+
+
+@pytest.mark.django_db(databases="__all__")
+class TestPeoplePageMarkStatus:
+    """The person page shows the viewer's shelf status on each listed work."""
+
+    def _setup_marked_work(self) -> tuple[People, Movie, Movie, User]:
+        person = _director()
+        watched = Movie.objects.create(title="Watched Movie")
+        unwatched = Movie.objects.create(title="Unwatched Movie")
+        for movie in (watched, unwatched):
+            ItemPeopleRelation.objects.create(
+                item=movie, people=person, role=PeopleRole.DIRECTOR
+            )
+        user = User.register(email="viewer@example.com", username="viewer")
+        shelf = user.identity.shelf_manager.get_shelf(ShelfType.COMPLETE)
+        ShelfMember.objects.create(
+            owner=user.identity,
+            item=watched,
+            parent=shelf,
+            visibility=0,
+            position=0,
+        )
+        return person, watched, unwatched, user
+
+    def test_badge_shown_for_marked_work(self):
+        person, _, _, user = self._setup_marked_work()
+        client = Client()
+        client.force_login(user, backend="mastodon.auth.OAuth2Backend")
+
+        response = client.get(person.url)
+        assert response.status_code == 200
+        content = response.content.decode()
+        label = ShelfManager.get_status_label(ShelfType.COMPLETE, ItemCategory.Movie)
+        # exactly one badge: the marked work has one, the unmarked one doesn't
+        assert content.count("status-badge") == 1
+        assert label in content
+
+    def test_no_badge_for_anonymous_visitor(self):
+        person, _, _, _ = self._setup_marked_work()
+
+        response = Client().get(person.url)
+        assert response.status_code == 200
+        assert "status-badge" not in response.content.decode()
+
+    def test_people_works_attaches_marks_in_bulk(self):
+        person, watched, unwatched, user = self._setup_marked_work()
+        client = Client()
+        client.force_login(user, backend="mastodon.auth.OAuth2Backend")
+
+        response = client.get(f"{person.url}/works/{PeopleRole.DIRECTOR.value}")
+        assert response.status_code == 200
+        marks = {w.pk: getattr(w, "mark", None) for w in response.context["works"]}
+        watched_mark = marks[watched.pk]
+        unwatched_mark = marks[unwatched.pk]
+        assert watched_mark is not None
+        assert watched_mark.shelf_type == ShelfType.COMPLETE
+        assert unwatched_mark is not None
+        assert unwatched_mark.shelf_type is None
