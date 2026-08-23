@@ -392,6 +392,49 @@ def test_fetch_actor_with_link_array_url(httpx_mock, config_system):
 
 @pytest.mark.django_db
 @pytest.mark.httpx_mock(assert_all_requests_were_expected=False)
+def test_fetch_actor_with_overlong_fields(httpx_mock, config_system):
+    """
+    "preferredUsername" is an identifier, not display text, so a value wider
+    than the 500-char column is dropped rather than truncated: no WebFinger
+    lookup resolves a shortened handle, and two actors on one domain that
+    share a 500-char prefix would collide on the (username, domain) unique
+    constraint. Display "name" is still clamped to fit.
+    """
+    identity = Identity.objects.create(
+        actor_uri="https://example.com/overlong",
+        local=False,
+    )
+    httpx_mock.add_response(
+        url="https://example.com/overlong",
+        headers={"Content-Type": "application/activity+json"},
+        json={
+            "@context": [
+                "https://www.w3.org/ns/activitystreams",
+                "https://w3id.org/security/v1",
+            ],
+            "id": "https://example.com/overlong",
+            "type": "Person",
+            "inbox": "https://example.com/inbox",
+            "publicKey": {
+                "id": "https://example.com/overlong#main-key",
+                "owner": "https://example.com/overlong",
+                "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nits-a-faaaake\n-----END PUBLIC KEY-----\n",
+            },
+            "name": "n" * 600,
+            "preferredUsername": "u" * 600,
+        },
+    )
+
+    assert identity.fetch_actor()
+
+    identity = Identity.objects.get(pk=identity.pk)
+    # dropped, not cut down to a handle that resolves nowhere
+    assert identity.username is None
+    assert identity.name == "n" * 500
+
+
+@pytest.mark.django_db
+@pytest.mark.httpx_mock(assert_all_requests_were_expected=False)
 def test_fetch_actor_with_list_type(httpx_mock, config_system):
     """
     JSON-LD allows "type" to be a list, and ActivityPods-style servers emit

@@ -1,7 +1,7 @@
 import logging
 import ssl
 from functools import cached_property, partial
-from typing import Literal, Optional
+from typing import Any, Literal, Optional
 from urllib.parse import urlparse
 
 import httpx
@@ -54,17 +54,38 @@ logger = logging.getLogger(__name__)
 _REMOTE_FIELD_MAX_LENGTH = 500
 
 
-def _remote_text(value, max_length: int = _REMOTE_FIELD_MAX_LENGTH) -> str | None:
-    """Clamp a remote AS text value to its column width.
+def _remote_str(value: Any) -> str | None:
+    """Unwrap a remote AS scalar, or None when it is not a string.
 
     JSON-LD sometimes wraps these in a language construct ({"@value": ...}).
     """
     if isinstance(value, dict):
         value = value.get("@value")
-    return value[:max_length] if isinstance(value, str) else None
+    return value if isinstance(value, str) else None
 
 
-def _remote_uri(value, max_length: int = _REMOTE_FIELD_MAX_LENGTH) -> str | None:
+def _remote_text(value: Any, max_length: int = _REMOTE_FIELD_MAX_LENGTH) -> str | None:
+    """Clamp a remote AS display-text value to its column width."""
+    text = _remote_str(value)
+    return text[:max_length] if text is not None else None
+
+
+def _remote_identifier(
+    value: Any, max_length: int = _REMOTE_FIELD_MAX_LENGTH
+) -> str | None:
+    """Coerce a remote AS identifier, dropping it when it will not fit.
+
+    Unlike display text an identifier must not be truncated: a shortened
+    ``preferredUsername`` is a handle no WebFinger lookup resolves, and two
+    actors on one domain that share a 500-char prefix would collide on the
+    (username, domain) unique constraint. The column is nullable, so dropping
+    is the safe failure mode.
+    """
+    text = _remote_str(value)
+    return text if text is not None and len(text) <= max_length else None
+
+
+def _remote_uri(value: Any, max_length: int = _REMOTE_FIELD_MAX_LENGTH) -> str | None:
     """Coerce a remote AS URI value into something that fits its column.
 
     ActivityStreams lets these be a bare URI or an object carrying one, and a
@@ -1241,7 +1262,7 @@ class Identity(StatorModel):
             document.get("endpoints", {}).get("sharedInbox")
         )
         self.summary = document.get("summary")
-        self.username = _remote_text(document.get("preferredUsername"))
+        self.username = _remote_identifier(document.get("preferredUsername"))
         self.manually_approves_followers = document.get("manuallyApprovesFollowers")
         self.public_key = document.get("publicKey", {}).get("publicKeyPem")
         self.public_key_id = document.get("publicKey", {}).get("id")

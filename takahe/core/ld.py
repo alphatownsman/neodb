@@ -4,6 +4,7 @@ import os
 import re
 import urllib.parse as urllib_parse
 from collections.abc import Container
+from typing import Any
 
 from dateutil import parser
 from pyld import jsonld
@@ -850,7 +851,7 @@ def get_first_image_url(data) -> str | None:
 
 
 def get_ap_link(
-    value, preferred_media_type: str | None = None
+    value: Any, preferred_media_type: str | None = None
 ) -> tuple[str | None, dict]:
     """Return one URL and its Link/Object metadata from an AS url value.
 
@@ -863,7 +864,7 @@ def get_ap_link(
 
     candidates: list[tuple[str, dict]] = []
 
-    def collect(item, inherited: dict | None = None) -> None:
+    def collect(item: Any, inherited: dict | None = None) -> None:
         if isinstance(item, str):
             candidates.append((item, inherited or {}))
             return
