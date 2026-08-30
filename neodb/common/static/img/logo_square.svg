@@ -52,60 +52,78 @@
   </defs>
   <g
      id="neodb-icon-shapes"
-     transform="translate(-4,45.1) scale(0.78)">
-    <defs
-       id="neodb-icon-defs">
-      <mask
-         id="neodb-icon-bite-circle">
-        <rect
-           x="-20"
-           y="-20"
-           width="136"
-           height="136"
-           fill="#ffffff" />
-        <circle
-           cx="44"
-           cy="52"
-           r="23"
-           fill="#000000" />
-      </mask>
-      <mask
-         id="neodb-icon-bite-triangle">
-        <rect
-           x="-20"
-           y="-20"
-           width="136"
-           height="136"
-           fill="#ffffff" />
-        <path
-           d="M 38.7 61.3 L 30.7 91.4 L 8.6 69.3 Z"
-           fill="#000000"
-           stroke="#000000"
-           stroke-width="5"
-           stroke-linejoin="round" />
-      </mask>
-    </defs>
-    <rect
-       id="neodb-icon-square"
-       x="44"
-       y="12"
-       width="32"
-       height="32"
-       rx="4"
-       fill="#8dcaff"
-       transform="rotate(20 60 28)"
-       mask="url(#neodb-icon-bite-circle)" />
+     transform="translate(-5,41.4) scale(0.82)">
+    <g
+       id="neodb-icon-book"
+       transform="rotate(-7 30 46)">
+      <rect
+         x="12"
+         y="28"
+         width="36"
+         height="36"
+         rx="3"
+         fill="#c0d9b4" />
+      <line
+         x1="19.5"
+         y1="30"
+         x2="19.5"
+         y2="62"
+         stroke="#ffffff"
+         stroke-width="3" />
+    </g>
     <circle
-       id="neodb-icon-circle"
-       cx="44"
-       cy="52"
-       r="20"
-       fill="#c0d9b4"
-       mask="url(#neodb-icon-bite-triangle)" />
-    <path
-       id="neodb-icon-triangle"
-       d="M 38.7 61.3 L 30.7 91.4 L 8.6 69.3 Z"
+       id="neodb-icon-vinyl"
+       cx="59"
+       cy="65"
+       r="19.5"
        fill="#ffb380" />
+    <circle
+       id="neodb-icon-vinyl-groove"
+       cx="59"
+       cy="65"
+       r="12"
+       fill="none"
+       stroke="#ffffff"
+       stroke-width="1.5"
+       opacity="0.75" />
+    <circle
+       id="neodb-icon-vinyl-hole"
+       cx="59"
+       cy="65"
+       r="3.5"
+       fill="#ffffff" />
+    <path
+       id="neodb-icon-play"
+       d="M 47 13 L 47 43 L 75 28 Z"
+       fill="#8dcaff" />
+    <g
+       id="neodb-icon-play-sprockets"
+       fill="#ffffff">
+      <rect
+         x="49"
+         y="16.5"
+         width="3.2"
+         height="3.2"
+         rx="0.9" />
+      <rect
+         x="49"
+         y="23"
+         width="3.2"
+         height="3.2"
+         rx="0.9" />
+      <rect
+         x="49"
+         y="29.5"
+         width="3.2"
+         height="3.2"
+         rx="0.9" />
+      <rect
+         x="49"
+         y="36"
+         width="3.2"
+         height="3.2"
+         rx="0.9" />
+    </g>
   </g>
   <g
      aria-label="NeoDB"
