@@ -52,15 +52,7 @@
   </defs>
   <g
      id="neodb-icon-shapes"
-     transform="translate(-3,41.9) scale(0.80)">
-    <defs
-       id="neodb-icon-defs">
-      <clipPath
-         id="neodb-icon-fan-clip">
-        <path
-           d="M 50 42 L 80 42 L 65 14 Z" />
-      </clipPath>
-    </defs>
+     transform="translate(-3,42.9) scale(0.80)">
     <g
        id="neodb-icon-film"
        transform="rotate(-7 30 46)">
@@ -106,20 +98,11 @@
     <g
        id="neodb-icon-book"
        transform="rotate(-5 65 30)">
-      <path
-         d="M 50 42 L 80 42 L 65 14 Z"
-         fill="#c0d9b4" />
-      <g
-         id="neodb-icon-book-pages"
-         clip-path="url(#neodb-icon-fan-clip)"
-         stroke="#ffffff"
-         stroke-width="1.7"
-         fill="none">
-        <line x1="52" y1="41" x2="70.9" y2="17.7" />
-        <line x1="52" y1="41" x2="75.6" y2="22.5" />
-        <line x1="52" y1="41" x2="79" y2="27.8" />
-        <line x1="52" y1="41" x2="81.2" y2="34.3" />
-      </g>
+      <rect x="52" y="34" width="30" height="7" rx="2" fill="#c0d9b4" />
+      <rect x="52" y="34" width="30" height="7" rx="2" fill="#a9c99b" transform="rotate(-16 52 41)" />
+      <rect x="52" y="34" width="30" height="7" rx="2" fill="#c0d9b4" transform="rotate(-32 52 41)" />
+      <rect x="52" y="34" width="30" height="7" rx="2" fill="#a9c99b" transform="rotate(-48 52 41)" />
+      <rect x="52" y="34" width="30" height="7" rx="2" fill="#c0d9b4" transform="rotate(-64 52 41)" />
     </g>
   </g>
   <g
