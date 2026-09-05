@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-04 14:24-0400\n"
+"POT-Creation-Date: 2026-09-05 17:21-0400\n"
 "PO-Revision-Date: 2026-08-08 21:19+0000\n"
 "Last-Translator: reducedradius <137701630+flytothehighest@users.noreply.github.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/projects/neodb/neodb/zh_Hans/>\n"
@@ -58,11 +58,11 @@ msgstr "简体中文"
 msgid "Traditional Chinese"
 msgstr "繁体中文"
 
-#: catalog/forms.py:35 catalog/models/item.py:301
+#: catalog/forms.py:35 catalog/models/item.py:302
 msgid "Primary ID Type"
 msgstr "主要标识类型"
 
-#: catalog/forms.py:40 catalog/models/item.py:304
+#: catalog/forms.py:40 catalog/models/item.py:305
 msgid "Primary ID Value"
 msgstr "主要标识数据"
 
@@ -119,11 +119,11 @@ msgid "other title"
 msgstr "其它标题"
 
 #: catalog/models/book.py:280 catalog/models/book.py:564
-#: catalog/models/item.py:117
+#: catalog/models/item.py:118
 msgid "author"
 msgstr "作者"
 
-#: catalog/models/book.py:287 catalog/models/item.py:118
+#: catalog/models/book.py:287 catalog/models/item.py:119
 msgid "translator"
 msgstr "译者"
 
@@ -132,7 +132,7 @@ msgid "book format"
 msgstr "格式"
 
 #: catalog/models/book.py:301 catalog/models/game.py:135
-#: catalog/models/item.py:132 catalog/models/music.py:142
+#: catalog/models/item.py:133 catalog/models/music.py:142
 msgid "publisher"
 msgstr "出版发行"
 
@@ -164,7 +164,7 @@ msgstr "目录"
 msgid "price"
 msgstr "价格"
 
-#: catalog/models/book.py:324 catalog/models/item.py:143
+#: catalog/models/book.py:324 catalog/models/item.py:144
 #: catalog/templates/edition.html:34
 msgid "imprint"
 msgstr "出品方"
@@ -524,7 +524,7 @@ msgid "Album"
 msgstr "专辑"
 
 #: catalog/models/common.py:163 catalog/models/common.py:180
-#: catalog/models/common.py:194 common/templates/_header.html:43
+#: catalog/models/common.py:194 common/templates/_header.html:52
 #: journal/templates/_sidebar_user_mark_list.html:48
 #: journal/templates/_sidebar_user_tag_filter.html:39
 msgid "Game"
@@ -539,7 +539,7 @@ msgid "Podcast Episode"
 msgstr "播客单集"
 
 #: catalog/models/common.py:166 catalog/models/common.py:182
-#: catalog/models/common.py:196 common/templates/_header.html:47
+#: catalog/models/common.py:196 common/templates/_header.html:56
 #: journal/templates/_sidebar_user_mark_list.html:52
 #: journal/templates/_sidebar_user_tag_filter.html:43
 msgid "Performance"
@@ -565,7 +565,7 @@ msgid "Person / Organization"
 msgstr "人物 / 团体"
 
 #: catalog/models/common.py:176 catalog/models/common.py:190
-#: common/templates/_header.html:27
+#: common/templates/_header.html:36
 #: journal/templates/_sidebar_user_mark_list.html:32
 #: journal/templates/_sidebar_user_tag_filter.html:24
 msgid "Book"
@@ -578,14 +578,14 @@ msgid "TV"
 msgstr "剧集"
 
 #: catalog/models/common.py:179 catalog/models/common.py:193
-#: common/templates/_header.html:39
+#: common/templates/_header.html:48
 #: journal/templates/_sidebar_user_mark_list.html:45
 #: journal/templates/_sidebar_user_tag_filter.html:36
 msgid "Music"
 msgstr "音乐"
 
 #: catalog/models/common.py:181 catalog/models/common.py:195
-#: catalog/templates/_sidebar_edit.html:219 common/templates/_header.html:35
+#: catalog/templates/_sidebar_edit.html:219 common/templates/_header.html:44
 #: journal/templates/_sidebar_user_mark_list.html:42
 #: journal/templates/_sidebar_user_tag_filter.html:33
 msgid "Podcast"
@@ -676,16 +676,16 @@ msgstr "重制"
 msgid "Special Edition"
 msgstr "特别版"
 
-#: catalog/models/game.py:111 catalog/models/item.py:124
+#: catalog/models/game.py:111 catalog/models/item.py:125
 msgid "designer"
 msgstr "设计者"
 
-#: catalog/models/game.py:119 catalog/models/item.py:123
+#: catalog/models/game.py:119 catalog/models/item.py:124
 #: catalog/models/music.py:134
 msgid "artist"
 msgstr "艺术家"
 
-#: catalog/models/game.py:127 catalog/models/item.py:133
+#: catalog/models/game.py:127 catalog/models/item.py:134
 msgid "developer"
 msgstr "开发者"
 
@@ -715,141 +715,141 @@ msgstr "发布类型"
 msgid "website"
 msgstr "网站"
 
-#: catalog/models/item.py:119 catalog/models/movie.py:123
+#: catalog/models/item.py:120 catalog/models/movie.py:123
 #: catalog/models/performance.py:182 catalog/models/performance.py:389
 #: catalog/models/tv.py:214 catalog/models/tv.py:440
 msgid "director"
 msgstr "导演"
 
-#: catalog/models/item.py:120 catalog/models/movie.py:130
+#: catalog/models/item.py:121 catalog/models/movie.py:130
 #: catalog/models/performance.py:189 catalog/models/performance.py:396
 #: catalog/models/tv.py:221 catalog/models/tv.py:447
 msgid "playwright"
 msgstr "编剧"
 
-#: catalog/models/item.py:121 catalog/models/movie.py:137
+#: catalog/models/item.py:122 catalog/models/movie.py:137
 #: catalog/models/performance.py:217 catalog/models/performance.py:424
 #: catalog/models/tv.py:228 catalog/models/tv.py:454
 msgid "actor"
 msgstr "演员"
 
-#: catalog/models/item.py:122 catalog/models/movie.py:144
+#: catalog/models/item.py:123 catalog/models/movie.py:144
 #: catalog/models/tv.py:235 catalog/models/tv.py:461
 msgid "producer"
 msgstr "制片人"
 
-#: catalog/models/item.py:125 catalog/models/performance.py:203
+#: catalog/models/item.py:126 catalog/models/performance.py:203
 #: catalog/models/performance.py:410
 msgid "composer"
 msgstr "作曲"
 
-#: catalog/models/item.py:126 catalog/models/performance.py:210
+#: catalog/models/item.py:127 catalog/models/performance.py:210
 #: catalog/models/performance.py:417
 msgid "choreographer"
 msgstr "编舞"
 
-#: catalog/models/item.py:127 catalog/models/performance.py:224
+#: catalog/models/item.py:128 catalog/models/performance.py:224
 #: catalog/models/performance.py:431
 msgid "performer"
 msgstr "表演者"
 
-#: catalog/models/item.py:128 catalog/models/podcast.py:80
+#: catalog/models/item.py:129 catalog/models/podcast.py:80
 msgid "host"
 msgstr "主播"
 
-#: catalog/models/item.py:129 catalog/models/performance.py:196
+#: catalog/models/item.py:130 catalog/models/performance.py:196
 #: catalog/models/performance.py:403
 msgid "original creator"
 msgstr "原始创作者"
 
-#: catalog/models/item.py:130 catalog/models/performance.py:238
+#: catalog/models/item.py:131 catalog/models/performance.py:238
 #: catalog/models/performance.py:445
 msgid "crew"
 msgstr "工作人员"
 
-#: catalog/models/item.py:134
+#: catalog/models/item.py:135
 msgid "production company"
 msgstr "制作公司"
 
-#: catalog/models/item.py:135
+#: catalog/models/item.py:136
 msgid "record label"
 msgstr "唱片公司"
 
-#: catalog/models/item.py:136
+#: catalog/models/item.py:137
 msgid "distributor"
 msgstr "发行商"
 
-#: catalog/models/item.py:137
+#: catalog/models/item.py:138
 msgid "studio"
 msgstr "工作室"
 
-#: catalog/models/item.py:138 catalog/models/performance.py:231
+#: catalog/models/item.py:139 catalog/models/performance.py:231
 #: catalog/models/performance.py:438
 msgid "troupe"
 msgstr "剧团"
 
-#: catalog/models/item.py:141
+#: catalog/models/item.py:142
 msgid "voice actor"
 msgstr "声优"
 
-#: catalog/models/item.py:142 catalog/templates/edition.html:30
+#: catalog/models/item.py:143 catalog/templates/edition.html:30
 msgid "publishing house"
 msgstr "出版社"
 
-#: catalog/models/item.py:167 catalog/models/people.py:476
+#: catalog/models/item.py:168 catalog/models/people.py:476
 #: catalog/models/performance.py:115 catalog/models/performance.py:134
 msgid "role"
 msgstr "角色"
 
-#: catalog/models/item.py:168 catalog/models/people.py:155
+#: catalog/models/item.py:169 catalog/models/people.py:155
 #: catalog/models/performance.py:114 catalog/models/performance.py:129
 #: users/models/webauthn.py:14
 msgid "name"
 msgstr "名字"
 
-#: catalog/models/item.py:170 catalog/templates/_item_credits_list.html:138
+#: catalog/models/item.py:171 catalog/templates/_item_credits_list.html:138
 msgid "character name"
 msgstr "角色名"
 
-#: catalog/models/item.py:298 catalog/models/item.py:330
+#: catalog/models/item.py:299 catalog/models/item.py:331
 #: journal/models/collection.py:98
 msgid "title"
 msgstr "标题"
 
-#: catalog/models/item.py:299 catalog/models/item.py:338
+#: catalog/models/item.py:300 catalog/models/item.py:339
 #: journal/models/collection.py:99
 msgid "description"
 msgstr "描述"
 
-#: catalog/models/item.py:310 catalog/models/people.py:484
+#: catalog/models/item.py:311 catalog/models/people.py:484
 msgid "metadata"
 msgstr "元数据"
 
-#: catalog/models/item.py:312 catalog/templates/_item_card.html:34
+#: catalog/models/item.py:313 catalog/templates/_item_card.html:34
 msgid "cover"
 msgstr "封面"
 
-#: catalog/models/item.py:1494
+#: catalog/models/item.py:1504
 msgid "source site"
 msgstr "来源站点"
 
-#: catalog/models/item.py:1496
+#: catalog/models/item.py:1506
 msgid "ID on source site"
 msgstr "来源站点标识"
 
-#: catalog/models/item.py:1498
+#: catalog/models/item.py:1508
 msgid "source url"
 msgstr "来源站点网址"
 
-#: catalog/models/item.py:1514
+#: catalog/models/item.py:1524
 msgid "IdType of the source site"
 msgstr "来源站点的主要标识类型"
 
-#: catalog/models/item.py:1520
+#: catalog/models/item.py:1530
 msgid "Primary Id on the source site"
 msgstr "来源站点的主要标识数据"
 
-#: catalog/models/item.py:1523
+#: catalog/models/item.py:1533
 msgid "url to the resource"
 msgstr "指向外部资源的网址"
 
@@ -1235,6 +1235,10 @@ msgstr "我的收藏单"
 msgid "mark history"
 msgstr "标记历史"
 
+#: catalog/templates/_search_suggest.html:2
+msgid "Suggestions"
+msgstr "搜索建议"
+
 #: catalog/templates/_sidebar_edit.html:8
 msgid "edit"
 msgstr "编辑"
@@ -1270,7 +1274,7 @@ msgstr "编辑选项"
 #: catalog/views/edit.py:490 catalog/views/edit.py:500
 #: catalog/views/edit.py:527 catalog/views/edit.py:592
 #: catalog/views/edit.py:647 catalog/views/edit.py:669
-#: catalog/views/search.py:389
+#: catalog/views/search.py:419
 msgid "Editing this item is restricted."
 msgstr "这个条目仅管理员可编辑。"
 
@@ -2264,19 +2268,19 @@ msgstr "无法关联到一个已经被合并或删除的条目"
 msgid "Cannot link items other than editions"
 msgstr "无法关联到非图书类的条目"
 
-#: catalog/views/search.py:108
+#: catalog/views/search.py:110
 msgid "the internet"
 msgstr "互联网"
 
-#: catalog/views/search.py:276 catalog/views/search.py:331
+#: catalog/views/search.py:306 catalog/views/search.py:361
 msgid "Page not found"
 msgstr "页面不存在"
 
-#: catalog/views/search.py:381
+#: catalog/views/search.py:411
 msgid "Invalid URL"
 msgstr "无效网址"
 
-#: catalog/views/search.py:384
+#: catalog/views/search.py:414
 msgid "Unsupported URL"
 msgstr "尚未支持的网址"
 
@@ -3737,96 +3741,96 @@ msgstr "关于"
 msgid "You are visiting an alternative domain for %(site_name)s, please always use <a href=\"%(site_url)s%(request.get_full_path)s\">original version</a> if possible."
 msgstr "这是%(site_name)s的临时镜像，请尽可能使用<a href=\"%(site_url)s%(request.get_full_path)s\">原始站点</a>。"
 
-#: common/templates/_header.html:19 common/templates/_header.html:164
+#: common/templates/_header.html:19 common/templates/_header.html:176
 msgid "title, creator, ISBN, item url, @user, @user@instance"
 msgstr "标题、创作者、ISBN、站外条目链接、@用户名、@用户名@实例"
 
-#: common/templates/_header.html:24
+#: common/templates/_header.html:33
 msgid "All Items"
 msgstr "全部"
 
-#: common/templates/_header.html:31
+#: common/templates/_header.html:40
 msgid "Movie & TV"
 msgstr "影视"
 
-#: common/templates/_header.html:50
+#: common/templates/_header.html:59
 msgid "People & Organizations"
 msgstr "人物与团体"
 
-#: common/templates/_header.html:52
+#: common/templates/_header.html:61
 msgid "Journal"
 msgstr "记录"
 
-#: common/templates/_header.html:54 journal/templates/user_post_list.html:10
+#: common/templates/_header.html:63 journal/templates/user_post_list.html:10
 #: journal/templates/user_post_list.html:23
 msgid "Posts"
 msgstr "帖文"
 
-#: common/templates/_header.html:89
+#: common/templates/_header.html:101
 msgid "Explore"
 msgstr "发现"
 
-#: common/templates/_header.html:93
+#: common/templates/_header.html:105
 msgid "Feed"
 msgstr "动态"
 
-#: common/templates/_header.html:98 journal/templates/profile.html:13
+#: common/templates/_header.html:110 journal/templates/profile.html:13
 #: users/templates/users/preferences.html:46
 msgid "Home"
 msgstr "主页"
 
-#: common/templates/_header.html:114 common/templates/common/scan.html:9
+#: common/templates/_header.html:126 common/templates/common/scan.html:9
 #: common/templates/common/scan.html:42
 msgid "Scan Barcode"
 msgstr "扫描条形码"
 
-#: common/templates/_header.html:118 social/templates/notification.html:12
+#: common/templates/_header.html:130 social/templates/notification.html:12
 #: social/templates/notification.html:53
 msgid "Notification"
 msgstr "通知"
 
-#: common/templates/_header.html:122 users/models/task.py:21
+#: common/templates/_header.html:134 users/models/task.py:21
 #: users/templates/users/account.html:219
 #: users/templates/users/crossposts.html:9
 msgid "Pending"
 msgstr "等待"
 
-#: common/templates/_header.html:125
+#: common/templates/_header.html:137
 msgid "Data"
 msgstr "数据"
 
-#: common/templates/_header.html:128 common/templates/_header.html:146
+#: common/templates/_header.html:140 common/templates/_header.html:158
 #: users/templates/users/preferences.html:12
 #: users/templates/users/preferences.html:23
 #: users/templates/users/preferences_anonymous.html:13
 msgid "Preferences"
 msgstr "设置"
 
-#: common/templates/_header.html:131
+#: common/templates/_header.html:143
 msgid "Account"
 msgstr "账号"
 
-#: common/templates/_header.html:135
+#: common/templates/_header.html:147
 msgid "Manage"
 msgstr "管理"
 
-#: common/templates/_header.html:139
+#: common/templates/_header.html:151
 msgid "Logout"
 msgstr "登出"
 
-#: common/templates/_header.html:143
+#: common/templates/_header.html:155
 msgid "Sign up or Login"
 msgstr "注册或登录"
 
-#: common/templates/_header.html:160
+#: common/templates/_header.html:172
 msgid "title or content  category:tv  status:complete  rating:8..10  date:2021-09-11..2022-02"
 msgstr "搜索你的评论或条目，可加过滤条件如 category:tv status:complete rating:8..10 date:2021-09-11..2022-02"
 
-#: common/templates/_header.html:162
+#: common/templates/_header.html:174
 msgid "name of a person or company"
 msgstr "人物或公司名称"
 
-#: common/templates/_header.html:179
+#: common/templates/_header.html:191
 msgid "Open"
 msgstr "打开"
 
@@ -5052,7 +5056,7 @@ msgid "%(count)d item"
 msgid_plural "%(count)d items"
 msgstr[0] "%(count)d 个条目"
 
-#: journal/models/common.py:53 journal/templates/action_open_post.html:15
+#: journal/models/common.py:54 journal/templates/action_open_post.html:15
 #: journal/templates/collection_share.html:35 journal/templates/mark.html:84
 #: journal/templates/post_compose.html:58 journal/templates/tag_edit.html:42
 #: journal/templates/wrapped_share.html:43 users/templates/users/data.html:69
@@ -5066,7 +5070,7 @@ msgstr[0] "%(count)d 个条目"
 msgid "Public"
 msgstr "公开"
 
-#: journal/models/common.py:54 journal/templates/action_open_post.html:9
+#: journal/models/common.py:55 journal/templates/action_open_post.html:9
 #: journal/templates/collection_share.html:46 journal/templates/mark.html:91
 #: journal/templates/post_compose.html:65
 #: journal/templates/wrapped_share.html:49 users/templates/users/data.html:77
@@ -5080,7 +5084,7 @@ msgstr "公开"
 msgid "Followers Only"
 msgstr "仅关注者"
 
-#: journal/models/common.py:55 journal/templates/collection_share.html:57
+#: journal/models/common.py:56 journal/templates/collection_share.html:57
 #: journal/templates/mark.html:98 journal/templates/post_compose.html:72
 #: journal/templates/wrapped_share.html:55 users/templates/users/data.html:85
 #: users/templates/users/data.html:138 users/templates/users/data.html:195
@@ -5093,27 +5097,27 @@ msgstr "仅关注者"
 msgid "Mentioned Only"
 msgstr "自己和提到的人"
 
-#: journal/models/common.py:790
+#: journal/models/common.py:804
 msgid "A recent post was not posted to Bluesky, please login NeoDB using ATProto again to re-authorize."
 msgstr "帖文未能发布到Bluesky，请重新使用ATProto验证登录。"
 
-#: journal/models/common.py:987
+#: journal/models/common.py:1001
 msgid "A recent post was not posted to Threads."
 msgstr "帖文未能发布到Threads。"
 
-#: journal/models/common.py:1020
+#: journal/models/common.py:1034
 msgid "A recent post was not boosted on Mastodon."
 msgstr "帖文未能在联邦实例转播。"
 
-#: journal/models/common.py:1030
+#: journal/models/common.py:1044
 msgid "Original post no longer exists."
 msgstr "原帖文已不存在。"
 
-#: journal/models/common.py:1044
+#: journal/models/common.py:1058
 msgid "A recent post was not posted to Mastodon, please re-authorize."
 msgstr "帖文未能发布到联邦实例，请重新验证登录。"
 
-#: journal/models/common.py:1053
+#: journal/models/common.py:1067
 msgid "A recent post was not posted to Mastodon."
 msgstr "帖文未能发布到联邦实例。"
 
@@ -6543,44 +6547,49 @@ msgstr "帖文长度限制"
 msgid "New Post"
 msgstr "新帖文"
 
-#: mastodon/views/bluesky.py:26 mastodon/views/bluesky.py:59
+#: mastodon/views/bluesky.py:30 mastodon/views/bluesky.py:91
 msgid "Bluesky login is disabled."
 msgstr "Bluesky 登录已禁用。"
 
-#: mastodon/views/bluesky.py:28 mastodon/views/email.py:35
+#: mastodon/views/bluesky.py:45 mastodon/views/bluesky.py:57
+#: mastodon/views/bluesky.py:63 mastodon/views/bluesky.py:96
+#: mastodon/views/bluesky.py:104 mastodon/views/bluesky.py:110
+#: mastodon/views/common.py:36 mastodon/views/mastodon.py:62
+#: mastodon/views/mastodon.py:70 mastodon/views/mastodon.py:77
+#: mastodon/views/mastodon.py:87 mastodon/views/mastodon.py:94
+#: mastodon/views/threads.py:55 mastodon/views/threads.py:63
+#: mastodon/views/threads.py:69 users/views/account.py:254
+#: users/views/account.py:373
+msgid "Authentication failed"
+msgstr "认证失败"
+
+#: mastodon/views/bluesky.py:45 mastodon/views/common.py:103
+msgid "Identity not found."
+msgstr "身份未找到"
+
+#: mastodon/views/bluesky.py:51 mastodon/views/email.py:35
 #: mastodon/views/mastodon.py:36 mastodon/views/threads.py:29
 #: users/templates/users/login.html:6 users/views/webauthn.py:134
 msgid "Security check failed. Please try again."
 msgstr "安全检查失败，请重试。"
 
-#: mastodon/views/bluesky.py:34 mastodon/views/bluesky.py:40
-#: mastodon/views/bluesky.py:64 mastodon/views/bluesky.py:72
-#: mastodon/views/bluesky.py:78 mastodon/views/common.py:36
-#: mastodon/views/mastodon.py:62 mastodon/views/mastodon.py:70
-#: mastodon/views/mastodon.py:77 mastodon/views/mastodon.py:87
-#: mastodon/views/mastodon.py:94 mastodon/views/threads.py:55
-#: mastodon/views/threads.py:63 mastodon/views/threads.py:69
-#: users/views/account.py:254 users/views/account.py:373
-msgid "Authentication failed"
-msgstr "认证失败"
-
-#: mastodon/views/bluesky.py:35 mastodon/views/email.py:66
+#: mastodon/views/bluesky.py:58 mastodon/views/email.py:66
 msgid "Too many attempts, please try again later."
 msgstr "尝试次数过多，请稍后再试。"
 
-#: mastodon/views/bluesky.py:40
+#: mastodon/views/bluesky.py:63
 msgid "ATProto handle is required."
 msgstr "请输入 ATProto 用户标识。"
 
-#: mastodon/views/bluesky.py:50
+#: mastodon/views/bluesky.py:82
 msgid "Error connecting to your ATProto server"
 msgstr "无法连接 ATProto 服务器"
 
-#: mastodon/views/bluesky.py:73
+#: mastodon/views/bluesky.py:105
 msgid "Invalid response from ATProto authorization server."
 msgstr "ATProto 授权服务器返回信息无效"
 
-#: mastodon/views/bluesky.py:78
+#: mastodon/views/bluesky.py:110
 msgid "Invalid account data from Bluesky."
 msgstr "Bluesky返回了无效的账号数据。"
 
@@ -6619,10 +6628,6 @@ msgstr "登录信息已更新为{handle}。"
 #: mastodon/views/common.py:116
 msgid "Disconnect identity failed"
 msgstr "未能取消身份关联"
-
-#: mastodon/views/common.py:103
-msgid "Identity not found."
-msgstr "身份未找到"
 
 #: mastodon/views/common.py:117
 msgid "You cannot disconnect last login identity."
