@@ -579,7 +579,7 @@ class NdjsonImporter(BaseImporter):
             item = self.items.get(content_data.get("withRegardTo", ""))
             if not item:
                 raise KeyError(f"Could not find item: {data.get('item', '')}")
-            title = content_data.get("title", "")
+            title = Note.title_from_ap_object(content_data, "") or ""
             content = content_data.get("content", "")
             sensitive = content_data.get("sensitive", False)
             progress = content_data.get("progress", {})

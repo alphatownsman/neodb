@@ -82,6 +82,7 @@ class TestApObjectStructure:
         obj = note.ap_object
         assert obj["type"] == "Note"
         assert obj["content"] == "Some reading notes"
+        assert obj["name"] is None
         assert obj["title"] is None
         assert obj["sensitive"] is False
         assert obj["id"] == note.absolute_url
@@ -117,6 +118,8 @@ class TestApObjectStructure:
             visibility=0,
         )
         obj = note.ap_object
+        # AS ``name`` is canonical; ``title`` stays for pre-name peers
+        assert obj["name"] == "Spoiler warning"
         assert obj["title"] == "Spoiler warning"
         assert obj["sensitive"] is True
 
@@ -632,6 +635,24 @@ class TestUpdateByApObject:
         assert params["content"] == "Simple note"
         assert params["progress_value"] is None
         assert params["progress_type"] is None
+
+    def test_note_title_from_ap_object(self):
+        """``name`` is canonical, ``title`` is the pre-name spelling, and the
+        post summary is the fallback when a peer sends neither."""
+        post = _make_remote_post(self.identity.pk)
+        post.summary = "from summary"
+        base = {"type": "Note", "content": "x"}
+        both = Note.params_from_ap_object(
+            post, {**base, "name": "new", "title": "old"}, None
+        )
+        assert both["title"] == "new"
+        legacy = Note.params_from_ap_object(post, {**base, "title": "old"}, None)
+        assert legacy["title"] == "old"
+        # an explicit empty name is a real value, not a missing one
+        empty = Note.params_from_ap_object(post, {**base, "name": None}, None)
+        assert empty["title"] is None
+        neither = Note.params_from_ap_object(post, base, None)
+        assert neither["title"] == "from summary"
 
     def test_note_round_trip(self):
         """Full round-trip: create Note, export ap_object, re-import via update_by_ap_object."""

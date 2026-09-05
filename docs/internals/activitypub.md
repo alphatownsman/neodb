@@ -58,7 +58,7 @@ reviews):
     - `Rating` — `value` is the grade (integer 1-10); `worst` is always 1, `best` always 10
     - `Comment` — `content` is the comment text
     - `Review` — `name` is the title, `content` the body, `mediaType` is `text/markdown` (see [Review](#review))
-    - `Note` — `content` is the note text
+    - `Note` — `name` is the title, `content` the note text (older instances sent the title as `title`; it is still emitted alongside `name`, and readers accept either)
     - `Shelf` — the lightweight envelope of a Collection or Shelf (see [Collections and shelves](#collections-and-shelves))
 - `tag` carries the catalog items referenced by the activity. Each item's `type`
   is one of `Edition`, `Movie`, `TVShow`, `TVSeason`, `TVEpisode`, `Album`,

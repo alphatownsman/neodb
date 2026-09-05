@@ -167,6 +167,9 @@ class Note(Content):
         d = {
             "id": self.absolute_url,
             "type": "Note",
+            "name": self.title,
+            # pre-name peers and backups read ``title``; keep it until they
+            # are gone
             "title": self.title,
             "content": self.content,
             "sensitive": self.sensitive,
@@ -183,13 +186,21 @@ class Note(Content):
             }
         return d
 
+    @staticmethod
+    def title_from_ap_object(obj: dict[str, Any], default: str | None) -> str | None:
+        """AS ``name`` wins; ``title`` is what older NeoDB peers sent."""
+        for key in ("name", "title"):
+            if key in obj:
+                return obj[key]
+        return default
+
     @override
     @classmethod
     def params_from_ap_object(cls, post, obj, piece):
         content: str = obj.get("content", "").strip()
         attachments: list[dict[str, object]] = []
         params: dict[str, object] = {
-            "title": obj.get("title", post.summary),
+            "title": cls.title_from_ap_object(obj, post.summary),
             "content": content,
             "sensitive": obj.get("sensitive", post.sensitive),
             "attachments": attachments,
