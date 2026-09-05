@@ -1,0 +1,61 @@
+{% load i18n %}
+<dialog open
+        class="edit-preview"
+        _="on close_dialog add .closing then wait for animationend then remove me">
+  <article>
+    <header>
+      <link to="#"
+            aria-label="Close"
+            class="close"
+            _="on click trigger close_dialog" />
+      <strong>{% trans 'Confirm changes' %} - {{ item.display_title }}</strong>
+    </header>
+    <div>
+      {% if errors %}
+        <p>
+          <i class="fa-solid fa-circle-exclamation"></i> {% trans "Please correct the errors below." %}
+        </p>
+        {{ errors }}
+        {% for d in errors.additonal_detail %}<p>{{ d }}</p>{% endfor %}
+      {% elif changes %}
+        <table class="diffview">
+          <thead>
+            <tr>
+              <th>{% trans 'Field' %}</th>
+              <th style="width:40%;">{% trans 'From' %}</th>
+              <th style="width:40%;">{% trans 'To' %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in changes %}
+              <tr>
+                <td>{{ c.label }}</td>
+                <td>
+                  <pre>{{ c.old }}</pre>
+                </td>
+                <td>
+                  <pre>{{ c.new }}</pre>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>
+          <i class="fa-solid fa-circle-info"></i> {% trans "No changes detected." %}
+        </p>
+      {% endif %}
+    </div>
+    <footer>
+      <div class="grid">
+        {% if not errors %}
+          <button type="button"
+                  _="on click set #edit-confirm-flag's value to '1' then call #edit-form.submit()">
+            {% trans 'Confirm and save' %}
+          </button>
+        {% endif %}
+        <button type="button" class="secondary" _="on click trigger close_dialog">{% trans 'Back to editing' %}</button>
+      </div>
+    </footer>
+  </article>
+</dialog>

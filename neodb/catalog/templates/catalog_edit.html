@@ -42,6 +42,16 @@
       .people-ref-link .people-ref-name:empty {
         display: none;
       }
+      .diffview pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        word-break: break-all;
+        background: unset;
+        margin: 0;
+      }
+      .diffview td {
+        vertical-align: top;
+      }
     </style>
   </head>
   <body>
@@ -55,9 +65,12 @@
           <i>{% trans "Item contains sub-items." %}</i>
         {% endif %}
         <form method="post"
+              id="edit-form"
               enctype="multipart/form-data"
+              {% if item %} hx-post="{% url 'catalog:edit' item.url_path item.uuid %}" hx-encoding="multipart/form-data" hx-target="#edit-preview" hx-swap="innerHTML" {% endif %}
               _=" init set .rjf-add-button's innerHTML to '➕' end">
           {% csrf_token %}
+          {% if item %}<input type="hidden" name="sure" id="edit-confirm-flag" value="0">{% endif %}
           {{ form.media }}
           {{ form }}
           <div class="grid">
@@ -69,6 +82,7 @@
                    onclick="{% if item %}window.location='{{ item.url }}'{% else %}history.go(-1){% endif %}">
           </div>
         </form>
+        <div id="edit-preview"></div>
       </div>
       <aside class="grid__aside">
         {% include "_sidebar_edit.html" %}

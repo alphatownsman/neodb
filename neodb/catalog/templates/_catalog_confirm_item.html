@@ -1,0 +1,24 @@
+{% load i18n %}
+<article class="item-card {% if deleting %}deleting{% endif %}">
+  {% include "_item_card.html" with item=item %}
+</article>
+{% if item.is_deleted %}
+  <p>
+    <i class="fa-solid fa-circle-xmark"></i> {% trans "Item has been deleted." %}
+  </p>
+{% endif %}
+{% if item.child_items %}
+  <p>
+    <i class="fa-solid fa-circle-exclamation"></i> {% trans "Item contains sub-items." %}
+  </p>
+{% endif %}
+{% if item.merged_to_item %}
+  <p>
+    <i class="fa-solid fa-circle-xmark"></i> {% trans "Item has been merged to another item." %}
+  </p>
+{% endif %}
+{% if item.journal_exists %}
+  <p>
+    <i class="fa-solid fa-circle-exclamation"></i> {% trans "Item has been marked by users." %}
+  </p>
+{% endif %}

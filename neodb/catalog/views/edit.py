@@ -1,3 +1,6 @@
+import json
+from typing import Any
+
 import django_rq
 from auditlog.context import set_actor
 from django.conf import settings
@@ -5,8 +8,10 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.core.exceptions import BadRequest, PermissionDenied
+from django.core.files.uploadedfile import UploadedFile
 from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext as _
@@ -46,6 +51,77 @@ def _add_error_map_detail(e):
                 for f2, v2 in validation_error.error_map.items():
                     e.additonal_detail.append(f"{f}§{f2}: {'; '.join(v2)}")
     return e
+
+
+def _is_confirmed(request) -> bool:
+    return request.POST.get("sure", "") == "1"
+
+
+def _confirm(request, title: str, item: Item, action: str, **kwargs):
+    """Render the confirmation page for a sidebar tool.
+
+    The page re-posts `fields` plus `sure=1` to `action`.
+    """
+    context = {
+        "title": title,
+        "item": item,
+        "action": action,
+        "fields": kwargs.pop("fields", {}),
+        "new_item": None,
+        "deleting": False,
+        "notes": [],
+        "item_lists": [],
+    }
+    context.update(kwargs)
+    return render(request, "catalog_confirm.html", context)
+
+
+def _display_value(value: Any) -> str:
+    if isinstance(value, list):
+        # migrate_initial pads an empty description with a blank entry
+        value = [
+            v for v in value if not (isinstance(v, dict) and not v.get("text", True))
+        ]
+    if value is None or value == "" or value == [] or value == {}:
+        return "-"
+    if isinstance(value, str):
+        return value
+    return json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True, default=str)
+
+
+def _edit_changes(form) -> list[dict[str, str]]:
+    """Diff what the form showed (`initial`) against what a save would persist
+    (`cleaned_data`, after normalization). ModelForm already copied cleaned
+    data onto `form.instance` during validation, so the instance holds no
+    "old" values any more.
+    """
+    changes = []
+    for name, field in form.fields.items():
+        if name == "id":
+            continue
+        old = form.initial.get(name)
+        new = form.cleaned_data.get(name)
+        if name == "cover":
+            if isinstance(new, UploadedFile):
+                changes.append(
+                    {
+                        "label": str(field.label),
+                        "old": old.name
+                        if old and old.name and old.name != settings.DEFAULT_ITEM_COVER
+                        else "-",
+                        "new": new.name or "-",
+                    }
+                )
+            continue
+        if _display_value(old) != _display_value(new):
+            changes.append(
+                {
+                    "label": str(field.label or name),
+                    "old": _display_value(old),
+                    "new": _display_value(new),
+                }
+            )
+    return changes
 
 
 @require_http_methods(["GET", "POST"])
@@ -159,7 +235,20 @@ def edit(request, item_path, item_uuid):
         form.fields["primary_lookup_id_value"].disabled = True
 
     if request.method == "POST":
-        if form.is_valid():
+        valid = form.is_valid()
+        if not _is_confirmed(request):
+            # preview: nothing is saved. htmx does not swap 4xx responses,
+            # so validation errors also come back as a 200 fragment.
+            return render(
+                request,
+                "_catalog_edit_preview.html",
+                {
+                    "item": item,
+                    "changes": _edit_changes(form) if valid else [],
+                    "errors": None if valid else _add_error_map_detail(form.errors),
+                },
+            )
+        if valid:
             form.instance.edited_time = timezone.now()
             form.instance.save()
             form.instance.sync_credits_from_metadata()
@@ -222,23 +311,27 @@ def delete(request, item_path, item_uuid):
         raise PermissionDenied(_("Item in use."))
     if not item.is_deletable():
         raise PermissionDenied(_("Item cannot be deleted."))
-    if request.POST.get("sure", 0) != "1":
-        return render(request, "catalog_delete.html", {"item": item})
-    else:
-        item_type = item.class_name
-        item.delete()
-        record_catalog_edit("delete", item_type, "delete")
-        discord_send(
-            "audit",
-            f"{item.absolute_url}?skipcheck=1\nby [@{request.user.username}]({request.user.absolute_url})",
-            thread_name=f"[delete] {item.display_title}",
-            username=f"@{request.user.username}",
+    if not _is_confirmed(request):
+        return _confirm(
+            request,
+            _("Are you sure to delete?"),
+            item,
+            reverse("catalog:delete", args=[item.url_path, item.uuid]),
+            deleting=True,
+            notes=[_("This operation cannot be undone.")],
         )
-        return (
-            redirect(item.url + "?skipcheck=1")
-            if request.user.is_staff
-            else redirect("/")
-        )
+    item_type = item.class_name
+    item.delete()
+    record_catalog_edit("delete", item_type, "delete")
+    discord_send(
+        "audit",
+        f"{item.absolute_url}?skipcheck=1\nby [@{request.user.username}]({request.user.absolute_url})",
+        thread_name=f"[delete] {item.display_title}",
+        username=f"@{request.user.username}",
+    )
+    return (
+        redirect(item.url + "?skipcheck=1") if request.user.is_staff else redirect("/")
+    )
 
 
 @require_http_methods(["POST"])
@@ -283,6 +376,35 @@ def recast(request, item_path, item_uuid):
         raise BadRequest("Invalid target type")
     if isinstance(item, model):
         raise BadRequest("Same target type")
+    if not _is_confirmed(request):
+        labels = {
+            TVShow: _("TV Show"),
+            Movie: _("Movie"),
+            TVSeason: _("TV Season"),
+        }
+        notes = [
+            f"{labels.get(type(item), item.class_name)} → {labels[model]}",
+            _("Switching may remove some metadata."),
+        ]
+        item_lists = []
+        if isinstance(item, TVShow) and item.seasons.exists():
+            item_lists.append(
+                {
+                    "label": _("The following seasons will be detached from this show"),
+                    "items": list(item.seasons.all()),
+                }
+            )
+        if douban_movie_to_tvseason:
+            notes.append(_("Links to IMDB and TMDB will be removed."))
+        return _confirm(
+            request,
+            _("Are you sure to switch category?"),
+            item,
+            reverse("catalog:recast", args=[item.url_path, item.uuid]),
+            fields={"class": request.POST.get("class", "")},
+            notes=notes,
+            item_lists=item_lists,
+        )
     logger.warning(f"{request.user} recasting {item} to {model}")
     discord_send(
         "audit",
@@ -317,17 +439,30 @@ def unlink(request):
     resource = get_object_or_404(ExternalResource, id=res_id)
     if not resource.item:
         raise BadRequest(_("Invalid parameter"))
-    item_type = resource.item.class_name
-    resource.unlink_from_item()
-    record_catalog_edit("update", item_type, "unlink_resource")
-    referer = request.META.get("HTTP_REFERER") or ""
+    # the confirmation page carries the original referer in `next`
+    next_url = request.POST.get("next") or request.META.get("HTTP_REFERER") or ""
     if not url_has_allowed_host_and_scheme(
-        referer,
+        next_url,
         allowed_hosts=set(settings.SITE_DOMAINS),
         require_https=settings.SSL_ONLY,
     ):
-        referer = "/"
-    return HttpResponseRedirect(referer)
+        next_url = "/"
+    if not _is_confirmed(request):
+        return _confirm(
+            request,
+            _("Are you sure to remove the link to this site?"),
+            resource.item,
+            reverse("catalog:unlink"),
+            fields={"id": resource.pk, "next": next_url},
+            notes=[
+                f"{_('External website')}: {resource.site_label} {resource.url}",
+                _("You may not be able to undo this operation."),
+            ],
+        )
+    item_type = resource.item.class_name
+    resource.unlink_from_item()
+    record_catalog_edit("update", item_type, "unlink_resource")
+    return HttpResponseRedirect(next_url)
 
 
 @require_http_methods(["POST"])
@@ -344,8 +479,23 @@ def assign_parent(request, item_path, item_uuid):
             raise BadRequest("Can't assign parent to a deleted or redirected item")
         if parent_item.child_class != item.__class__.__name__:
             raise BadRequest("Incompatible child item type")
-    # if not request.user.is_staff and item.parent_item:
-    #     raise BadRequest("Already assigned to a parent item")
+    if not _is_confirmed(request):
+        current = item.parent_item
+        notes = [
+            f"{_('Current parent item')}: "
+            + (f"{current.display_title} {current.absolute_url}" if current else "-")
+        ]
+        if not parent_item:
+            notes.append(_("The link to the parent item will be removed."))
+        return _confirm(
+            request,
+            _("Are you sure to link?"),
+            item,
+            reverse("catalog:assign_parent", args=[item.url_path, item.uuid]),
+            fields={"parent_item_url": request.POST.get("parent_item_url", "")},
+            new_item=parent_item,
+            notes=notes,
+        )
     logger.warning(f"{request.user} assign {item} to {parent_item}")
     item.set_parent_item(parent_item)
     item.save()
@@ -360,9 +510,27 @@ def remove_unused_seasons(request, item_path, item_uuid):
     if not item.is_editable_by(request.user):
         raise PermissionDenied(_("Editing this item is restricted."))
     sl = list(item.seasons.all())
-    for s in sl:
-        if not s.journal_exists():
-            s.delete()
+    unused = [s for s in sl if not s.journal_exists()]
+    if not _is_confirmed(request):
+        return _confirm(
+            request,
+            _("Are you sure to delete?"),
+            item,
+            reverse("catalog:remove_unused_seasons", args=[item.url_path, item.uuid]),
+            notes=[_("This operation cannot be undone.")],
+            item_lists=[
+                {
+                    "label": _("The following seasons will be deleted"),
+                    "items": unused,
+                },
+                {
+                    "label": _("The following seasons will be kept"),
+                    "items": [s for s in sl if s not in unused],
+                },
+            ],
+        )
+    for s in unused:
+        s.delete()
     record_catalog_edit("delete", "tvseason", "remove_unused_seasons")
     ol = [s.pk for s in sl]
     nl = [s.pk for s in item.seasons.all()]
@@ -435,12 +603,20 @@ def merge(request, item_path, item_uuid):
         raise PermissionDenied(_("Editing this item is restricted."))
     if not request.user.is_staff and item.journal_exists():
         raise PermissionDenied(_("Insufficient permission"))
-    if request.POST.get("sure", 0) != "1":
-        new_item = Item.get_by_url(request.POST.get("target_item_url"))
-        return render(
+    if not _is_confirmed(request):
+        target_url = request.POST.get("target_item_url", "")
+        new_item = Item.get_by_url(target_url)
+        return _confirm(
             request,
-            "catalog_merge.html",
-            {"item": item, "new_item": new_item, "mode": "merge"},
+            _("Are you sure to merge?")
+            if new_item
+            else _("Are you sure to cancel merge?"),
+            item,
+            reverse("catalog:merge", args=[item.url_path, item.uuid]),
+            fields={"target_item_url": target_url},
+            new_item=new_item,
+            deleting=bool(new_item),
+            notes=[_("This operation cannot be undone.")] if new_item else [],
         )
     elif request.POST.get("target_item_url"):
         new_item = Item.get_by_url(request.POST.get("target_item_url"))
@@ -500,14 +676,16 @@ def link_edition(request, item_path, item_uuid):
         raise PermissionDenied(_("Editing this item is restricted."))
     if item.class_name != "edition" or new_item.class_name != "edition":
         raise BadRequest(_("Cannot link items other than editions"))
-    if request.POST.get("sure", 0) != "1":
-        new_item = Edition.get_by_url(request.POST.get("target_item_url"))
-        return render(
+    if not _is_confirmed(request):
+        return _confirm(
             request,
-            "catalog_merge.html",
-            {"item": item, "new_item": new_item, "mode": "link"},
+            _("Are you sure to link?"),
+            item,
+            reverse("catalog:link_edition", args=[item.url_path, item.uuid]),
+            fields={"target_item_url": request.POST.get("target_item_url", "")},
+            new_item=new_item,
         )
-    logger.warning(f"{request.user} merges {item} to {new_item}")
+    logger.warning(f"{request.user} links {item} to {new_item}")
     item.link_to_related_book(new_item)
     record_catalog_edit("update", item.class_name, "link_edition")
     discord_send(
@@ -527,6 +705,20 @@ def unlink_works(request, item_path, item_uuid):
         raise PermissionDenied(_("Editing this item is restricted."))
     if not request.user.is_staff and item.journal_exists():
         raise PermissionDenied(_("Insufficient permission"))
+    if not _is_confirmed(request):
+        work = item.get_work()
+        return _confirm(
+            request,
+            _("Are you sure to unlink?"),
+            item,
+            reverse("catalog:unlink_works", args=[item.url_path, item.uuid]),
+            item_lists=[
+                {
+                    "label": _("This edition will be unlinked from the following work"),
+                    "items": [work] if work else [],
+                }
+            ],
+        )
     item.set_parent_item(None)
     record_catalog_edit("update", item.class_name, "unlink_works")
     discord_send(

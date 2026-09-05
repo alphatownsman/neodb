@@ -1,0 +1,61 @@
+{% load static %}
+{% load i18n %}
+{% load l10n %}
+{% load mastodon %}
+{% load thumb %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ site_name }} - {{ title }}</title>
+    {% include "common_libs.html" %}
+  </head>
+  <body>
+    {% include "_header.html" %}
+    <main class="container">
+      <h2>{{ title }}</h2>
+      <div>
+        {% include "_catalog_confirm_item.html" with item=item deleting=deleting %}
+        {% for note in notes %}
+          <p>
+            <i class="fa-solid fa-circle-info"></i> {{ note }}
+          </p>
+        {% endfor %}
+        {% for group in item_lists %}
+          <p>
+            <i class="fa-solid fa-circle-info"></i> {{ group.label }}
+          </p>
+          <ul>
+            {% for i in group.items %}
+              <li>
+                <a href="{{ i.url }}?skipcheck=1">{{ i.display_title }}</a>
+              </li>
+            {% empty %}
+              <li>-</li>
+            {% endfor %}
+          </ul>
+        {% endfor %}
+        {% if new_item %}
+          <div>
+            <center>
+              <i class="fa-solid fa-angles-down"></i>
+              <i class="fa-solid fa-angles-down"></i>
+              <i class="fa-solid fa-angles-down"></i>
+            </center>
+          </div>
+          {% include "_catalog_confirm_item.html" with item=new_item deleting=False %}
+        {% endif %}
+      </div>
+      <form method="post" action="{{ action }}">
+        {% csrf_token %}
+        {% for name, value in fields.items %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}
+        <input type="hidden" name="sure" value="1">
+        <input type="submit" value="{% trans 'Yes' %}">
+        <input type="reset" value="{% trans 'No' %}" onclick="history.go(-1)">
+      </form>
+    </main>
+    {% include "_footer.html" %}
+  </body>
+</html>
