@@ -65,6 +65,11 @@ def _resolve_attachments(
     """
     if len(uuids) > MAX_ATTACHMENTS_PER_NOTE:
         return None, f"At most {MAX_ATTACHMENTS_PER_NOTE} attachments per note"
+    if len(set(uuids)) != len(uuids):
+        # One upload cannot be two attachments: it would post twice to takahe
+        # and link once here, so the federated post would carry an image the
+        # note does not show.
+        return None, "Duplicate attachment"
     rows: list[Attachment] = []
     for u in uuids:
         try:

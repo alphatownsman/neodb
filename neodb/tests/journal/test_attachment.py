@@ -2,6 +2,7 @@
 
 import io
 import json
+import pickle
 import uuid
 from unittest import mock
 from urllib.parse import urlparse
@@ -1240,6 +1241,31 @@ class TestNoteApiAttachments:
         Attachment.sync_from_post(note, post)
         assert Attachment.objects.filter(owner=self.identity).count() == before
         assert list(note.attachment_records.all()) == [a]
+
+    def test_pending_media_is_not_carried_into_a_queued_job(self):
+        """The crosspost queue pickles the piece from inside the save, so the
+        pending set must not survive serialization at any point."""
+        a = self._upload()
+        note = Note(
+            item=self.item, owner=self.identity, title="T", content="C", visibility=0
+        )
+        note.set_attachments([a])
+
+        revived = pickle.loads(pickle.dumps(note))
+
+        assert note.attachments_when_save == [a]  # still usable by this save
+        assert revived.attachments_when_save is None
+
+    def test_repeated_uuids_are_rejected(self):
+        """Posting one upload twice would put two images on the federated post
+        and one on the note, because the link is a set."""
+        a = self._upload()
+
+        code, data = self._post_note(attachment_uuids=[a.uuid, a.uuid])
+
+        assert code == 400
+        assert "duplicate" in data["message"].lower()
+        assert not Note.objects.filter(owner=self.identity).exists()
 
     def test_a_later_metadata_save_does_not_restore_replaced_media(self):
         """The crosspost queue pickles the note and saves it again later. That

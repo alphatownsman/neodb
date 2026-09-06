@@ -340,14 +340,23 @@ class Note(Content):
         self.attachments_when_save = attachments
         self.attachments = []
 
+    def __getstate__(self):
+        # ``attachments_when_save`` is an instruction for one save, not state a
+        # worker should carry. The crosspost queue pickles the piece from
+        # *inside* ``Piece.save``, so clearing the attribute after the save
+        # returns comes too late for that copy: the queued instance would keep
+        # the set, and its later metadata-only save would replay it and restore
+        # media a newer edit had dropped. Dropping it here covers every
+        # serialization, whenever it is taken.
+        state = super().__getstate__()
+        state.pop("attachments_when_save", None)
+        return state
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         # Applied after super(), which is where the row gets its pk on create
-        # and where the post has already taken the same set.
-        #
-        # Consumed, not left standing: the crosspost queue pickles the whole
-        # instance, and its later metadata-only save would otherwise replay
-        # this replacement and restore media a newer edit had dropped.
+        # and where the post has already taken the same set. Consumed rather
+        # than left standing, so no later save of this instance repeats it.
         pending, self.attachments_when_save = self.attachments_when_save, None
         if pending is not None:
             self.attachment_records.set(pending)
