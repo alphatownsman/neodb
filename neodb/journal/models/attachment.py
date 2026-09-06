@@ -693,9 +693,9 @@ class Attachment(models.Model):
         # correct rendering: it fed the one-off backfill, and that reads the
         # note's legacy JSON, which ``Note.set_attachments`` empties.
         #
-        # One upload posted on two notes still churns -- the older note's sync
-        # no longer recognises the row, so it takes a copy and unlinks this one
-        # -- but it converges on the same image, with nothing lost.
+        # Safe because a row cannot be posted from two places: the note API
+        # refuses an upload already linked to another piece, so this pointer
+        # is never one that another piece is relying on.
         source = source_for_post_attachment(atta.pk)
         if self.source != source:
             self.source = source

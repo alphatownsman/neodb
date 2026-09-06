@@ -57,12 +57,14 @@ def _attachment_json(attachment: Any) -> dict[str, Any]:
 
 
 def _resolve_attachments(
-    identity, uuids: list[str]
+    identity, uuids: list[str], note: "Note | None" = None
 ) -> "tuple[list[Attachment] | None, str]":
     """Owned rows for ``uuids``, in the order given, or ``(None, reason)``.
 
     Every rejection is the caller's to fix, so each one names what is wrong
     rather than silently dropping the attachment from the note.
+
+    ``note`` is the note being edited, whose own links are not "elsewhere".
     """
     if len(uuids) > MAX_ATTACHMENTS_PER_NOTE:
         return None, f"At most {MAX_ATTACHMENTS_PER_NOTE} attachments per note"
@@ -100,6 +102,18 @@ def _resolve_attachments(
             return None, f"Attachment type cannot be posted: {u}"
         if attachment.size > MAX_POST_ATTACHMENT_SIZE:
             return None, f"Attachment too large to post: {u}"
+        used = attachment.pieces.all()
+        if note is not None and note.pk:
+            used = used.exclude(pk=note.pk)
+        if used.exists():
+            # Posting an upload mints a takahe attachment and points the row at
+            # it, which is what stops the post-save sync duplicating the media.
+            # A row shared with another piece cannot point at two of them, and
+            # the piece that loses the pointer loses the media with it -- an
+            # imported note, whose post carries none, has nothing to restore it
+            # from. Mastodon refuses a re-used media id for its own reasons;
+            # upload the file again for this note.
+            return None, f"Attachment already used elsewhere: {u}"
         rows.append(attachment)
     return rows, ""
 
@@ -295,7 +309,7 @@ def update_note(request, note_uuid: str, n_in: NoteInSchema):
         return NOT_FOUND
     if n_in.attachment_uuids is not None:
         attachments, error = _resolve_attachments(
-            request.user.identity, n_in.attachment_uuids
+            request.user.identity, n_in.attachment_uuids, note
         )
         if attachments is None:
             return Status(400, {"message": error})

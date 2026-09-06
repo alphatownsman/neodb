@@ -1399,6 +1399,38 @@ class TestNoteApiAttachments:
         assert code == 400
         assert "4" in data["message"]
 
+    def test_an_upload_used_elsewhere_is_rejected(self):
+        """Posting a row points it at a takahe attachment, and a row cannot
+        point at two. Sharing one would make the other piece lose the media --
+        an imported note, whose post carries none, could not restore it."""
+        a = self._upload()
+        other_note = Note(
+            item=self.item, owner=self.identity, title="T", content="C", visibility=0
+        )
+        other_note.save(post_when_save=False, index_when_save=False)
+        other_note.attachment_records.add(a)
+
+        code, data = self._post_note(attachment_uuids=[a.uuid])
+
+        assert code == 400
+        assert "already used" in data["message"].lower()
+        # the other note keeps both its link and its provenance
+        a.refresh_from_db()
+        assert list(other_note.attachment_records.all()) == [a]
+        assert a.source == ""
+
+    def test_editing_a_note_may_keep_its_own_media(self):
+        """The note's own links are not 'elsewhere', so re-sending them is
+        allowed -- that is how a client keeps media while editing text."""
+        a = self._upload()
+        code, data = self._post_note(attachment_uuids=[a.uuid])
+        assert code == 200
+
+        code, data = self._put_note(data["uuid"], attachment_uuids=[a.uuid])
+
+        assert code == 200
+        assert [x["uuid"] for x in data["attachments"]] == [a.uuid]
+
     def test_non_image_media_is_rejected(self):
         """A note can hold video from a Mastodon client, and the sync gives it
         an owned row with a file. takahe decodes an upload with Pillow, so
