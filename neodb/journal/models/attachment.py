@@ -38,6 +38,7 @@ from django.db import models
 from django.utils import timezone
 from loguru import logger
 
+from takahe.utils import Takahe
 from users.models import APIdentity
 
 from .renderers import RE_MD_IMAGE, normalize_image_src
@@ -641,6 +642,58 @@ class Attachment(models.Model):
             mimetype=mimetype,
             source=source,
         )
+
+    def to_post_attachment(self) -> "PostAttachment | None":
+        """Push this upload into takahe so a post can carry it as media.
+
+        The reverse of :meth:`from_post_attachment`: that one brings media a
+        Mastodon client attached into the registry, this one takes media the
+        NeoDB API attached out to takahe, so a note composed through our own
+        API federates the same way one composed in a Mastodon client does.
+
+        ``None`` when the bytes cannot be read or takahe refuses them; the
+        caller posts without that attachment rather than losing the note.
+        """
+        if not self.file:
+            # A pointer row for remote media -- we hold URLs, not bytes, so
+            # there is nothing to hand takahe.
+            return None
+        try:
+            with self.file.open("rb") as f:
+                content = f.read()
+        except Exception as e:
+            logger.warning(f"attachment {self.uid} unreadable {e}")
+            return None
+        try:
+            atta = Takahe.upload_image(
+                self.owner_id,
+                os.path.basename(self.file.name or "image"),
+                content,
+                self.mimetype or mimetypes.guess_type(self.file.name or "")[0] or "",
+                description=self.description,
+            )
+        except Exception as e:
+            logger.warning(f"attachment {self.uid} not uploaded to takahe {e}")
+            return None
+        # Claim the takahe pk as this row's source so the post-save sync
+        # recognises the media as already registered. Without it
+        # ``from_post_attachment`` finds no row for the new pk, copies the
+        # same bytes into a second row, and then prunes this one off the note.
+        #
+        # Re-stamped, not only stamped once: every push mints a new takahe
+        # attachment, so a row still carrying the previous pk would fall
+        # outside what ``sync_from_post`` considers current and get replaced by
+        # a copy on each edit, leaking an orphan row and a duplicate file every
+        # time. A source of another kind (legacy JSON, a copied URL) is left
+        # alone -- it is that row's only provenance, and the backfill dedupes
+        # on it.
+        source = source_for_post_attachment(atta.pk)
+        if self.source != source and not self.source.startswith(
+            ("url:", "takahe-media:")
+        ):
+            self.source = source
+            self.save(update_fields=["source"])
+        return atta
 
     @classmethod
     def sync_from_post(cls, piece: "Piece", post: "Post") -> list["Attachment"]:

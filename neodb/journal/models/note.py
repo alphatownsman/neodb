@@ -43,6 +43,11 @@ class Note(Content):
         TIMESTAMP = "timestamp", _("Timestamp")
         PERCENTAGE = "percentage", _("Percentage")
 
+    # Media the current save should replace the note's attachments with.
+    # ``None`` means "leave them alone", which is what every caller that does
+    # not manage media wants -- see ``to_post_params``.
+    attachments_when_save: "list[Attachment] | None" = None
+
     title = models.TextField(blank=True, null=True, default=None)
     content = models.TextField(blank=False, null=False)
     sensitive = models.BooleanField(default=False, null=False)
@@ -305,14 +310,41 @@ class Note(Content):
     def to_post_params(self):
         footer = f'\n<p>—<br><a href="{self.item.absolute_url}">{self.item.display_title}</a> {self.progress_display}\n</p>'
         post = self.shelfmember.latest_post if self.shelfmember else None
-        return {
+        params = {
             "summary": self.title,
             "content": self.content,
             "append_content": footer,
             "sensitive": self.sensitive,
             "reply_to_pk": post.pk if post else None,
-            # not passing "attachments" so it won't change
         }
+        # Only a caller that asked for a specific set touches post media.
+        # Passing a list unconditionally would clear the media of every note
+        # composed in a Mastodon client the first time it is edited here.
+        if self.attachments_when_save is not None:
+            params["attachments"] = [
+                a
+                for a in (r.to_post_attachment() for r in self.attachments_when_save)
+                if a is not None
+            ]
+        return params
+
+    def set_attachments(self, attachments: "list[Attachment]") -> None:
+        """Replace the note's media with ``attachments`` (call before save).
+
+        ``save`` links the rows and ``to_post_params`` carries the same set to
+        takahe, so what the note renders and what the federated post carries
+        stay in step. The legacy JSON is emptied because ``attachment_list``
+        only falls back to it when no row is linked, and a cleared note would
+        otherwise keep rendering the media it just dropped.
+        """
+        self.attachments_when_save = attachments
+        self.attachments = []
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.attachments_when_save is not None:
+            # after super(), which is where the row gets its pk on create
+            self.attachment_records.set(self.attachments_when_save)
 
     @classmethod
     def strip_footer(cls, content: str) -> tuple[str, str | None, str | None]:

@@ -1,6 +1,8 @@
 """Tests for the user upload registry (``journal.models.Attachment``)."""
 
 import io
+import json
+import uuid
 from unittest import mock
 from urllib.parse import urlparse
 
@@ -1132,3 +1134,214 @@ class TestAccountDeletion:
         assert not Attachment.objects.filter(owner=self.identity).exists()
         assert not default_storage.exists(upload_name)
         assert not default_storage.exists(cover_name)
+
+
+@pytest.mark.django_db(databases="__all__")
+class TestNoteApiAttachments:
+    """The note API's read/write of note media."""
+
+    @pytest.fixture(autouse=True)
+    def setup_data(self):
+        self.user = User.register(email="notemedia@test.com", username="notemedia")
+        self.identity = self.user.identity
+        self.item = Edition.objects.create(title="Note Media Book")
+        self.token = _api_token(self.user)
+        self.client = Client()
+
+    def _upload(self, description: str = "") -> Attachment:
+        return Attachment.register(
+            self.identity,
+            ContentFile(_png_bytes()),
+            "png",
+            mimetype="image/png",
+            description=description,
+        )
+
+    def _post_note(self, **extra) -> "tuple[int, dict]":
+        body = {"title": "T", "content": "C", "visibility": 0}
+        body.update(extra)
+        r = self.client.post(
+            f"/api/me/note/item/{self.item.uuid}/",
+            data=json.dumps(body),
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+        return r.status_code, (r.json() if r.status_code < 500 else {})
+
+    def _put_note(self, note_uuid: str, **extra) -> "tuple[int, dict]":
+        body = {"title": "T", "content": "C2", "visibility": 0}
+        body.update(extra)
+        r = self.client.put(
+            f"/api/me/note/{note_uuid}",
+            data=json.dumps(body),
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+        return r.status_code, (r.json() if r.status_code < 500 else {})
+
+    def test_create_with_attachment_links_row_and_posts_media(self):
+        a = self._upload(description="alt text")
+        code, data = self._post_note(attachment_uuids=[a.uuid])
+        assert code == 200
+        assert [x["uuid"] for x in data["attachments"]] == [a.uuid]
+        assert data["attachments"][0]["type"] == "image"
+        assert data["attachments"][0]["description"] == "alt text"
+        assert data["attachments"][0]["url"]
+
+        note = Note.objects.get(uid__isnull=False, owner=self.identity)
+        assert list(note.attachment_records.all()) == [a]
+        # the media reached the post, so it federates like Mastodon-composed
+        # note media does
+        post = note.latest_post
+        assert post is not None
+        assert post.attachments.count() == 1
+        # and the row claims the takahe pk, so the post-save sync recognises
+        # it instead of copying the same bytes into a second row
+        a.refresh_from_db()
+        posted = post.attachments.first()
+        assert posted is not None
+        assert a.source == f"takahe:{posted.pk}"
+
+    def test_sync_from_post_reuses_the_pushed_row(self):
+        a = self._upload()
+        code, data = self._post_note(attachment_uuids=[a.uuid])
+        assert code == 200
+        note = Note.objects.get(uid__isnull=False, owner=self.identity)
+        post = note.latest_post
+        assert post is not None
+        before = Attachment.objects.filter(owner=self.identity).count()
+
+        Attachment.sync_from_post(note, post)
+
+        assert Attachment.objects.filter(owner=self.identity).count() == before
+        assert list(note.attachment_records.all()) == [a]
+
+    def test_resending_the_same_media_leaves_no_orphan_copies(self):
+        a = self._upload()
+        code, data = self._post_note(attachment_uuids=[a.uuid])
+        assert code == 200
+        note_uuid = data["uuid"]
+        before = Attachment.objects.filter(owner=self.identity).count()
+
+        for _ in range(2):
+            code, data = self._put_note(note_uuid, attachment_uuids=[a.uuid])
+            assert code == 200
+            assert [x["uuid"] for x in data["attachments"]] == [a.uuid]
+
+        note = Note.objects.get(uid__isnull=False, owner=self.identity)
+        post = note.latest_post
+        assert post is not None
+        # the row tracks the newest takahe attachment, so the post-save sync
+        # keeps it instead of replacing it with a copy on every edit
+        a.refresh_from_db()
+        posted = post.attachments.first()
+        assert posted is not None
+        assert a.source == f"takahe:{posted.pk}"
+        Attachment.sync_from_post(note, post)
+        assert Attachment.objects.filter(owner=self.identity).count() == before
+        assert list(note.attachment_records.all()) == [a]
+
+    def test_omitting_the_field_keeps_existing_media(self):
+        a = self._upload()
+        code, data = self._post_note(attachment_uuids=[a.uuid])
+        assert code == 200
+        note_uuid = data["uuid"]
+
+        code, data = self._put_note(note_uuid)
+
+        assert code == 200
+        assert [x["uuid"] for x in data["attachments"]] == [a.uuid]
+        note = Note.objects.get(uid__isnull=False, owner=self.identity)
+        post = note.latest_post
+        assert post is not None
+        assert post.attachments.count() == 1
+
+    def test_empty_list_clears_media(self):
+        a = self._upload()
+        code, data = self._post_note(attachment_uuids=[a.uuid])
+        assert code == 200
+        note_uuid = data["uuid"]
+
+        code, data = self._put_note(note_uuid, attachment_uuids=[])
+
+        assert code == 200
+        assert data["attachments"] == []
+        note = Note.objects.get(uid__isnull=False, owner=self.identity)
+        assert note.attachment_records.count() == 0
+        post = note.latest_post
+        assert post is not None
+        assert post.attachments.count() == 0
+        # the upload itself survives, unlinked
+        assert Attachment.objects.filter(pk=a.pk).exists()
+
+    def test_another_users_upload_is_not_found(self):
+        other = User.register(email="other@test.com", username="othermedia")
+        a = Attachment.register(other.identity, ContentFile(_png_bytes()), "png")
+
+        code, data = self._post_note(attachment_uuids=[a.uuid])
+
+        assert code == 400
+        assert "not found" in data["message"].lower()
+        assert not Note.objects.filter(owner=self.identity).exists()
+
+    def test_unknown_and_malformed_uuids_are_rejected(self):
+        code, _ = self._post_note(attachment_uuids=["not-a-uuid"])
+        assert code == 400
+        code, _ = self._post_note(attachment_uuids=[uuid.uuid4().hex])
+        assert code == 400
+
+    def test_more_than_four_attachments_is_rejected(self):
+        uploads = [self._upload() for _ in range(5)]
+
+        code, data = self._post_note(attachment_uuids=[a.uuid for a in uploads])
+
+        assert code == 400
+        assert "4" in data["message"]
+
+    def test_pointer_row_without_bytes_is_rejected(self):
+        a = Attachment.objects.create(
+            owner=self.identity,
+            remote_url="https://example.org/remote.png",
+            mimetype="image/png",
+        )
+
+        code, data = self._post_note(attachment_uuids=[a.uuid])
+
+        assert code == 400
+        assert "no file" in data["message"].lower()
+
+    def test_oversized_upload_is_rejected(self):
+        a = self._upload()
+        Attachment.objects.filter(pk=a.pk).update(size=6 * 1024 * 1024)
+
+        code, data = self._post_note(attachment_uuids=[a.uuid])
+
+        assert code == 400
+        assert "too large" in data["message"].lower()
+
+    def test_legacy_json_media_is_returned_without_a_uuid(self):
+        code, data = self._post_note()
+        assert code == 200
+        note = Note.objects.get(uid__isnull=False, owner=self.identity)
+        Note.objects.filter(pk=note.pk).update(
+            attachments=[
+                {
+                    "type": "image",
+                    "mimetype": "image/png",
+                    "url": "https://example.org/legacy.png",
+                    "preview_url": "https://example.org/legacy-thumb.png",
+                }
+            ]
+        )
+
+        r = self.client.get(
+            f"/api/me/note/item/{self.item.uuid}/",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+
+        assert r.status_code == 200
+        atta = r.json()["data"][0]["attachments"]
+        assert len(atta) == 1
+        assert atta[0]["uuid"] is None
+        assert atta[0]["url"] == "https://example.org/legacy.png"
+        assert atta[0]["preview_url"] == "https://example.org/legacy-thumb.png"
