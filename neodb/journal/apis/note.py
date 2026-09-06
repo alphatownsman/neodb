@@ -23,6 +23,7 @@ from takahe.utils import Takahe
 from users.apis import UserIdentitySchema
 
 from ..models import Attachment, Note
+from .attachment import ALLOWED_IMAGE_TYPES
 
 # takahe re-encodes a thumbnail in memory when it takes an upload, and refuses
 # anything past this. Our own upload endpoint allows more, so a file can be
@@ -88,6 +89,15 @@ def _resolve_attachments(
         if not attachment.file:
             # a pointer row for remote media; we hold URLs, not bytes
             return None, f"Attachment has no file to post: {u}"
+        if attachment.mimetype not in ALLOWED_IMAGE_TYPES:
+            # takahe decodes an upload with Pillow to build its thumbnail, so
+            # it takes images only. A note *can* hold video or audio, from a
+            # Mastodon client, and those rows are owned and have files -- but
+            # posting one would fail on the takahe side and quietly drop the
+            # media from the federated post while the note kept showing it.
+            # Say so instead; an edit that means to keep such media leaves
+            # `attachment_uuids` out.
+            return None, f"Attachment type cannot be posted: {u}"
         if attachment.size > MAX_POST_ATTACHMENT_SIZE:
             return None, f"Attachment too large to post: {u}"
         rows.append(attachment)

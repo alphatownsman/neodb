@@ -1379,6 +1379,24 @@ class TestNoteApiAttachments:
         assert code == 400
         assert "4" in data["message"]
 
+    def test_non_image_media_is_rejected(self):
+        """A note can hold video from a Mastodon client, and the sync gives it
+        an owned row with a file. takahe decodes an upload with Pillow, so
+        posting one would fail there and drop it from the federated post while
+        the note kept showing it. Say so rather than lose it quietly."""
+        a = Attachment.register(
+            self.identity,
+            ContentFile(b"not really a video"),
+            "mp4",
+            mimetype="video/mp4",
+        )
+
+        code, data = self._post_note(attachment_uuids=[a.uuid])
+
+        assert code == 400
+        assert "cannot be posted" in data["message"].lower()
+        assert not Note.objects.filter(owner=self.identity).exists()
+
     def test_pointer_row_without_bytes_is_rejected(self):
         a = Attachment.objects.create(
             owner=self.identity,
