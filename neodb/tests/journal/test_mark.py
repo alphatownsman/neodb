@@ -186,6 +186,27 @@ def test_mark_save_inline_closes_dialog_and_swaps_icon(client):
 
 
 @pytest.mark.django_db(databases="__all__")
+def test_mark_save_crosspost_failure_shows_error_page_over_htmx(client, monkeypatch):
+    user = User.register(email="mark-xpost@example.com", username="markxpost")
+    book = Edition.objects.create(title="Crosspost Book")
+    client.force_login(user, backend="mastodon.auth.OAuth2Backend")
+
+    def fail(*args, **kwargs):
+        raise ValueError("422")
+
+    monkeypatch.setattr(Mark, "update", fail)
+    response = client.post(
+        reverse("journal:mark", args=[book.uuid]),
+        _mark_post_data(inline="1"),
+        HTTP_HX_REQUEST="true",
+    )
+    assert response.status_code == 200
+    assert response["HX-Retarget"] == "body"
+    assert response["HX-Reswap"] == "innerHTML"
+    assert "Content too long" in response.content.decode()
+
+
+@pytest.mark.django_db(databases="__all__")
 def test_timeline_bookmark_reflects_viewer_mark(client):
     user = User.register(email="mark-feed@example.com", username="markfeed")
     other = User.register(email="mark-feed2@example.com", username="markfeed2")
