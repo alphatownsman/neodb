@@ -29,24 +29,7 @@
         </a>
       </span>
     {% elif request.user.is_authenticated and item.class_name != 'collection' %}
-      <span>
-        {% if not mark.shelf_type %}
-          <a title="{% trans "add mark" %}"
-             hx-get="{% url 'journal:mark' item.uuid %}?shelf_type=wishlist"
-             hx-target="body"
-             hx-swap="beforeend">
-            <i class="fa-regular fa-bookmark"></i>
-          </a>
-        {% else %}
-          <a class="activated"
-             title="{% trans "update mark" %}"
-             hx-get="{% url 'journal:mark' item.uuid %}"
-             hx-target="body"
-             hx-swap="beforeend">
-            <i class="fa-solid fa-bookmark"></i>
-          </a>
-        {% endif %}
-      </span>
+      {% include "action_mark_item.html" with item=item mark=mark %}
     {% endif %}
   </span>
   {% include "_item_card.html" with item=item %}

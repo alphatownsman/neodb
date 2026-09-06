@@ -3,7 +3,7 @@ from datetime import datetime
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import BadRequest, PermissionDenied
-from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseBase, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -25,6 +25,39 @@ PAGE_SIZE = 10
 _checkmark = "✔️".encode("utf-8")
 
 
+def _redirect_back(request: AuthedHttpRequest) -> HttpResponseRedirect:
+    referer = request.META.get("HTTP_REFERER") or ""
+    if not url_has_allowed_host_and_scheme(
+        referer,
+        allowed_hosts=set(settings.SITE_DOMAINS),
+        require_https=settings.SSL_ONLY,
+    ):
+        referer = "/"
+    return HttpResponseRedirect(referer)
+
+
+def _mark_saved_response(request: AuthedHttpRequest, item: Item) -> HttpResponseBase:
+    """
+    After the mark dialog saves or deletes: a plain form submit goes back to
+    the referer as before. An htmx submit from an item page reloads it, while
+    an inline one (timeline, list cards) closes the dialog and refreshes the
+    bookmark icons of that item in place.
+    """
+    if not request.headers.get("HX-Request"):
+        return _redirect_back(request)
+    if not request.POST.get("inline"):
+        response = HttpResponse(status=204)
+        response["HX-Refresh"] = "true"
+        return response
+    response = render(
+        request,
+        "action_mark_item.html",
+        {"item": item, "mark": Mark(request.user.identity, item), "oob": True},
+    )
+    response["HX-Trigger"] = "close_dialog"
+    return response
+
+
 @login_required
 @require_http_methods(["POST"])
 def wish(request: AuthedHttpRequest, item_uuid):
@@ -36,14 +69,7 @@ def wish(request: AuthedHttpRequest, item_uuid):
         )
     record_activity("mark", "web")
     if request.GET.get("back"):
-        referer = request.META.get("HTTP_REFERER") or ""
-        if not url_has_allowed_host_and_scheme(
-            referer,
-            allowed_hosts=set(settings.SITE_DOMAINS),
-            require_https=settings.SSL_ONLY,
-        ):
-            referer = "/"
-        return HttpResponseRedirect(referer)
+        return _redirect_back(request)
     return HttpResponse(_checkmark)
 
 
@@ -100,6 +126,7 @@ def mark(request: AuthedHttpRequest, item_uuid):
             {
                 "item": item,
                 "mark": mark,
+                "inline": bool(request.GET.get("inline")),
                 "form": MarkForm(
                     initial={
                         "text": mark.comment_text or "",
@@ -118,14 +145,7 @@ def mark(request: AuthedHttpRequest, item_uuid):
     else:
         if request.POST.get("delete", default=False):
             mark.delete()
-            referer = request.META.get("HTTP_REFERER") or ""
-            if not url_has_allowed_host_and_scheme(
-                referer,
-                allowed_hosts=set(settings.SITE_DOMAINS),
-                require_https=settings.SSL_ONLY,
-            ):
-                referer = "/"
-            return HttpResponseRedirect(referer)
+            return _mark_saved_response(request, item)
         else:
             form = MarkForm(request.POST)
             if form.is_valid():
@@ -151,7 +171,7 @@ def mark(request: AuthedHttpRequest, item_uuid):
                         if str(e) == "422"
                         else str(e)
                     )
-                    return render(
+                    response = render(
                         request,
                         "common/error.html",
                         {
@@ -161,15 +181,14 @@ def mark(request: AuthedHttpRequest, item_uuid):
                             "secondary_msg": err,
                         },
                     )
+                    if request.headers.get("HX-Request"):
+                        # the dialog form swaps nothing by itself, so show the
+                        # full error page in place of the current one
+                        response["HX-Retarget"] = "body"
+                        response["HX-Reswap"] = "innerHTML"
+                    return response
                 record_activity("mark", "web")
-                referer = request.META.get("HTTP_REFERER") or ""
-                if not url_has_allowed_host_and_scheme(
-                    referer,
-                    allowed_hosts=set(settings.SITE_DOMAINS),
-                    require_https=settings.SSL_ONLY,
-                ):
-                    referer = "/"
-                return HttpResponseRedirect(referer)
+                return _mark_saved_response(request, item)
             else:
                 # In a real app we'd handle form errors better, but preserving existing behavior of falling through or erroring
                 # For now, let's just log and redirect or error if really invalid.
