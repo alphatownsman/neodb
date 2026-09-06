@@ -350,6 +350,13 @@ class Note(Content):
         # serialization, whenever it is taken.
         state = super().__getstate__()
         state.pop("attachments_when_save", None)
+        # ``latest_post`` goes too, for the same reason at one remove. It is a
+        # cached_property holding a Post that ``Takahe.get_posts`` prefetched
+        # media onto, and the edit that changed that media went through a
+        # different instance. ``to_crosspost_params`` reads it, so a worker
+        # holding this copy would crosspost the media the note used to have --
+        # and ``refresh_from_db`` does not reach a cached property.
+        state.pop("latest_post", None)
         return state
 
     def save(self, *args, **kwargs):

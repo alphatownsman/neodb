@@ -1256,6 +1256,26 @@ class TestNoteApiAttachments:
         assert note.attachments_when_save == [a]  # still usable by this save
         assert revived.attachments_when_save is None
 
+    def test_stale_post_media_is_not_carried_into_a_queued_job(self):
+        """``to_crosspost_params`` reads ``latest_post.attachments``, which
+        ``get_posts`` prefetches. A worker holding the copy taken during the
+        save would crosspost the media the note used to have."""
+        a = self._upload()
+        code, data = self._post_note(attachment_uuids=[a.uuid])
+        assert code == 200
+        note = Note.objects.get(uid__isnull=False, owner=self.identity)
+        post = note.latest_post  # caches the post, media prefetched onto it
+        assert post is not None
+        assert "latest_post" in note.__dict__
+
+        revived = pickle.loads(pickle.dumps(note))
+
+        assert "latest_post" not in revived.__dict__
+        # so the worker re-queries and sees the media the note has now
+        assert [x.pk for x in revived.latest_post.attachments.all()] == [
+            x.pk for x in post.attachments.all()
+        ]
+
     def test_repeated_uuids_are_rejected(self):
         """Posting one upload twice would put two images on the federated post
         and one on the note, because the link is a set."""
