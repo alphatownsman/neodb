@@ -58,6 +58,46 @@ def _mark_saved_response(request: AuthedHttpRequest, item: Item) -> HttpResponse
     return response
 
 
+def _mark_error_response(
+    request: AuthedHttpRequest,
+    msg: str,
+    secondary_msg: str = "",
+    saved_item: Item | None = None,
+) -> HttpResponse:
+    """
+    Show a message inside the open mark dialog, keeping it open. When the
+    mark was saved anyway, also refresh the bookmark icons of that item.
+    """
+    response = render(
+        request,
+        "_mark_form_error.html",
+        {"msg": msg, "secondary_msg": secondary_msg},
+    )
+    if saved_item:
+        oob = render(
+            request,
+            "action_mark_item.html",
+            {
+                "item": saved_item,
+                "mark": Mark(request.user.identity, saved_item),
+                "oob": True,
+            },
+        )
+        response.content += oob.content
+    response["HX-Retarget"] = "#mark-form-error"
+    response["HX-Reswap"] = "innerHTML"
+    return response
+
+
+def _form_error_text(form: MarkForm) -> str:
+    parts = []
+    for field, errors in form.errors.items():
+        label = form.fields[field].label if field in form.fields else ""
+        text = " ".join(str(e) for e in errors)
+        parts.append(f"{label}: {text}" if label else text)
+    return "; ".join(parts)
+
+
 @login_required
 @require_http_methods(["POST"])
 def wish(request: AuthedHttpRequest, item_uuid):
@@ -171,29 +211,22 @@ def mark(request: AuthedHttpRequest, item_uuid):
                         if str(e) == "422"
                         else str(e)
                     )
-                    response = render(
+                    msg = _("Data saved but unable to crosspost to Fediverse instance.")
+                    if request.headers.get("HX-Request"):
+                        return _mark_error_response(request, msg, err, item)
+                    return render(
                         request,
                         "common/error.html",
-                        {
-                            "msg": _(
-                                "Data saved but unable to crosspost to Fediverse instance."
-                            ),
-                            "secondary_msg": err,
-                        },
+                        {"msg": msg, "secondary_msg": err},
                     )
-                    if request.headers.get("HX-Request"):
-                        # the dialog form swaps nothing by itself, so show the
-                        # full error page in place of the current one
-                        response["HX-Retarget"] = "body"
-                        response["HX-Reswap"] = "innerHTML"
-                    return response
                 record_activity("mark", "web")
                 return _mark_saved_response(request, item)
             else:
-                # In a real app we'd handle form errors better, but preserving existing behavior of falling through or erroring
-                # For now, let's just log and redirect or error if really invalid.
-                # The original code didn't strictly validate structure, just tried to cast things.
                 logger.warning(f"Mark form invalid: {form.errors}")
+                if request.headers.get("HX-Request"):
+                    return _mark_error_response(
+                        request, _("Invalid input"), _form_error_text(form)
+                    )
                 raise BadRequest(_("Invalid input"))
 
 

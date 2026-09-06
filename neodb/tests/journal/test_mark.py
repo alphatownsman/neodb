@@ -201,9 +201,34 @@ def test_mark_save_crosspost_failure_shows_error_page_over_htmx(client, monkeypa
         HTTP_HX_REQUEST="true",
     )
     assert response.status_code == 200
-    assert response["HX-Retarget"] == "body"
+    assert response["HX-Retarget"] == "#mark-form-error"
     assert response["HX-Reswap"] == "innerHTML"
-    assert "Content too long" in response.content.decode()
+    assert "HX-Trigger" not in response
+    html = response.content.decode()
+    assert "Data saved but unable to crosspost" in html
+    assert "Content too long" in html
+    assert f"hx-swap-oob=\"outerHTML:[data-mark-item='{book.uuid}']\"" in html
+
+
+@pytest.mark.django_db(databases="__all__")
+def test_mark_save_invalid_input_shows_error_in_dialog(client):
+    user = User.register(email="mark-invalid@example.com", username="markinvalid")
+    book = Edition.objects.create(title="Invalid Book")
+    client.force_login(user, backend="mastodon.auth.OAuth2Backend")
+    url = reverse("journal:mark", args=[book.uuid])
+
+    response = client.post(
+        url, _mark_post_data(inline="1", visibility="9"), HTTP_HX_REQUEST="true"
+    )
+    assert response.status_code == 200
+    assert response["HX-Retarget"] == "#mark-form-error"
+    html = response.content.decode()
+    assert "Invalid input" in html
+    assert "hx-swap-oob" not in html
+    assert Mark(user.identity, book).shelf_type is None
+
+    response = client.post(url, _mark_post_data(visibility="9"))
+    assert response.status_code == 400
 
 
 @pytest.mark.django_db(databases="__all__")
