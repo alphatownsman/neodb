@@ -680,17 +680,24 @@ class Attachment(models.Model):
         # ``from_post_attachment`` finds no row for the new pk, copies the
         # same bytes into a second row, and then prunes this one off the note.
         #
-        # Re-stamped, not only stamped once: every push mints a new takahe
-        # attachment, so a row still carrying the previous pk would fall
-        # outside what ``sync_from_post`` considers current and get replaced by
-        # a copy on each edit, leaking an orphan row and a duplicate file every
-        # time. A source of another kind (legacy JSON, a copied URL) is left
-        # alone -- it is that row's only provenance, and the backfill dedupes
-        # on it.
+        # Re-stamped on every push, and over whatever the previous value was.
+        # Each push mints a new takahe attachment, and a row carrying any other
+        # value falls outside what ``sync_from_post`` treats as current: a
+        # stale ``takahe:`` pk has the row replaced by a copy on every edit,
+        # leaking an orphan file each time, and a legacy ``url:`` /
+        # ``takahe-media:`` value is worse, because pruning skips those, so the
+        # sync adds its copy while keeping this row -- the note then renders
+        # the image twice and keeps rendering it after the media is removed.
+        #
+        # The cost is that row's legacy provenance, which is worth less than
+        # correct rendering: it fed the one-off backfill, and that reads the
+        # note's legacy JSON, which ``Note.set_attachments`` empties.
+        #
+        # One upload posted on two notes still churns -- the older note's sync
+        # no longer recognises the row, so it takes a copy and unlinks this one
+        # -- but it converges on the same image, with nothing lost.
         source = source_for_post_attachment(atta.pk)
-        if self.source != source and not self.source.startswith(
-            ("url:", "takahe-media:")
-        ):
+        if self.source != source:
             self.source = source
             self.save(update_fields=["source"])
         return atta

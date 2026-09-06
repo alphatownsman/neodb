@@ -1241,6 +1241,54 @@ class TestNoteApiAttachments:
         assert Attachment.objects.filter(owner=self.identity).count() == before
         assert list(note.attachment_records.all()) == [a]
 
+    def test_a_later_metadata_save_does_not_restore_replaced_media(self):
+        """The crosspost queue pickles the note and saves it again later. That
+        save must not replay the media the request set, or an edit made in
+        between is silently rolled back."""
+        first, second = self._upload(), self._upload()
+        # the instance the queue pickled, still holding what that save set
+        queued = Note(
+            item=self.item, owner=self.identity, title="T", content="C", visibility=0
+        )
+        queued.set_attachments([first])
+        queued.save()
+        assert queued.attachments_when_save is None
+
+        edited = Note.objects.get(pk=queued.pk)
+        edited.set_attachments([second])
+        edited.save()
+
+        # what the queued job does: reload, then save only metadata
+        queued.refresh_from_db()
+        queued.metadata = {"crossposted": True}
+        queued.save(
+            update_fields=["metadata"], post_when_save=False, index_when_save=False
+        )
+
+        note = Note.objects.get(pk=queued.pk)
+        assert list(note.attachment_records.all()) == [second]
+
+    def test_legacy_sourced_upload_is_not_duplicated_by_the_sync(self):
+        """A row the backfill created carries a ``url:`` source. Posting it
+        must re-point that source at the takahe attachment, or the sync adds a
+        copy beside it and the note renders the image twice."""
+        a = self._upload()
+        a.source = "url:https://example.org/old.png:deadbeef"
+        a.save(update_fields=["source"])
+
+        code, data = self._post_note(attachment_uuids=[a.uuid])
+        assert code == 200
+        note = Note.objects.get(uid__isnull=False, owner=self.identity)
+        post = note.latest_post
+        assert post is not None
+        before = Attachment.objects.filter(owner=self.identity).count()
+
+        Attachment.sync_from_post(note, post)
+
+        assert Attachment.objects.filter(owner=self.identity).count() == before
+        assert list(note.attachment_records.all()) == [a]
+        assert len(note.attachment_list) == 1
+
     def test_omitting_the_field_keeps_existing_media(self):
         a = self._upload()
         code, data = self._post_note(attachment_uuids=[a.uuid])

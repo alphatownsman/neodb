@@ -224,6 +224,9 @@ def add_note_for_item(
     returned uuids as `attachment_uuids`. They must be your own uploads, at
     most 4, each no larger than 5MB. They become the media of the federated
     post as well, so other servers see the same images.
+
+    Note that the media of the note renders in upload order, not in the order
+    given here; upload in the order you want them shown.
     """
     item, redirect = resolve_item_for_write(
         item_uuid, "/api/me/note/item/{uuid}/", response

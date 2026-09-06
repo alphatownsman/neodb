@@ -342,9 +342,15 @@ class Note(Content):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if self.attachments_when_save is not None:
-            # after super(), which is where the row gets its pk on create
-            self.attachment_records.set(self.attachments_when_save)
+        # Applied after super(), which is where the row gets its pk on create
+        # and where the post has already taken the same set.
+        #
+        # Consumed, not left standing: the crosspost queue pickles the whole
+        # instance, and its later metadata-only save would otherwise replay
+        # this replacement and restore media a newer edit had dropped.
+        pending, self.attachments_when_save = self.attachments_when_save, None
+        if pending is not None:
+            self.attachment_records.set(pending)
 
     @classmethod
     def strip_footer(cls, content: str) -> tuple[str, str | None, str | None]:
