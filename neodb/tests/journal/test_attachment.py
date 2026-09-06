@@ -1267,6 +1267,13 @@ class TestNoteApiAttachments:
         assert "duplicate" in data["message"].lower()
         assert not Note.objects.filter(owner=self.identity).exists()
 
+        # the same id spelled two ways is still the same row
+        code, data = self._post_note(attachment_uuids=[a.uuid, str(a.uid)])
+
+        assert code == 400
+        assert "duplicate" in data["message"].lower()
+        assert not Note.objects.filter(owner=self.identity).exists()
+
     def test_a_later_metadata_save_does_not_restore_replaced_media(self):
         """The crosspost queue pickles the note and saves it again later. That
         save must not replay the media the request set, or an edit made in

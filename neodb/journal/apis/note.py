@@ -65,17 +65,21 @@ def _resolve_attachments(
     """
     if len(uuids) > MAX_ATTACHMENTS_PER_NOTE:
         return None, f"At most {MAX_ATTACHMENTS_PER_NOTE} attachments per note"
-    if len(set(uuids)) != len(uuids):
-        # One upload cannot be two attachments: it would post twice to takahe
-        # and link once here, so the federated post would carry an image the
-        # note does not show.
-        return None, "Duplicate attachment"
-    rows: list[Attachment] = []
+    parsed: list[tuple[str, uuid.UUID]] = []
     for u in uuids:
         try:
-            uid = uuid.UUID(u)
+            parsed.append((u, uuid.UUID(u)))
         except ValueError:
             return None, f"Invalid attachment: {u}"
+    # Compared as parsed values, not as the strings given: one id has several
+    # spellings (hex and hyphenated), and they all resolve to the same row. One
+    # upload cannot be two attachments -- it would post twice to takahe and
+    # link once here, so the federated post would carry an image the note does
+    # not show.
+    if len({uid for _, uid in parsed}) != len(parsed):
+        return None, "Duplicate attachment"
+    rows: list[Attachment] = []
+    for u, uid in parsed:
         # scoped to the caller: an id belonging to someone else must not be
         # distinguishable from one that does not exist
         attachment = Attachment.objects.filter(owner=identity, uid=uid).first()
