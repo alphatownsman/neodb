@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-07 14:56-0400\n"
+"POT-Creation-Date: 2026-09-10 22:57-0400\n"
 "PO-Revision-Date: 2026-08-09 06:32+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/projects/neodb/neodb/zh_Hant/>\n"
@@ -561,7 +561,7 @@ msgid "Album"
 msgstr "專輯"
 
 #: catalog/models/common.py:168 catalog/models/common.py:185
-#: catalog/models/common.py:199 common/templates/_header.html:53
+#: catalog/models/common.py:199 common/templates/_header.html:54
 #: journal/templates/_sidebar_user_mark_list.html:48
 #: journal/templates/_sidebar_user_tag_filter.html:39
 msgid "Game"
@@ -576,7 +576,7 @@ msgid "Podcast Episode"
 msgstr "播客單集"
 
 #: catalog/models/common.py:171 catalog/models/common.py:187
-#: catalog/models/common.py:201 common/templates/_header.html:57
+#: catalog/models/common.py:201 common/templates/_header.html:58
 #: journal/templates/_sidebar_user_mark_list.html:52
 #: journal/templates/_sidebar_user_tag_filter.html:43
 msgid "Performance"
@@ -602,7 +602,7 @@ msgid "Person / Organization"
 msgstr ""
 
 #: catalog/models/common.py:181 catalog/models/common.py:195
-#: common/templates/_header.html:37
+#: common/templates/_header.html:38
 #: journal/templates/_sidebar_user_mark_list.html:32
 #: journal/templates/_sidebar_user_tag_filter.html:24
 msgid "Book"
@@ -615,14 +615,14 @@ msgid "TV"
 msgstr "劇集"
 
 #: catalog/models/common.py:184 catalog/models/common.py:198
-#: common/templates/_header.html:49
+#: common/templates/_header.html:50
 #: journal/templates/_sidebar_user_mark_list.html:45
 #: journal/templates/_sidebar_user_tag_filter.html:36
 msgid "Music"
 msgstr "音樂"
 
 #: catalog/models/common.py:186 catalog/models/common.py:200
-#: catalog/templates/_sidebar_edit.html:213 common/templates/_header.html:45
+#: catalog/templates/_sidebar_edit.html:213 common/templates/_header.html:46
 #: journal/templates/_sidebar_user_mark_list.html:42
 #: journal/templates/_sidebar_user_tag_filter.html:33
 msgid "Podcast"
@@ -1448,7 +1448,7 @@ msgstr "編輯選項"
 #: catalog/views/edit.py:624 catalog/views/edit.py:664
 #: catalog/views/edit.py:674 catalog/views/edit.py:703
 #: catalog/views/edit.py:782 catalog/views/edit.py:837
-#: catalog/views/edit.py:859 catalog/views/search.py:418
+#: catalog/views/edit.py:859 catalog/views/search.py:466
 #, fuzzy
 #| msgid "Edit this item"
 msgid "Editing this item is restricted."
@@ -2070,9 +2070,25 @@ msgstr "借閱或購買"
 msgid "Some items were found from other websites and instances, click their title to save them locally."
 msgstr "系統會嘗試搜索其它網站的條目，點擊標題可添加到本站。 "
 
+#: catalog/templates/fetch_confirm.html:13
 #: catalog/templates/fetch_pending.html:13
 msgid "Search results"
 msgstr "搜索結果"
+
+#: catalog/templates/fetch_confirm.html:21
+msgid "This link is not in the catalog yet."
+msgstr ""
+
+#: catalog/templates/fetch_confirm.html:26
+#, python-format
+msgid "Get the data from %(site_label)s and add it to the catalog?"
+msgstr ""
+
+#: catalog/templates/fetch_confirm.html:31
+#, fuzzy
+#| msgid "Fetch all"
+msgid "Fetch"
+msgstr "批量獲取"
 
 #: catalog/templates/fetch_pending.html:22
 #, python-format
@@ -2348,9 +2364,9 @@ msgstr "版本"
 
 #: catalog/views/edit.py:293 catalog/views/edit.py:296
 #: catalog/views/edit.py:440 catalog/views/edit.py:443
-#: catalog/views/verify.py:197 journal/views/collection.py:75
-#: journal/views/collection.py:100 journal/views/collection.py:538
-#: journal/views/collection.py:634 journal/views/common.py:231
+#: catalog/views/verify.py:197 journal/views/collection.py:79
+#: journal/views/collection.py:104 journal/views/collection.py:609
+#: journal/views/collection.py:705 journal/views/common.py:235
 #: journal/views/mark.py:244 journal/views/post.py:119
 #: journal/views/post.py:121 journal/views/post.py:168
 #: journal/views/post.py:187 journal/views/post.py:189
@@ -2384,12 +2400,12 @@ msgstr "本操作不可撤銷。確認合併嗎？"
 #: catalog/views/edit.py:752 catalog/views/verify.py:158
 #: catalog/views/verify.py:206 journal/views/article.py:44
 #: journal/views/article.py:133 journal/views/article.py:153
-#: journal/views/collection.py:248 journal/views/collection.py:341
-#: journal/views/collection.py:354 journal/views/collection.py:372
-#: journal/views/collection.py:439 journal/views/collection.py:482
-#: journal/views/collection.py:521 journal/views/collection.py:533
-#: journal/views/collection.py:558 journal/views/collection.py:595
-#: journal/views/common.py:304 journal/views/mark.py:317
+#: journal/views/collection.py:252 journal/views/collection.py:345
+#: journal/views/collection.py:358 journal/views/collection.py:376
+#: journal/views/collection.py:510 journal/views/collection.py:553
+#: journal/views/collection.py:592 journal/views/collection.py:604
+#: journal/views/collection.py:629 journal/views/collection.py:666
+#: journal/views/common.py:308 journal/views/mark.py:317
 #: journal/views/post.py:60 journal/views/post.py:80 journal/views/post.py:102
 #: journal/views/post.py:172 journal/views/post.py:201
 #: journal/views/post.py:274 journal/views/post.py:289
@@ -2521,15 +2537,15 @@ msgstr "確定關聯嗎？"
 msgid "This edition will be unlinked from the following work"
 msgstr "這個圖書版本屬於以下作品"
 
-#: catalog/views/search.py:113
+#: catalog/views/search.py:113 catalog/views/search.py:208
 msgid "the internet"
 msgstr ""
 
-#: catalog/views/search.py:410
+#: catalog/views/search.py:449 catalog/views/search.py:458
 msgid "Invalid URL"
 msgstr "無效網址"
 
-#: catalog/views/search.py:413
+#: catalog/views/search.py:461
 msgid "Unsupported URL"
 msgstr "此類網址尚未支持"
 
@@ -4072,98 +4088,98 @@ msgstr ""
 msgid "You are visiting an alternative domain for %(site_name)s, please always use <a href=\"%(site_url)s%(request.get_full_path)s\">original version</a> if possible."
 msgstr "這是%(site_name)s的臨時鏡像，請儘可能使用<a href=\"%(site_url)s%(request.get_full_path)s\">原始站點</a>。"
 
-#: common/templates/_header.html:19 common/templates/_header.html:177
+#: common/templates/_header.html:20 common/templates/_header.html:178
 msgid "title, creator, ISBN, item url, @user, @user@instance"
 msgstr "標題、創作者、ISBN、站外條目連結、@用戶名、@用戶名@實例"
 
-#: common/templates/_header.html:34
+#: common/templates/_header.html:35
 msgid "All Items"
 msgstr "所有條目"
 
-#: common/templates/_header.html:41
+#: common/templates/_header.html:42
 msgid "Movie & TV"
 msgstr "影視"
 
-#: common/templates/_header.html:60
+#: common/templates/_header.html:61
 msgid "People & Organizations"
 msgstr ""
 
-#: common/templates/_header.html:62
+#: common/templates/_header.html:63
 msgid "Journal"
 msgstr "記錄"
 
-#: common/templates/_header.html:64 journal/templates/user_post_list.html:10
+#: common/templates/_header.html:65 journal/templates/user_post_list.html:10
 #: journal/templates/user_post_list.html:23
 msgid "Posts"
 msgstr "帖文"
 
-#: common/templates/_header.html:102
+#: common/templates/_header.html:103
 msgid "Explore"
 msgstr "發現"
 
-#: common/templates/_header.html:106 common/views_manage.py:36
+#: common/templates/_header.html:107 common/views_manage.py:36
 msgid "Feed"
 msgstr "動態"
 
-#: common/templates/_header.html:111 journal/templates/profile.html:13
+#: common/templates/_header.html:112 journal/templates/profile.html:13
 #: users/templates/users/preferences.html:46
 msgid "Home"
 msgstr "主頁"
 
-#: common/templates/_header.html:127 common/templates/common/scan.html:9
+#: common/templates/_header.html:128 common/templates/common/scan.html:9
 #: common/templates/common/scan.html:42
 #, fuzzy
 #| msgid "barcode"
 msgid "Scan Barcode"
 msgstr "條形碼"
 
-#: common/templates/_header.html:131 social/templates/notification.html:12
+#: common/templates/_header.html:132 social/templates/notification.html:12
 #: social/templates/notification.html:53
 msgid "Notification"
 msgstr "通知"
 
-#: common/templates/_header.html:135 users/models/task.py:23
+#: common/templates/_header.html:136 users/models/task.py:23
 #: users/templates/users/account.html:219
 #: users/templates/users/crossposts.html:9
 msgid "Pending"
 msgstr "等待"
 
-#: common/templates/_header.html:138
+#: common/templates/_header.html:139
 msgid "Data"
 msgstr "數據"
 
-#: common/templates/_header.html:141 common/templates/_header.html:159
+#: common/templates/_header.html:142 common/templates/_header.html:160
 #: users/templates/users/preferences.html:12
 #: users/templates/users/preferences.html:23
 #: users/templates/users/preferences_anonymous.html:13
 msgid "Preferences"
 msgstr "設定"
 
-#: common/templates/_header.html:144
+#: common/templates/_header.html:145
 msgid "Account"
 msgstr "帳號"
 
-#: common/templates/_header.html:148
+#: common/templates/_header.html:149
 msgid "Manage"
 msgstr "管理"
 
-#: common/templates/_header.html:152
+#: common/templates/_header.html:153
 msgid "Logout"
 msgstr "登出"
 
-#: common/templates/_header.html:156
+#: common/templates/_header.html:157
 msgid "Sign up or Login"
 msgstr "註冊或登入"
 
-#: common/templates/_header.html:173
+#: common/templates/_header.html:174
 msgid "title or content  category:tv  status:complete  rating:8..10  date:2021-09-11..2022-02"
 msgstr "搜索你的評論或條目，可加過濾條件如 category:tv status:complete rating:8..10 date:2021-09-11..2022-02"
 
-#: common/templates/_header.html:175
+#: common/templates/_header.html:176
 msgid "name of a person or company"
 msgstr ""
 
-#: common/templates/_header.html:192
+#: common/templates/_header.html:193
 msgid "Open"
 msgstr "打開"
 
@@ -6331,7 +6347,7 @@ msgstr "全部標籤"
 msgid "Boost this post?"
 msgstr "儘可能轉播原文"
 
-#: journal/templates/action_boost_post.html:10 mastodon/models/mastodon.py:706
+#: journal/templates/action_boost_post.html:10 mastodon/models/mastodon.py:724
 msgid "Boost"
 msgstr "轉播"
 
@@ -6832,7 +6848,7 @@ msgstr "年度小結"
 msgid "Articles"
 msgstr ""
 
-#: journal/templates/profile.html:166 journal/views/collection.py:409
+#: journal/templates/profile.html:166 journal/views/collection.py:448
 #: journal/views/profile.py:401
 msgid "collection"
 msgstr "收藏單"
@@ -6944,34 +6960,44 @@ msgstr "{0} 的評論"
 msgid "Link invalid"
 msgstr "連結無效"
 
-#: journal/views/collection.py:62 journal/views/collection.py:94
+#: journal/views/collection.py:66 journal/views/collection.py:98
 #, python-brace-format
 msgid "Collection by {0}"
 msgstr "{0} 的收藏單"
 
-#: journal/views/collection.py:414
+#: journal/views/collection.py:400
+#, fuzzy
+#| msgid "Data saved but unable to crosspost to Fediverse instance."
+msgid "Unable to crosspost to Fediverse instance."
+msgstr "數據已保存但未能轉發到聯邦實例。"
+
+#: journal/views/collection.py:411
+msgid "Unable to share to Bluesky."
+msgstr ""
+
+#: journal/views/collection.py:423
 msgid "shared my collection"
 msgstr "分享我的收藏單"
 
-#: journal/views/collection.py:417
+#: journal/views/collection.py:431
 #, python-brace-format
 msgid "shared {username}'s collection"
 msgstr "分享 {username} 的收藏單"
 
-#: journal/views/collection.py:484 journal/views/collection.py:523
-#: journal/views/collection.py:535 journal/views/collection.py:561
+#: journal/views/collection.py:555 journal/views/collection.py:594
+#: journal/views/collection.py:606 journal/views/collection.py:632
 msgid "Dynamic collection is not editable"
 msgstr ""
 
-#: journal/views/collection.py:500
+#: journal/views/collection.py:571
 msgid "The item is already in the collection."
 msgstr "條目已在收藏單中。"
 
-#: journal/views/collection.py:502
+#: journal/views/collection.py:573
 msgid "Unable to find the item, please use item url from this site."
 msgstr "找不到條目，請使用本站條目網址。"
 
-#: journal/views/collection.py:548
+#: journal/views/collection.py:619
 msgid "Saved."
 msgstr "已保存"
 
@@ -6982,15 +7008,15 @@ msgstr "已保存"
 msgid "Content not found"
 msgstr "內容未找到"
 
-#: journal/views/common.py:184 journal/views/mark.py:210
+#: journal/views/common.py:174 journal/views/mark.py:210
 msgid "Data saved but unable to crosspost to Fediverse instance."
 msgstr "數據已保存但未能轉發到聯邦實例。"
 
-#: journal/views/common.py:186
+#: journal/views/common.py:190
 msgid "Redirecting to your Fediverse instance now to re-authenticate."
 msgstr "正在重定向到你的聯邦實例以重新認證。"
 
-#: journal/views/common.py:193
+#: journal/views/common.py:197
 msgid "List not found."
 msgstr "列表未找到"
 
@@ -7180,43 +7206,43 @@ msgstr ""
 "\n"
 "如果你確認要使用電子郵件新註冊帳號，請輸入如下驗證碼： {code}"
 
-#: mastodon/models/mastodon.py:570
+#: mastodon/models/mastodon.py:588
 msgid "site domain name"
 msgstr "站點域名"
 
-#: mastodon/models/mastodon.py:571
+#: mastodon/models/mastodon.py:589
 msgid "domain for api call"
 msgstr "站點API域名"
 
-#: mastodon/models/mastodon.py:572
+#: mastodon/models/mastodon.py:590
 msgid "type and verion"
 msgstr "站點類型和版本"
 
-#: mastodon/models/mastodon.py:573
+#: mastodon/models/mastodon.py:591
 msgid "in-site app id"
 msgstr "實例應用id"
 
-#: mastodon/models/mastodon.py:574
+#: mastodon/models/mastodon.py:592
 msgid "client id"
 msgstr "實例應用Client ID"
 
-#: mastodon/models/mastodon.py:575
+#: mastodon/models/mastodon.py:593
 msgid "client secret"
 msgstr "實例應用Client Secret"
 
-#: mastodon/models/mastodon.py:576
+#: mastodon/models/mastodon.py:594
 msgid "vapid key"
 msgstr "實例應用VAPID Key"
 
-#: mastodon/models/mastodon.py:578
+#: mastodon/models/mastodon.py:596
 msgid "0: unicode moon; 1: custom emoji"
 msgstr ""
 
-#: mastodon/models/mastodon.py:581
+#: mastodon/models/mastodon.py:599
 msgid "max toot len"
 msgstr "帖文長度限制"
 
-#: mastodon/models/mastodon.py:707
+#: mastodon/models/mastodon.py:725
 msgid "New Post"
 msgstr "新帖文"
 
