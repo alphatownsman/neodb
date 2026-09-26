@@ -316,10 +316,13 @@ def post_translate(request, post_id: int):
         )
     else:
         html = tr(sanitize_post_content(post.content))
+        # a note shows its title where other posts show the summary
+        heading = post.summary
         if isinstance(piece, Note):
             html = f'<blockquote class="note-quote">{html}</blockquote>'
-        if post.summary:
-            html += f'<div hx-swap-oob="innerHTML" id="post_{post.pk}_summary">{escape(tr(post.summary))}</div>'
+            heading = piece.title
+        if heading:
+            html += f'<div hx-swap-oob="innerHTML" id="post_{post.pk}_summary">{escape(tr(heading))}</div>'
     return HttpResponse(html)
 
 

@@ -6,6 +6,7 @@ from django.test import Client
 
 from catalog.models import Edition
 from journal.models import Article, Note
+from takahe.models import Post
 from takahe.utils import Takahe
 from users.models import User
 
@@ -67,6 +68,26 @@ class TestPostTranslate:
         assert html.startswith('<blockquote class="note-quote">T[')
         assert "note body" in html
         assert f'id="post_{note.latest_post_id}_summary">T[note title]</div>' in html
+
+    @pytest.mark.parametrize("title", ["note title", ""])
+    def test_note_heading_is_title_not_post_summary(self, title: str):
+        # a federated note can carry a content warning apart from its title
+        book = Edition.objects.create(title="Translate Test Book")
+        note = Note.objects.create(
+            owner=self.author.identity,
+            item=book,
+            title=title,
+            content="note body",
+            visibility=0,
+        )
+        assert note.latest_post_id
+        Post.objects.filter(pk=note.latest_post_id).update(summary="separate cw")
+        html = self._translate(note.latest_post_id)
+        assert "separate cw" not in html
+        if title:
+            assert f'id="post_{note.latest_post_id}_summary">T[{title}]</div>' in html
+        else:
+            assert "hx-swap-oob" not in html
 
     def test_local_article_translates_teaser_not_body(self):
         article = Article.update_local_article(
