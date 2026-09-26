@@ -373,6 +373,19 @@ class TestTrendsStatuses:
         DiscoverGenerator().run()
         assert cache.get("trends_statuses") == []
 
+    def test_local_posts_come_only_from_the_curated_list(self, site_config, fans):
+        site_config.trend_include_fedi_posts = True
+        site_config.discover_show_popular_posts = False
+        author = User.register(email="local@example.com", username="local")
+        post = Takahe.post(
+            author.identity.pk, "local thoughts", Takahe.Visibilities.public
+        )
+        assert post
+        for fan in fans[:3]:
+            Takahe.like_post(post.pk, fan)
+        DiscoverGenerator().run()
+        assert cache.get("trends_statuses") == []
+
     def test_score_decays_by_the_hour(self, site_config, fans):
         site_config.trend_include_fedi_posts = True
         # 5 interactions a day ago score 16 / 2^4 = 1, 3 now score 4

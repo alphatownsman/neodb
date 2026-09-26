@@ -119,11 +119,15 @@ class DiscoverGenerator(BaseJob):
         return pks
 
     def get_trending_fedi_posts(self):
-        """Public posts from any server, eligible for trends as in Mastodon."""
+        """Public posts from other servers, eligible for trends as in Mastodon.
+
+        Local posts reach trends only through the curated popular posts.
+        """
         since = timezone.now() - timedelta(days=DAYS_FOR_TRENDS)
         return (
             Post.objects.exclude(state__in=["deleted", "deleted_fanned_out"])
             .filter(
+                local=False,
                 visibility=0,
                 published__gte=since,
                 in_reply_to__isnull=True,
