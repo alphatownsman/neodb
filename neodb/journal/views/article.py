@@ -168,8 +168,11 @@ def article_translate(request, article_uuid: str):
     target_lang = request.user.language or "en"
     text = translate(text, target_lang, lang)
     title = translate(article.title, target_lang, lang)
+    summary = translate(article.display_summary, target_lang, lang)
     return HttpResponse(
-        f'<span hx-swap-oob="true" id="article_{article.uuid}_title">{escape(title)}</span><div>{text}</div>'
+        f'<span hx-swap-oob="true" id="article_{article.uuid}_title">{escape(title)}</span>'
+        f'<span hx-swap-oob="true" id="article_{article.uuid}_summary">{escape(summary)}</span>'
+        f"<div>{text}</div>"
     )
 
 

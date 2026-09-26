@@ -111,7 +111,7 @@
             </hgroup>
             <div class="piece-summary article-summary">
               {% if article.classname == "article" %}
-                {{ article.display_summary|default:'' }}
+                <span id="article_{{ article.uuid }}_summary">{{ article.display_summary|default:'' }}</span>
               {% else %}
                 <a href="{{ article.item.url }}">{{ article.item.display_title }}</a> - {% trans 'Review' %}
                 {% if article.rating_grade %}{{ article.rating_grade | rating_star }}{% endif %}

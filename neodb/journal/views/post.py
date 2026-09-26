@@ -4,6 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import BadRequest, PermissionDenied
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
+from django.utils.html import escape, strip_tags
+from django.utils.safestring import mark_safe
+from django.utils.text import Truncator
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_http_methods
 
@@ -272,9 +276,51 @@ def post_translate(request, post_id: int):
     owner = APIdentity.by_takahe_identity(post.author)
     if not owner or _can_view_post(post, owner, viewer) != 1:
         raise PermissionDenied(_("Insufficient permission"))
-    text = sanitize_post_content(post.content)
-    text = translate(text, request.user.language, post.language)
-    return HttpResponse(text)
+    lang = request.user.language
+
+    def tr(text: str | None) -> str:
+        return translate(text or "", lang, post.language)
+
+    # re-render what _event_post.html shows inside #content_<pk>
+    piece = post.piece
+    if isinstance(piece, (Article, Review)):
+        html = render_to_string(
+            "_article_teaser.html",
+            {
+                "article": piece,
+                "translated_title": tr(piece.title),
+                "translated_summary": tr(piece.display_summary),
+            },
+            request=request,
+        )
+    elif post.type == "Article":
+        full = request.GET.get("full") == "1"
+        obj = (post.type_data or {}).get("object") or {}
+        summary = strip_tags(obj.get("summary") or "")
+        if not summary and not full:
+            summary = Truncator(post.content_plain_text).words(60)
+        html = render_to_string(
+            "_remote_article_teaser.html",
+            {
+                "post": post,
+                "show_full": full,
+                "translated_title": tr(
+                    strip_tags(obj.get("name") or post.summary or "")
+                ),
+                "translated_summary": tr(summary),
+                "translated_content": mark_safe(
+                    tr(sanitize_post_content(post.content)) if full else ""
+                ),
+            },
+            request=request,
+        )
+    else:
+        html = tr(sanitize_post_content(post.content))
+        if isinstance(piece, Note):
+            html = f'<blockquote class="note-quote">{html}</blockquote>'
+        if post.summary:
+            html += f'<div hx-swap-oob="innerHTML" id="post_{post.pk}_summary">{escape(tr(post.summary))}</div>'
+    return HttpResponse(html)
 
 
 @require_http_methods(["POST"])

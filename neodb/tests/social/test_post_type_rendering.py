@@ -281,5 +281,5 @@ def test_note_title_renders_as_heading_not_content_warning(sensitive):
         response = client.get(url)
         assert response.status_code == 200
         html = response.content.decode()
-        assert "<strong>Chapter one</strong>" in html
+        assert f'<strong id="post_{post.pk}_summary">Chapter one</strong>' in html
         assert ('class="post-content-main spoiler"' in html) is sensitive

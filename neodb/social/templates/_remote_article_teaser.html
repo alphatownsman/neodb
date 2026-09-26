@@ -8,10 +8,12 @@
         </figure>
       {% endif %}
       <header>
-        <h1 class="remote-article-title">{{ title|default:_("Untitled article") }}</h1>
-        {% if summary %}<p class="piece-summary">{{ summary|striptags }}</p>{% endif %}
+        <h1 class="remote-article-title">{{ translated_title|default:title|default:_("Untitled article") }}</h1>
+        {% if translated_summary or summary %}
+          <p class="piece-summary">{{ translated_summary|default:summary|striptags }}</p>
+        {% endif %}
       </header>
-      <div class="markdown-content">{{ post.safe_content_local }}</div>
+      <div class="markdown-content">{{ translated_content|default:post.safe_content_local }}</div>
       {% with tags=post.type_data.object.tag %}
         {% if tags %}
           <footer>
@@ -27,9 +29,9 @@
   {% else %}
     <section class="article-teaser">
       <h6>
-        <a href="{% url 'journal:post_view' post.author.handle post.pk %}">{{ title|default:_("Untitled article") }}</a>
+        <a href="{% url 'journal:post_view' post.author.handle post.pk %}">{{ translated_title|default:title|default:_("Untitled article") }}</a>
       </h6>
-      {% with teaser=summary|default:post.content_plain_text %}
+      {% with teaser=translated_summary|default:summary|default:post.content_plain_text %}
         {% if teaser %}<p class="piece-summary">{{ teaser|striptags|truncatewords:60 }}</p>{% endif %}
       {% endwith %}
     </section>
