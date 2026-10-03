@@ -2,6 +2,8 @@
 {% load humanize %}
 {% load collection %}
 {% load i18n %}
+{% block rating %}
+{% endblock rating %}
 {% block brief %}
   {% with collection=item.journal_item %}
     <div class="multi-fields">
@@ -21,6 +23,6 @@
 {% endblock brief %}
 {% block full %}
   <div>
-    {% if not hide_brief %}{{ item.display_description | linebreaksbr }}{% endif %}
+    {% if not hide_brief %}{{ item.display_description }}{% endif %}
   </div>
 {% endblock full %}
