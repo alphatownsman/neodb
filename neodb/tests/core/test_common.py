@@ -312,7 +312,8 @@ class TestNodeInfo:
 
     def test_nodeinfo_catalog_search_defaults(self):
         data = Client().get("/nodeinfo/2.0/").json()
-        assert data["metadata"]["neodbCatalogSearchEnabled"] is True
+        assert "catalog.search" in data["metadata"]["neodbFeatures"]
+        assert "journal.post" in data["metadata"]["neodbFeatures"]
         assert (
             data["metadata"]["neodbCatalogSearchEndpoint"]
             == settings.SITE_INFO["site_url"] + "/api/catalog/search"
@@ -328,7 +329,8 @@ class TestNodeInfo:
         monkeypatch.setattr(SiteConfig, "system", system)
         monkeypatch.setattr(SiteConfig, "__forced__", True, raising=False)
         data = Client().get("/nodeinfo/2.0/").json()
-        assert data["metadata"]["neodbCatalogSearchEnabled"] is False
+        assert "catalog.search" not in data["metadata"]["neodbFeatures"]
+        assert "catalog.item" in data["metadata"]["neodbFeatures"]
         assert (
             data["metadata"]["neodbCatalogSearchEndpoint"]
             == "https://search.example.org/q"

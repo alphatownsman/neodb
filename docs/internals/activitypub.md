@@ -44,24 +44,57 @@ e.g. <https://neodb.social/nodeinfo/2.0/>:
   "protocols": ["activitypub", "neodb"],
   "metadata": {
     "nodeEnvironment": "production",
-    "neodbCatalogSearchEnabled": true,
+    "neodbFeatures": [
+      "catalog.item",
+      "catalog.search",
+      "journal.post",
+      "journal.collection"
+    ],
     "neodbCatalogSearchEndpoint": "https://neodb.social/api/catalog/search"
   }
 }
 ```
 
-NeoDB instances search the catalogs of peers they know, which are domains
-with `neodb` in `protocols` and `nodeEnvironment` of `production`:
+A NeoDB instance treats a domain as a NeoDB peer when its NodeInfo has `neodb`
+in `protocols` and `nodeEnvironment` of `production`. A debug instance reports
+`development`, so peers leave it alone.
 
-- `neodbCatalogSearchEnabled` is `false` when the instance asks peers not to
-  include its catalog in their search results, even when an admin lists it in
-  *Federated search peers*. A peer without this key is searched, since it
-  predates the key.
-- `neodbCatalogSearchEndpoint` is the URL to send the search to, with the
-  `query`, `page` and optional `category` parameters of
-  `/api/catalog/search`. It is used only when it is `https` and on the peer's
-  domain or a subdomain of it; otherwise `https://<domain>/api/catalog/search`
-  is used.
+### Features
+
+`neodbFeatures` lists the parts of NeoDB federation that a server offers, so
+software that implements only some of them can still join. A server that sends
+the list must list every feature it offers; a feature missing from the list is
+not offered. A server that does not send the list predates it and is assumed to
+offer every feature below.
+
+| Feature | The server | Peers |
+|---|---|---|
+| `catalog.item` | Returns a catalog item as JSON when its URL is fetched with `Accept: application/activity+json`. `type` is one of `Edition`, `Movie`, `TVShow`, `TVSeason`, `TVEpisode`, `Album`, `Game`, `Podcast`, `Performance` and `PerformanceProduction`, and `id` is the URL fetched. | Import the item into their own catalog when a user opens its URL or picks it from search results. |
+| `catalog.search` | Answers catalog search at `neodbCatalogSearchEndpoint` (see below), and lets peers include the results in theirs. An admin removes it with *Allow incoming federated search*. | Send searches to it. A peer that does not list it is not searched, even when an admin lists it in *Federated search peers*. |
+| `journal.post` | Adds `relatedWith` and item `tag` to its posts, as in [Extended activities](#extended-activities). | Rebuild marks, ratings, comments, reviews and notes from those posts, and show its users with a NeoDB profile. |
+| `journal.collection` | Publishes collections and shelves as in [Collections and shelves](#collections-and-shelves). | Mirror them. |
+
+Only `catalog.search` changes what a peer does today; the other entries
+describe what a NeoDB instance serves, for software that implements part of it.
+
+### Catalog search
+
+`neodbCatalogSearchEndpoint` is the URL to send a search to. Peers use it only
+when it is `https` on the server's domain or a subdomain of it; otherwise, or
+when the key is absent, they use `https://<domain>/api/catalog/search`. Peers
+add these query parameters:
+
+- `query`: the search text
+- `page`: page number from 1, 20 items per page
+- `category`: optional, a category of `/api/catalog/search`, e.g. `book` or
+  `movie,tv`
+
+The response is a JSON object whose `data` is a list of items. Each item needs
+`url` (a path on the server's domain, or a full `https` URL) and
+`display_title`; peers also read `category`, `brief`, `cover_image_url` and
+`external_resources` (a list of objects with `url`) when present. Peers skip an
+item that misses a required field, and an item with an external resource on
+their own domain, since they already have it.
 
 ## Extended activities
 

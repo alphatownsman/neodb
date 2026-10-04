@@ -10,7 +10,7 @@ from django.core.cache import cache
 
 from catalog.common import ResourceContent
 from catalog.common.downloaders import DownloadError, use_local_response
-from catalog.models import Album, ExternalResource, IdType
+from catalog.models import Album, ExternalResource, IdType, ItemCategory
 from catalog.sites.fedi import FediverseInstance
 from common.models import SiteConfig
 from takahe.models import Domain
@@ -497,6 +497,75 @@ class TestFediverseInstance:
         ]:
             assert FediverseInstance.peer_search_endpoint("peer.com", bad) == default
 
+    def test_peer_search_result_tolerates_partial_items(self):
+        def result(item):
+            r = FediverseInstance.peer_search_result("peer.com", item)
+            return r and (r.source_url, r.display_title, r.category)
+
+        with patch("catalog.sites.fedi.settings.SITE_DOMAINS", ["local.test"]):
+            assert result({"url": "/book/1", "display_title": "A"}) == (
+                "https://peer.com/book/1",
+                "A",
+                None,
+            )
+            assert result(
+                {
+                    "url": "https://other.peer.com/movie/2",
+                    "display_title": "B",
+                    "category": "movie",
+                    "brief": None,
+                    "cover_image_url": 5,
+                    "external_resources": "x",
+                }
+            ) == ("https://other.peer.com/movie/2", "B", ItemCategory.Movie)
+            for bad in [
+                None,
+                "x",
+                {"url": "/book/1"},
+                {"display_title": "A"},
+                {"url": 1, "display_title": "A"},
+                {"url": "/book/1", "display_title": ["A"]},
+                {"url": "javascript:alert(1)", "display_title": "A"},
+                {"url": "http://peer.com/book/1", "display_title": "A"},
+                {"url": "https://[peer.com/book/1", "display_title": "A"},
+                {"url": "/book/1", "display_title": "A", "external_resources": 1},
+                {
+                    "url": "/book/1",
+                    "display_title": "A",
+                    "external_resources": [{"url": "https://local.test/book/9"}],
+                },
+            ]:
+                assert result(bad) is None, bad
+
+    @pytest.mark.parametrize(
+        "payload,urls",
+        [
+            ([], []),
+            ("x", []),
+            ({"data": None}, []),
+            ({"data": {"url": "/book/1"}}, []),
+            (
+                {"data": [None, {"url": "/book/1", "display_title": "A"}]},
+                ["https://peer.com/book/1"],
+            ),
+        ],
+    )
+    def test_peer_search_task_malformed_response(self, payload, urls):
+        async def async_get(*args, **kwargs):
+            mock_response = MagicMock()
+            mock_response.json.return_value = payload
+            return mock_response
+
+        async def run_test():
+            with patch("httpx.AsyncClient") as mock_client_class:
+                mock_client = AsyncMock()
+                mock_client.get = async_get
+                mock_client_class.return_value.__aenter__.return_value = mock_client
+                return await FediverseInstance.peer_search_task("peer.com", "q", 1)
+
+        results = asyncio.run(run_test())
+        assert [r.source_url for r in results] == urls
+
     def test_peer_search_task_uses_endpoint(self):
         urls = []
 
@@ -563,12 +632,12 @@ class TestFediverseInstance:
 
         add_peer(
             "on.example.com",
-            neodbCatalogSearchEnabled=True,
+            neodbFeatures=["catalog.item", "catalog.search"],
             neodbCatalogSearchEndpoint="https://on.example.com/s",
         )
-        add_peer("off.example.com", neodbCatalogSearchEnabled=False)
+        add_peer("off.example.com", neodbFeatures=["catalog.item"])
         add_peer("legacy.example.com")
-        add_peer("odd.example.com", neodbCatalogSearchEndpoint=123)
+        add_peer("odd.example.com", neodbFeatures="x", neodbCatalogSearchEndpoint=123)
         cache.delete("neodb_search_settings")
         try:
             assert Takahe.get_neodb_search_settings() == (

@@ -1087,28 +1087,28 @@ class Takahe:
     def get_neodb_search_settings() -> tuple[set[str], dict[str, str]]:
         """
         Federated catalog search settings that known NeoDB domains advertise in
-        nodeinfo: the domains that opted out, and the endpoint of each domain
-        that advertises one. A domain without the keys predates them.
+        nodeinfo: the domains that do not offer catalog.search, and the
+        endpoint of each domain that advertises one. A domain without
+        neodbFeatures predates the list and offers every feature.
         """
         cache_key = "neodb_search_settings"
         r = cache.get(cache_key, None)
         if r is None:
-            # exclude(key=False) would also drop rows missing the key
             rows = Domain.objects.filter(
                 nodeinfo__protocols__contains="neodb", local=False
             ).values_list(
                 "pk",
-                "nodeinfo__metadata__neodbCatalogSearchEnabled",
+                "nodeinfo__metadata__neodbFeatures",
                 "nodeinfo__metadata__neodbCatalogSearchEndpoint",
             )
-            opted_out: set[str] = set()
+            no_search: set[str] = set()
             endpoints: dict[str, str] = {}
-            for pk, enabled, endpoint in rows:
-                if enabled is False:
-                    opted_out.add(pk)
+            for pk, features, endpoint in rows:
+                if isinstance(features, list) and "catalog.search" not in features:
+                    no_search.add(pk)
                 elif isinstance(endpoint, str):
                     endpoints[pk] = endpoint
-            r = (opted_out, endpoints)
+            r = (no_search, endpoints)
             cache.set(cache_key, r, timeout=1800)
         return r
 

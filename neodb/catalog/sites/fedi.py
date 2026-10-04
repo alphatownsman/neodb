@@ -1,6 +1,6 @@
 import logging
 import re
-from urllib.parse import quote_plus, urlparse
+from urllib.parse import quote_plus, urljoin, urlparse
 
 import httpx
 from django.conf import settings
@@ -225,30 +225,54 @@ class FediverseInstance(AbstractSite):
                 reason = "timeout" if isinstance(e, httpx.TimeoutException) else "error"
                 record_search_failure("fediverse", reason)
                 return []
-            if "data" in r:
-                for item in r["data"]:
-                    if any(
-                        urlparse(res["url"]).hostname in settings.SITE_DOMAINS
-                        for res in item.get("external_resources", [])
-                    ):
-                        continue
-                    url = f"https://{host}{item['url']}"  # FIXME update API and use abs urls
-                    try:
-                        cat = ItemCategory(item["category"])
-                    except Exception:
-                        cat = None
-                    results.append(
-                        ExternalSearchResultItem(
-                            cat,
-                            host,
-                            url,
-                            item["display_title"],
-                            "",
-                            item["brief"],
-                            item["cover_image_url"],
-                        )
-                    )
+            data = r.get("data") if isinstance(r, dict) else None
+            for item in data if isinstance(data, list) else []:
+                result = cls.peer_search_result(host, item)
+                if result:
+                    results.append(result)
         return results[offset : offset + page_size]
+
+    @staticmethod
+    def peer_search_result(host: str, item: object) -> ExternalSearchResultItem | None:
+        """
+        Peers may run older NeoDB or other software, so any field of an item
+        may be missing or malformed; such an item is skipped, not fatal.
+        """
+        if not isinstance(item, dict):
+            return None
+        title = item.get("display_title")
+        path = item.get("url")
+        if not title or not isinstance(title, str) or not isinstance(path, str):
+            return None
+        try:
+            # NeoDB returns a path; a full URL is accepted too
+            url = urljoin(f"https://{host}/", path)
+            if urlparse(url).scheme != "https":
+                return None
+            for res in item.get("external_resources") or []:
+                if (
+                    isinstance(res, dict)
+                    and urlparse(str(res.get("url") or "")).hostname
+                    in settings.SITE_DOMAINS
+                ):
+                    return None
+        except ValueError, TypeError:
+            return None
+        try:
+            cat = ItemCategory(item.get("category"))
+        except ValueError:
+            cat = None
+        brief = item.get("brief")
+        cover = item.get("cover_image_url")
+        return ExternalSearchResultItem(
+            cat,
+            host,
+            url,
+            title,
+            "",
+            brief if isinstance(brief, str) else "",
+            cover if isinstance(cover, str) else "",
+        )
 
     @staticmethod
     def peer_search_endpoint(host: str, advertised: str | None) -> str:
@@ -294,10 +318,10 @@ class FediverseInstance(AbstractSite):
         peers = cls.get_peers_for_search()
         if not peers:
             return []
-        opted_out, endpoints = Takahe.get_neodb_search_settings()
+        no_search, endpoints = Takahe.get_neodb_search_settings()
         c = category if category != "movietv" else "movie,tv"
         return [
             cls.peer_search_task(host, q, page, c, page_size, endpoints.get(host))
             for host in peers
-            if host not in opted_out
+            if host not in no_search
         ]

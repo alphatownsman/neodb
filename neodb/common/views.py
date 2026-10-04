@@ -99,6 +99,15 @@ def ap_redirect(request, uri):
     return redirect(redirect_to)
 
 
+# Listed in nodeinfo as neodbFeatures; docs/internals/activitypub.md defines each.
+NEODB_FEATURES = [
+    "catalog.item",
+    "catalog.search",
+    "journal.post",
+    "journal.collection",
+]
+
+
 def nodeinfo2(request, version: str):
     if version not in ["2.0", "2.1", "2.2"]:
         return _error_response(
@@ -132,7 +141,9 @@ def nodeinfo2(request, version: str):
                 "features": ["quote_posting", "editing", "polls"],
                 "nodeRevision": settings.NEODB_VERSION,
                 "nodeEnvironment": "development" if settings.DEBUG else "production",
-                "neodbCatalogSearchEnabled": SiteConfig.system.allow_incoming_federated_search,
+                "neodbFeatures": NEODB_FEATURES
+                if SiteConfig.system.allow_incoming_federated_search
+                else [f for f in NEODB_FEATURES if f != "catalog.search"],
                 "neodbCatalogSearchEndpoint": SiteConfig.system.catalog_search_endpoint
                 or settings.SITE_INFO["site_url"].rstrip("/") + "/api/catalog/search",
             }
