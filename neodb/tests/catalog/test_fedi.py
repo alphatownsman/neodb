@@ -6,12 +6,15 @@ import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from django.core.cache import cache
 
 from catalog.common import ResourceContent
 from catalog.common.downloaders import DownloadError, use_local_response
 from catalog.models import Album, ExternalResource, IdType
 from catalog.sites.fedi import FediverseInstance
 from common.models import SiteConfig
+from takahe.models import Domain
+from takahe.utils import Takahe
 
 
 class TestFediverseInstance:
@@ -466,12 +469,108 @@ class TestFediverseInstance:
         with (
             patch.object(SiteConfig.system, "search_peers", []),
             patch(
-                "takahe.utils.Takahe.get_neodb_peers",
-                return_value=["takahe1.com", "takahe2.com"],
+                "takahe.utils.Takahe.get_neodb_search_endpoints",
+                return_value={"takahe1.com": None, "takahe2.com": None},
             ),
         ):
             result = FediverseInstance.get_peers_for_search()
             assert result == ["takahe1.com", "takahe2.com"]
+
+    def test_peer_search_endpoint(self):
+        default = "https://peer.com/api/catalog/search"
+        assert FediverseInstance.peer_search_endpoint("peer.com", None) == default
+        for good in [
+            "https://peer.com/api/v2/search",
+            "https://search.peer.com/q?x=1",
+            "https://PEER.com/s",
+        ]:
+            assert FediverseInstance.peer_search_endpoint("peer.com", good) == good
+        for bad in [
+            "http://peer.com/api/catalog/search",
+            "https://victim.com/api/catalog/search",
+            "https://notpeer.com/s",
+            "https://peer.com.evil.com/s",
+            "https://peer.com/s#frag",
+            "/api/catalog/search",
+            "",
+        ]:
+            assert FediverseInstance.peer_search_endpoint("peer.com", bad) == default
+
+    def test_peer_search_task_uses_endpoint(self):
+        urls = []
+
+        async def async_get(url, **kwargs):
+            urls.append(url)
+            mock_response = MagicMock()
+            mock_response.json.return_value = {"data": []}
+            return mock_response
+
+        async def run_test():
+            with patch("httpx.AsyncClient") as mock_client_class:
+                mock_client = AsyncMock()
+                mock_client.get = async_get
+                mock_client_class.return_value.__aenter__.return_value = mock_client
+                await FediverseInstance.peer_search_task(
+                    "peer.com", "a b", 1, "book", 5, "https://s.peer.com/q?v=2"
+                )
+                await FediverseInstance.peer_search_task(
+                    "peer.com", "a b", 1, None, 5, "https://evil.com/q"
+                )
+
+        asyncio.run(run_test())
+        assert urls == [
+            "https://s.peer.com/q?v=2&query=a+b&page=1&category=book",
+            "https://peer.com/api/catalog/search?query=a+b&page=1",
+        ]
+
+    def test_search_tasks_pass_advertised_endpoint(self):
+        with (
+            patch.object(SiteConfig.system, "search_peers", []),
+            patch(
+                "takahe.utils.Takahe.get_neodb_search_endpoints",
+                return_value={"peer.com": "https://peer.com/s", "old.com": None},
+            ),
+            patch.object(
+                FediverseInstance, "peer_search_task", new_callable=MagicMock
+            ) as mock_task,
+        ):
+            FediverseInstance.search_tasks("q", 1, "all", 5)
+        assert [c.args for c in mock_task.call_args_list] == [
+            ("peer.com", "q", 1, "all", 5, "https://peer.com/s"),
+            ("old.com", "q", 1, "all", 5, None),
+        ]
+
+    @pytest.mark.django_db(databases="__all__")
+    def test_get_neodb_search_endpoints_honors_flag(self):
+        def add_peer(domain: str, **metadata):
+            Domain.objects.create(
+                domain=domain,
+                local=False,
+                state="updated",
+                nodeinfo={
+                    "protocols": ["activitypub", "neodb"],
+                    "metadata": {"nodeEnvironment": "production"} | metadata,
+                },
+            )
+
+        add_peer(
+            "on.example.com",
+            neodbCatalogSearchEnabled=True,
+            neodbCatalogSearchEndpoint="https://on.example.com/s",
+        )
+        add_peer("off.example.com", neodbCatalogSearchEnabled=False)
+        add_peer("legacy.example.com")
+        add_peer("odd.example.com", neodbCatalogSearchEndpoint=123)
+        keys = ["neodb_peers", "neodb_peers_active", "neodb_search_endpoints"]
+        cache.delete_many(keys)
+        try:
+            assert Takahe.get_neodb_search_endpoints() == {
+                "on.example.com": "https://on.example.com/s",
+                "legacy.example.com": None,
+                "odd.example.com": None,
+            }
+        finally:
+            cache.delete_many(keys)
 
     @pytest.mark.django_db(databases="__all__")
     @patch("catalog.sites.fedi.CachedDownloader")

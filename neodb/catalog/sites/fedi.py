@@ -202,10 +202,13 @@ class FediverseInstance(AbstractSite):
         return self.content_from_json(data)
 
     @classmethod
-    async def peer_search_task(cls, host, q, page, category=None, page_size=5):
+    async def peer_search_task(
+        cls, host, q, page, category=None, page_size=5, endpoint: str | None = None
+    ):
         p = (page - 1) * page_size // 20 + 1
         offset = (page - 1) * page_size % 20
-        api_url = f"https://{host}/api/catalog/search?query={quote_plus(q)}&page={p}{'&category=' + category if category and category != 'all' else ''}"
+        endpoint = cls.peer_search_endpoint(host, endpoint)
+        api_url = f"{endpoint}{'&' if '?' in endpoint else '?'}query={quote_plus(q)}&page={p}{'&category=' + category if category and category != 'all' else ''}"
         async with httpx.AsyncClient() as client:
             results = []
             try:
@@ -247,6 +250,24 @@ class FediverseInstance(AbstractSite):
                     )
         return results[offset : offset + page_size]
 
+    @staticmethod
+    def peer_search_endpoint(host: str, advertised: str | None) -> str:
+        """
+        Use the endpoint a peer advertises in nodeinfo only when it is https on
+        the peer's own domain, so a peer cannot point every NeoDB instance's
+        search traffic at a third-party host.
+        """
+        if advertised:
+            u = urlparse(advertised)
+            h = (u.hostname or "").lower()
+            if (
+                u.scheme == "https"
+                and not u.fragment
+                and (h == host.lower() or h.endswith("." + host.lower()))
+            ):
+                return advertised
+        return f"https://{host}/api/catalog/search"
+
     @classmethod
     def get_peers_for_search(cls) -> list[str]:
         from takahe.utils import Takahe
@@ -257,12 +278,18 @@ class FediverseInstance(AbstractSite):
                 if SiteConfig.system.search_peers == ["-"]
                 else SiteConfig.system.search_peers
             )
-        return Takahe.get_neodb_peers()
+        return list(Takahe.get_neodb_search_endpoints())
 
     @classmethod
     def search_tasks(
         cls, q: str, page: int = 1, category: str | None = None, page_size=5
     ):
+        from takahe.utils import Takahe
+
         peers = cls.get_peers_for_search()
+        endpoints = Takahe.get_neodb_search_endpoints() if peers else {}
         c = category if category != "movietv" else "movie,tv"
-        return [cls.peer_search_task(host, q, page, c, page_size) for host in peers]
+        return [
+            cls.peer_search_task(host, q, page, c, page_size, endpoints.get(host))
+            for host in peers
+        ]

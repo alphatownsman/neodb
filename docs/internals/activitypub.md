@@ -41,9 +41,26 @@ e.g. <https://neodb.social/nodeinfo/2.0/>:
     "repository": "https://github.com/neodb-social/neodb",
     "homepage": "https://neodb.net/"
   },
-  "protocols": ["activitypub", "neodb"]
+  "protocols": ["activitypub", "neodb"],
+  "metadata": {
+    "nodeEnvironment": "production",
+    "neodbCatalogSearchEnabled": true,
+    "neodbCatalogSearchEndpoint": "https://neodb.social/api/catalog/search"
+  }
 }
 ```
+
+NeoDB instances search the catalogs of peers they know, which are domains
+with `neodb` in `protocols` and `nodeEnvironment` of `production`:
+
+- `neodbCatalogSearchEnabled` is `false` when the instance asks peers not to
+  include its catalog in their search results. A peer without this key is
+  searched, since it predates the key.
+- `neodbCatalogSearchEndpoint` is the URL to send the search to, with the
+  `query`, `page` and optional `category` parameters of
+  `/api/catalog/search`. It is used only when it is `https` and on the peer's
+  domain or a subdomain of it; otherwise `https://<domain>/api/catalog/search`
+  is used.
 
 ## Extended activities
 

@@ -1084,6 +1084,30 @@ class Takahe:
         return r
 
     @staticmethod
+    def get_neodb_search_endpoints() -> dict[str, str | None]:
+        """
+        Active NeoDB peers that accept federated catalog search, mapped to the
+        endpoint each advertises. A peer without the nodeinfo flag predates it
+        and is included.
+        """
+        cache_key = "neodb_search_endpoints"
+        r = cache.get(cache_key, None)
+        if r is None:
+            # exclude(key=False) would also drop rows missing the key
+            rows = Domain.objects.filter(pk__in=Takahe.get_neodb_peers()).values_list(
+                "pk",
+                "nodeinfo__metadata__neodbCatalogSearchEnabled",
+                "nodeinfo__metadata__neodbCatalogSearchEndpoint",
+            )
+            r = {
+                pk: endpoint if isinstance(endpoint, str) else None
+                for pk, enabled, endpoint in rows
+                if enabled is not False
+            }
+            cache.set(cache_key, r, timeout=1800)
+        return r
+
+    @staticmethod
     def get_blocked_peers():
         cache_key = "blocked_peers"
         peers = cache.get(cache_key, None)

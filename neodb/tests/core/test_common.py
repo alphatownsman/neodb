@@ -310,6 +310,30 @@ class TestNodeInfo:
         data = response.json()
         assert "federation" not in data["metadata"]
 
+    def test_nodeinfo_catalog_search_defaults(self):
+        data = Client().get("/nodeinfo/2.0/").json()
+        assert data["metadata"]["neodbCatalogSearchEnabled"] is True
+        assert (
+            data["metadata"]["neodbCatalogSearchEndpoint"]
+            == settings.SITE_INFO["site_url"] + "/api/catalog/search"
+        )
+
+    def test_nodeinfo_catalog_search_configured(self, monkeypatch):
+        system = SiteConfig.system.model_copy(
+            update={
+                "allow_incoming_federated_search": False,
+                "catalog_search_endpoint": "https://search.example.org/q",
+            }
+        )
+        monkeypatch.setattr(SiteConfig, "system", system)
+        monkeypatch.setattr(SiteConfig, "__forced__", True, raising=False)
+        data = Client().get("/nodeinfo/2.0/").json()
+        assert data["metadata"]["neodbCatalogSearchEnabled"] is False
+        assert (
+            data["metadata"]["neodbCatalogSearchEndpoint"]
+            == "https://search.example.org/q"
+        )
+
     def test_nodeinfo_hidden_on_alternative_domain(self, monkeypatch):
         system = SiteConfig.system.model_copy(
             update={"alternative_domains": ["alias.example.org"]}
