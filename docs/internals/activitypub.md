@@ -54,8 +54,9 @@ NeoDB instances search the catalogs of peers they know, which are domains
 with `neodb` in `protocols` and `nodeEnvironment` of `production`:
 
 - `neodbCatalogSearchEnabled` is `false` when the instance asks peers not to
-  include its catalog in their search results. A peer without this key is
-  searched, since it predates the key.
+  include its catalog in their search results, even when an admin lists it in
+  *Federated search peers*. A peer without this key is searched, since it
+  predates the key.
 - `neodbCatalogSearchEndpoint` is the URL to send the search to, with the
   `query`, `page` and optional `category` parameters of
   `/api/catalog/search`. It is used only when it is `https` and on the peer's

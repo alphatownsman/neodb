@@ -257,16 +257,21 @@ class FediverseInstance(AbstractSite):
         the peer's own domain, so a peer cannot point every NeoDB instance's
         search traffic at a third-party host.
         """
-        if advertised:
+        default = f"https://{host}/api/catalog/search"
+        if not advertised:
+            return default
+        try:
             u = urlparse(advertised)
             h = (u.hostname or "").lower()
-            if (
-                u.scheme == "https"
-                and not u.fragment
-                and (h == host.lower() or h.endswith("." + host.lower()))
-            ):
-                return advertised
-        return f"https://{host}/api/catalog/search"
+        except ValueError:
+            return default
+        if (
+            u.scheme == "https"
+            and not u.fragment
+            and (h == host.lower() or h.endswith("." + host.lower()))
+        ):
+            return advertised
+        return default
 
     @classmethod
     def get_peers_for_search(cls) -> list[str]:
@@ -278,7 +283,7 @@ class FediverseInstance(AbstractSite):
                 if SiteConfig.system.search_peers == ["-"]
                 else SiteConfig.system.search_peers
             )
-        return list(Takahe.get_neodb_search_endpoints())
+        return Takahe.get_neodb_peers()
 
     @classmethod
     def search_tasks(
@@ -287,9 +292,12 @@ class FediverseInstance(AbstractSite):
         from takahe.utils import Takahe
 
         peers = cls.get_peers_for_search()
-        endpoints = Takahe.get_neodb_search_endpoints() if peers else {}
+        if not peers:
+            return []
+        opted_out, endpoints = Takahe.get_neodb_search_settings()
         c = category if category != "movietv" else "movie,tv"
         return [
             cls.peer_search_task(host, q, page, c, page_size, endpoints.get(host))
             for host in peers
+            if host not in opted_out
         ]

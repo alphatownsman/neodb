@@ -469,8 +469,8 @@ class TestFediverseInstance:
         with (
             patch.object(SiteConfig.system, "search_peers", []),
             patch(
-                "takahe.utils.Takahe.get_neodb_search_endpoints",
-                return_value={"takahe1.com": None, "takahe2.com": None},
+                "takahe.utils.Takahe.get_neodb_peers",
+                return_value=["takahe1.com", "takahe2.com"],
             ),
         ):
             result = FediverseInstance.get_peers_for_search()
@@ -491,6 +491,7 @@ class TestFediverseInstance:
             "https://notpeer.com/s",
             "https://peer.com.evil.com/s",
             "https://peer.com/s#frag",
+            "https://[peer.com/search",
             "/api/catalog/search",
             "",
         ]:
@@ -523,25 +524,32 @@ class TestFediverseInstance:
             "https://peer.com/api/catalog/search?query=a+b&page=1",
         ]
 
-    def test_search_tasks_pass_advertised_endpoint(self):
+    @pytest.mark.parametrize("search_peers", [[], ["peer.com", "off.com", "old.com"]])
+    def test_search_tasks_honor_peer_settings(self, search_peers):
         with (
-            patch.object(SiteConfig.system, "search_peers", []),
+            patch.object(SiteConfig.system, "search_peers", search_peers),
             patch(
-                "takahe.utils.Takahe.get_neodb_search_endpoints",
-                return_value={"peer.com": "https://peer.com/s", "old.com": None},
+                "takahe.utils.Takahe.get_neodb_peers",
+                return_value=["peer.com", "off.com", "old.com"],
+            ),
+            patch(
+                "takahe.utils.Takahe.get_neodb_search_settings",
+                return_value=({"off.com"}, {"peer.com": "https://peer.com/s"}),
             ),
             patch.object(
                 FediverseInstance, "peer_search_task", new_callable=MagicMock
             ) as mock_task,
         ):
             FediverseInstance.search_tasks("q", 1, "all", 5)
+            # discover picks post domains from the same list, opt-out or not
+            assert "off.com" in FediverseInstance.get_peers_for_search()
         assert [c.args for c in mock_task.call_args_list] == [
             ("peer.com", "q", 1, "all", 5, "https://peer.com/s"),
             ("old.com", "q", 1, "all", 5, None),
         ]
 
     @pytest.mark.django_db(databases="__all__")
-    def test_get_neodb_search_endpoints_honors_flag(self):
+    def test_get_neodb_search_settings(self):
         def add_peer(domain: str, **metadata):
             Domain.objects.create(
                 domain=domain,
@@ -561,16 +569,14 @@ class TestFediverseInstance:
         add_peer("off.example.com", neodbCatalogSearchEnabled=False)
         add_peer("legacy.example.com")
         add_peer("odd.example.com", neodbCatalogSearchEndpoint=123)
-        keys = ["neodb_peers", "neodb_peers_active", "neodb_search_endpoints"]
-        cache.delete_many(keys)
+        cache.delete("neodb_search_settings")
         try:
-            assert Takahe.get_neodb_search_endpoints() == {
-                "on.example.com": "https://on.example.com/s",
-                "legacy.example.com": None,
-                "odd.example.com": None,
-            }
+            assert Takahe.get_neodb_search_settings() == (
+                {"off.example.com"},
+                {"on.example.com": "https://on.example.com/s"},
+            )
         finally:
-            cache.delete_many(keys)
+            cache.delete("neodb_search_settings")
 
     @pytest.mark.django_db(databases="__all__")
     @patch("catalog.sites.fedi.CachedDownloader")
