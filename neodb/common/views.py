@@ -134,7 +134,7 @@ def nodeinfo2(request, version: str):
                 "nodeEnvironment": "development" if settings.DEBUG else "production",
                 "neodbCatalogSearchEnabled": SiteConfig.system.allow_incoming_federated_search,
                 "neodbCatalogSearchEndpoint": SiteConfig.system.catalog_search_endpoint
-                or settings.SITE_INFO["site_url"] + "/api/catalog/search",
+                or settings.SITE_INFO["site_url"].rstrip("/") + "/api/catalog/search",
             }
             | (
                 {"federation": {"enabled": False}}

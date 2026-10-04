@@ -5089,8 +5089,8 @@ msgid "Catalog search endpoint"
 msgstr "目录搜索端点"
 
 #: common/views_manage.py:925
-msgid "Catalog search URL advertised to other NeoDB instances via NodeInfo. Leave empty to use this site's /api/catalog/search."
-msgstr "通过 NodeInfo 向其它 NeoDB 实例公布的目录搜索 URL。留空则使用本站的 /api/catalog/search。"
+msgid "Catalog search URL advertised to other NeoDB instances via NodeInfo. Peers use it only if it is https on this site's domain or a subdomain. Leave empty to use this site's /api/catalog/search."
+msgstr "通过 NodeInfo 向其它 NeoDB 实例公布的目录搜索 URL。仅当它是本站域名或其子域名下的 https 地址时，其它实例才会使用。留空则使用本站的 /api/catalog/search。"
 
 #: common/views_manage.py:864
 msgid "Hidden categories"

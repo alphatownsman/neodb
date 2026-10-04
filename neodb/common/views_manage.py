@@ -923,7 +923,9 @@ class FederationSettings(SiteConfigSettingsPage):
             "title": _("Catalog search endpoint"),
             "help_text": _(
                 "Catalog search URL advertised to other NeoDB instances via "
-                "NodeInfo. Leave empty to use this site's /api/catalog/search."
+                "NodeInfo. Peers use it only if it is https on this site's "
+                "domain or a subdomain. Leave empty to use this site's "
+                "/api/catalog/search."
             ),
         },
         "hidden_categories": {
