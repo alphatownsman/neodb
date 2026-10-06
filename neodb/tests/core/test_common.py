@@ -319,22 +319,28 @@ class TestNodeInfo:
             == settings.SITE_INFO["site_url"] + "/api/catalog/search"
         )
 
-    def test_nodeinfo_catalog_search_configured(self, monkeypatch):
-        system = SiteConfig.system.model_copy(
-            update={
-                "allow_incoming_federated_search": False,
-                "catalog_search_endpoint": "https://search.example.org/q",
-            }
-        )
+    def _nodeinfo_with(self, monkeypatch, **options) -> dict:
+        system = SiteConfig.system.model_copy(update=options)
         monkeypatch.setattr(SiteConfig, "system", system)
         monkeypatch.setattr(SiteConfig, "__forced__", True, raising=False)
-        data = Client().get("/nodeinfo/2.0/").json()
-        assert "catalog.search" not in data["metadata"]["neodbFeatures"]
-        assert "catalog.item" in data["metadata"]["neodbFeatures"]
-        assert (
-            data["metadata"]["neodbCatalogSearchEndpoint"]
-            == "https://search.example.org/q"
+        return Client().get("/nodeinfo/2.0/").json()["metadata"]
+
+    def test_nodeinfo_catalog_search_custom_endpoint(self, monkeypatch):
+        metadata = self._nodeinfo_with(
+            monkeypatch, catalog_search_endpoint="https://search.example.org/q"
         )
+        assert "catalog.search" in metadata["neodbFeatures"]
+        assert metadata["neodbCatalogSearchEndpoint"] == "https://search.example.org/q"
+
+    def test_nodeinfo_catalog_search_disallowed(self, monkeypatch):
+        metadata = self._nodeinfo_with(
+            monkeypatch,
+            allow_incoming_federated_search=False,
+            catalog_search_endpoint="https://search.example.org/q",
+        )
+        assert "catalog.search" not in metadata["neodbFeatures"]
+        assert "catalog.item" in metadata["neodbFeatures"]
+        assert "neodbCatalogSearchEndpoint" not in metadata
 
     def test_nodeinfo_hidden_on_alternative_domain(self, monkeypatch):
         system = SiteConfig.system.model_copy(

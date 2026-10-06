@@ -119,6 +119,22 @@ def nodeinfo2(request, version: str):
     if host in {d.lower() for d in SiteConfig.system.alternative_domains}:
         return _error_response(request, 404, default_message="Not found")
     usage = cache.get("nodeinfo_usage", default={})
+    metadata = {
+        "nodeName": SiteConfig.system.site_name,
+        "features": ["quote_posting", "editing", "polls"],
+        "nodeRevision": settings.NEODB_VERSION,
+        "nodeEnvironment": "development" if settings.DEBUG else "production",
+    }
+    if SiteConfig.system.allow_incoming_federated_search:
+        metadata["neodbFeatures"] = NEODB_FEATURES
+        metadata["neodbCatalogSearchEndpoint"] = (
+            SiteConfig.system.catalog_search_endpoint
+            or settings.SITE_INFO["site_url"].rstrip("/") + "/api/catalog/search"
+        )
+    else:
+        metadata["neodbFeatures"] = [f for f in NEODB_FEATURES if f != "catalog.search"]
+    if getattr(settings, "SETUP", None) and settings.SETUP.NO_FEDERATION:
+        metadata["federation"] = {"enabled": False}
     return JsonResponse(
         {
             "version": version,
@@ -136,22 +152,7 @@ def nodeinfo2(request, version: str):
             "openRegistrations": not SiteConfig.system.invite_only,
             "services": {"outbound": [], "inbound": []},
             "usage": usage,
-            "metadata": {
-                "nodeName": SiteConfig.system.site_name,
-                "features": ["quote_posting", "editing", "polls"],
-                "nodeRevision": settings.NEODB_VERSION,
-                "nodeEnvironment": "development" if settings.DEBUG else "production",
-                "neodbFeatures": NEODB_FEATURES
-                if SiteConfig.system.allow_incoming_federated_search
-                else [f for f in NEODB_FEATURES if f != "catalog.search"],
-                "neodbCatalogSearchEndpoint": SiteConfig.system.catalog_search_endpoint
-                or settings.SITE_INFO["site_url"].rstrip("/") + "/api/catalog/search",
-            }
-            | (
-                {"federation": {"enabled": False}}
-                if getattr(settings, "SETUP", None) and settings.SETUP.NO_FEDERATION
-                else {}
-            ),
+            "metadata": metadata,
         }
     )
 

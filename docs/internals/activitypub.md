@@ -79,7 +79,8 @@ describe what a NeoDB instance serves, for software that implements part of it.
 
 ### Catalog search
 
-`neodbCatalogSearchEndpoint` is the URL to send a search to. Peers use it only
+`neodbCatalogSearchEndpoint` is the URL to send a search to, sent only with
+`catalog.search` in `neodbFeatures`. Peers use it only
 when it is `https` on the server's domain or a subdomain of it; otherwise, or
 when the key is absent, they use `https://<domain>/api/catalog/search`. Peers
 add these query parameters:
