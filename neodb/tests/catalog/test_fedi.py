@@ -639,14 +639,14 @@ class TestFediverseInstance:
         add_peer("off.example.com", neodbFeatures=["catalog.item"])
         add_peer("legacy.example.com")
         add_peer("odd.example.com", neodbFeatures="x", neodbCatalogSearchEndpoint=123)
-        add_peer("bridge.example.com", software="bridge")
+        add_peer("partial.example.com", software="other")
         add_peer(
             "other.example.com", software="other", neodbFeatures=["catalog.search"]
         )
         cache.delete("neodb_search_settings")
         try:
             assert Takahe.get_neodb_search_settings() == (
-                {"off.example.com", "bridge.example.com"},
+                {"off.example.com", "partial.example.com"},
                 {"on.example.com": "https://on.example.com/s"},
             )
         finally:
