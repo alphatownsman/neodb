@@ -312,8 +312,7 @@ class TestNodeInfo:
 
     def test_nodeinfo_catalog_search_defaults(self):
         data = Client().get("/nodeinfo/2.0/").json()
-        assert "catalog.search" in data["metadata"]["neodbFeatures"]
-        assert "journal.post" in data["metadata"]["neodbFeatures"]
+        assert data["metadata"]["neodbFeatures"] == ["catalog.item", "catalog.search"]
         assert (
             data["metadata"]["neodbCatalogSearchEndpoint"]
             == settings.SITE_INFO["site_url"] + "/api/catalog/search"
@@ -338,8 +337,7 @@ class TestNodeInfo:
             allow_incoming_federated_search=False,
             catalog_search_endpoint="https://search.example.org/q",
         )
-        assert "catalog.search" not in metadata["neodbFeatures"]
-        assert "catalog.item" in metadata["neodbFeatures"]
+        assert metadata["neodbFeatures"] == ["catalog.item"]
         assert "neodbCatalogSearchEndpoint" not in metadata
 
     def test_nodeinfo_hidden_on_alternative_domain(self, monkeypatch):

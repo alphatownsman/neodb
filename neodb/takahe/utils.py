@@ -1088,8 +1088,9 @@ class Takahe:
         """
         Federated catalog search settings that known NeoDB domains advertise in
         nodeinfo: the domains that do not offer catalog.search, and the
-        endpoint of each domain that advertises one. A domain without
-        neodbFeatures predates the list and offers every feature.
+        endpoint of each domain that advertises one. NeoDB without
+        neodbFeatures predates the list and offers every feature; other
+        software without it offers none.
         """
         cache_key = "neodb_search_settings"
         r = cache.get(cache_key, None)
@@ -1098,13 +1099,20 @@ class Takahe:
                 nodeinfo__protocols__contains="neodb", local=False
             ).values_list(
                 "pk",
+                "nodeinfo__software__name",
                 "nodeinfo__metadata__neodbFeatures",
                 "nodeinfo__metadata__neodbCatalogSearchEndpoint",
             )
             no_search: set[str] = set()
             endpoints: dict[str, str] = {}
-            for pk, features, endpoint in rows:
-                if isinstance(features, list) and "catalog.search" not in features:
+            for pk, software, features, endpoint in rows:
+                if not isinstance(features, list):
+                    features = (
+                        ["catalog.item", "catalog.search"]
+                        if software == "neodb"
+                        else []
+                    )
+                if "catalog.search" not in features:
                     no_search.add(pk)
                 elif isinstance(endpoint, str):
                     endpoints[pk] = endpoint

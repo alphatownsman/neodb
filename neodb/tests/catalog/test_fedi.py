@@ -619,12 +619,13 @@ class TestFediverseInstance:
 
     @pytest.mark.django_db(databases="__all__")
     def test_get_neodb_search_settings(self):
-        def add_peer(domain: str, **metadata):
+        def add_peer(domain: str, software: str = "neodb", **metadata):
             Domain.objects.create(
                 domain=domain,
                 local=False,
                 state="updated",
                 nodeinfo={
+                    "software": {"name": software, "version": "1"},
                     "protocols": ["activitypub", "neodb"],
                     "metadata": {"nodeEnvironment": "production"} | metadata,
                 },
@@ -638,10 +639,14 @@ class TestFediverseInstance:
         add_peer("off.example.com", neodbFeatures=["catalog.item"])
         add_peer("legacy.example.com")
         add_peer("odd.example.com", neodbFeatures="x", neodbCatalogSearchEndpoint=123)
+        add_peer("bridge.example.com", software="bridge")
+        add_peer(
+            "other.example.com", software="other", neodbFeatures=["catalog.search"]
+        )
         cache.delete("neodb_search_settings")
         try:
             assert Takahe.get_neodb_search_settings() == (
-                {"off.example.com"},
+                {"off.example.com", "bridge.example.com"},
                 {"on.example.com": "https://on.example.com/s"},
             )
         finally:

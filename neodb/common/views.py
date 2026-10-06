@@ -100,12 +100,7 @@ def ap_redirect(request, uri):
 
 
 # Listed in nodeinfo as neodbFeatures; docs/internals/activitypub.md defines each.
-NEODB_FEATURES = [
-    "catalog.item",
-    "catalog.search",
-    "journal.post",
-    "journal.collection",
-]
+NEODB_FEATURES = ["catalog.item", "catalog.search"]
 
 
 def nodeinfo2(request, version: str):
