@@ -300,6 +300,19 @@ class Domain(StatorModel):
             return f"{name:.10} - {version:.10}"
         return None
 
+    @property
+    def is_neodb_compatible(self) -> bool:
+        """
+        Servers say so with "neodb" in protocols, or with catalog.item in
+        metadata.neodbFeatures, which lets the non-standard protocol be dropped.
+        """
+        nodeinfo = self.nodeinfo or {}
+        if "neodb" in (nodeinfo.get("protocols") or []):
+            return True
+        metadata = nodeinfo.get("metadata")
+        features = metadata.get("neodbFeatures") if isinstance(metadata, dict) else None
+        return isinstance(features, list) and "catalog.item" in features
+
     def recursively_blocked(self) -> bool:
         """
         Checks for blocks on all right subsets of this domain, except the very

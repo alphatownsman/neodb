@@ -50,9 +50,12 @@ e.g. <https://neodb.social/nodeinfo/2.0/>:
 }
 ```
 
-A NeoDB instance treats a domain as a NeoDB peer when its NodeInfo has `neodb`
-in `protocols` and `nodeEnvironment` of `production`. A debug instance reports
-`development`, so peers leave it alone.
+A NeoDB instance treats a domain as a NeoDB peer when its NodeInfo has
+`nodeEnvironment` of `production`, and either `neodb` in `protocols` or
+`catalog.item` in `neodbFeatures` (see below). A debug instance reports
+`development`, so peers leave it alone. `neodb` is not a protocol that NodeInfo
+defines; NeoDB keeps sending it for peers that predate `neodbFeatures`, and may
+drop it once those are gone.
 
 ### Features
 
@@ -72,7 +75,8 @@ How peers read the list:
   predates it, and offers every feature above.
 - Other software that does not send the list offers none of them, so it should
   send the list, e.g. `["catalog.item"]` for a server that serves items but
-  has no search.
+  has no search. Such a server should also keep `neodb` in `protocols`, which
+  is how NeoDB instances older than `neodbFeatures` recognise it.
 
 Only `catalog.search` changes what a peer does today. NeoDB still fetches an
 item URL in a post from any server, whatever that server lists.

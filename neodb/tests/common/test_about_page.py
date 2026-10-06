@@ -69,3 +69,33 @@ def test_neodb_peers_skip_alternative_domains(settings):
     assert Takahe.get_neodb_peers() == ["peer1.example.com"]
     assert Takahe.get_neodb_peers(active_only=False) == ["peer1.example.com"]
     cache.delete_many(["neodb_peers", "neodb_peers_active"])
+
+
+def test_neodb_peers_recognized_by_features():
+    Domain.objects.create(
+        domain="features.example.com",
+        local=False,
+        state="updated",
+        nodeinfo={
+            "software": {"name": "other", "version": "1"},
+            "protocols": ["activitypub"],
+            "metadata": {
+                "nodeEnvironment": "production",
+                "neodbFeatures": ["catalog.item"],
+            },
+        },
+    )
+    Domain.objects.create(
+        domain="plain.example.com",
+        local=False,
+        state="updated",
+        nodeinfo={
+            "protocols": ["activitypub"],
+            "metadata": {"nodeEnvironment": "production"},
+        },
+    )
+    cache.delete_many(["neodb_peers", "neodb_peers_active"])
+    try:
+        assert Takahe.get_neodb_peers() == ["features.example.com"]
+    finally:
+        cache.delete_many(["neodb_peers", "neodb_peers_active"])

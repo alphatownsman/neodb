@@ -5,6 +5,31 @@ from users.models import Domain
 from users.models.domain import DomainStates
 
 
+@pytest.mark.parametrize(
+    "nodeinfo,expected",
+    [
+        (None, False),
+        ({"protocols": ["activitypub"]}, False),
+        ({"protocols": ["activitypub", "neodb"]}, True),
+        (
+            {
+                "protocols": ["activitypub"],
+                "metadata": {"neodbFeatures": ["catalog.item"]},
+            },
+            True,
+        ),
+        ({"metadata": {"neodbFeatures": ["catalog.search"]}}, False),
+        ({"metadata": {"neodbFeatures": "catalog.item"}}, False),
+        ({"metadata": []}, False),
+    ],
+)
+def test_is_neodb_compatible(nodeinfo, expected):
+    assert (
+        Domain(domain="peer.example.com", nodeinfo=nodeinfo).is_neodb_compatible
+        is expected
+    )
+
+
 def test_valid_domain():
     """
     Tests that a valid domain is valid

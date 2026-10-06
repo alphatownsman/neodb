@@ -30,6 +30,13 @@ if TYPE_CHECKING:
     from users.models import User as NeoUser
 
 
+# A NeoDB-compatible server lists "neodb" in protocols, or catalog.item in
+# neodbFeatures so that the non-standard protocol entry can be dropped later.
+NEODB_COMPATIBLE_NODEINFO = Q(nodeinfo__protocols__contains="neodb") | Q(
+    nodeinfo__metadata__neodbFeatures__contains=["catalog.item"]
+)
+
+
 class Takahe:
     Visibilities = Post.Visibilities
 
@@ -1072,7 +1079,7 @@ class Takahe:
         r = cache.get(cache_key, None)
         if r is None:
             peers = Domain.objects.filter(
-                nodeinfo__protocols__contains="neodb",
+                NEODB_COMPATIBLE_NODEINFO,
                 nodeinfo__metadata__nodeEnvironment="production",
                 local=False,
                 blocked=False,
@@ -1096,7 +1103,7 @@ class Takahe:
         r = cache.get(cache_key, None)
         if r is None:
             rows = Domain.objects.filter(
-                nodeinfo__protocols__contains="neodb", local=False
+                NEODB_COMPATIBLE_NODEINFO, local=False
             ).values_list(
                 "pk",
                 "nodeinfo__software__name",

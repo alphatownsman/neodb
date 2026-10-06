@@ -255,7 +255,7 @@ class PostStates(StateGraph):
         # pieces stay linked to them, and pruning breaks item post
         # listings until the post is refetched
         domain = instance.author.domain
-        if domain and "neodb" in ((domain.nodeinfo or {}).get("protocols") or []):
+        if domain and domain.is_neodb_compatible:
             return
         # It must have no local interactions
         if instance.interactions.filter(identity__local=True).exists():

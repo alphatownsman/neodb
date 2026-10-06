@@ -619,14 +619,19 @@ class TestFediverseInstance:
 
     @pytest.mark.django_db(databases="__all__")
     def test_get_neodb_search_settings(self):
-        def add_peer(domain: str, software: str = "neodb", **metadata):
+        def add_peer(
+            domain: str,
+            software: str = "neodb",
+            protocols: tuple[str, ...] = ("activitypub", "neodb"),
+            **metadata,
+        ):
             Domain.objects.create(
                 domain=domain,
                 local=False,
                 state="updated",
                 nodeinfo={
                     "software": {"name": software, "version": "1"},
-                    "protocols": ["activitypub", "neodb"],
+                    "protocols": list(protocols),
                     "metadata": {"nodeEnvironment": "production"} | metadata,
                 },
             )
@@ -642,6 +647,11 @@ class TestFediverseInstance:
         add_peer("partial.example.com", software="other")
         add_peer(
             "other.example.com", software="other", neodbFeatures=["catalog.search"]
+        )
+        add_peer(
+            "future.example.com",
+            protocols=("activitypub",),
+            neodbFeatures=["catalog.item", "catalog.search"],
         )
         cache.delete("neodb_search_settings")
         try:
