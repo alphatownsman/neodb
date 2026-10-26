@@ -4079,10 +4079,6 @@ msgstr "Accueil"
 msgid "Scan barcode"
 msgstr "Scanner un code-barres"
 
-#: common/templates/_header.html:131
-msgid "Notification"
-msgstr "Notifications"
-
 #: common/templates/_header.html:135 users/models/task.py:26
 #: users/templates/users/account.html:219
 msgid "Pending"
@@ -4176,10 +4172,6 @@ msgstr ""
 #: users/templates/users/profile_actions.html:36
 msgid "Approving followers manually"
 msgstr "valider manuellement les demandes de suivi"
-
-#: common/templates/_sidebar.html:78 common/templates/_sidebar.html:83
-msgid "followers"
-msgstr "abonné⋅es"
 
 #: common/templates/_sidebar.html:109
 msgid "Current targets"
@@ -6935,25 +6927,9 @@ msgstr "Les étiquettes personnelles ne sont pas incluses dans le flux public. C
 msgid "Delete this tag"
 msgstr "Supprimer cette étiquette"
 
-#: journal/templates/user_article_list.html:26
-#, python-format
-msgid "%(counter)s article"
-msgid_plural "%(counter)s articles"
-msgstr[0] "%(counter)s article"
-msgstr[1] "%(counter)s articles"
-
-#: journal/templates/user_article_list.html:31
-#, python-format
-msgid "by %(name)s"
-msgstr ""
-
 #: journal/templates/user_article_list.html:39
 msgid "RSS feed"
 msgstr "Flux RSS"
-
-#: journal/templates/user_article_list.html:46
-msgid "Compose new article"
-msgstr ""
 
 #: journal/templates/user_article_list.html:74
 #, python-format
@@ -6961,10 +6937,6 @@ msgid "%(counter)s min read"
 msgid_plural "%(counter)s min read"
 msgstr[0] "%(counter)s min de lecture"
 msgstr[1] "%(counter)s min de lecture"
-
-#: journal/templates/user_article_list.html:114
-msgid "You have no articles yet. An article is a long text that you write here and send to the Fediverse."
-msgstr ""
 
 #: journal/templates/user_article_list.html:120
 msgid "Write an article"
@@ -9946,3 +9918,249 @@ msgstr "Inscriptions ouvertes"
 #| msgid "You may not be able to undo this operation."
 msgid "You cannot send messages in this conversation."
 msgstr "Vous ne pourrez peut-être pas annuler cette opération."
+
+#: common/templates/_sidebar.html:80 common/templates/_sidebar.html:85
+#, fuzzy, python-format
+#| msgid "%(counter)s word"
+#| msgid_plural "%(counter)s words"
+msgid "%(counter)s follower"
+msgid_plural "%(counter)s followers"
+msgstr[0] "%(counter)s mot"
+msgstr[1] "%(counter)s mots"
+
+#: catalog/templates/search_header.html:11
+#, fuzzy
+#| msgid "All categories"
+msgid "Search categories"
+msgstr "Toutes les catégories"
+
+#: journal/forms.py:117
+#, fuzzy
+#| msgid "Review"
+msgid "Review date"
+msgstr "Avis"
+
+#: journal/forms.py:152
+#, fuzzy
+#| msgid "Change review date"
+msgid "Please choose a review date."
+msgstr "changer la date de l'avis"
+
+#: journal/forms.py:154
+msgid "Choose a date between 1900 and today."
+msgstr ""
+
+#: journal/templates/_article_reading.html:8
+#: journal/templates/user_article_list.html:24
+#, fuzzy, python-format
+#| msgid "Articles by {0}"
+msgid "Articles by %(name)s"
+msgstr "Articles de {0}"
+
+#: journal/templates/_article_reading.html:52
+#, fuzzy
+#| msgid "Content"
+msgid "Contents"
+msgstr "Contenu"
+
+#: journal/templates/_article_reading.html:79
+#, fuzzy
+#| msgid "Link invalid"
+msgid "Link copied"
+msgstr "Lien invalide"
+
+#: journal/templates/_article_reading.html:79
+#, fuzzy
+#| msgid "Update link"
+msgid "Copy link"
+msgstr "Mettre à jour le lien"
+
+#: journal/templates/_article_reading.html:83
+#, fuzzy
+#| msgid "My review"
+msgid "More reviews"
+msgstr "mon avis"
+
+#: journal/templates/_article_reading.html:85
+#, fuzzy
+#| msgid "Compose article"
+msgid "More articles"
+msgstr "Rédiger un article"
+
+#: journal/templates/_article_tag_picker.html:4
+#, fuzzy
+#| msgid "Remove item"
+msgid "Remove tag"
+msgstr "retirer l'œuvre"
+
+#: journal/templates/_article_tag_picker.html:5
+msgid "Too many tags or too much text. Remove a tag to continue."
+msgstr ""
+
+#: journal/templates/_article_tag_picker.html:13
+msgid "Find or add a tag"
+msgstr ""
+
+#: journal/templates/_article_tag_picker.html:18
+msgid "Choose a tag below, or type a new one and press Enter."
+msgstr ""
+
+#: journal/templates/article_edit.html:20
+#, fuzzy
+#| msgid "Edit article"
+msgid "My articles"
+msgstr "Modifier l'article"
+
+#: journal/templates/article_edit.html:25 journal/templates/review_edit.html:24
+#, fuzzy
+#| msgid "publisher"
+msgid "Not published"
+msgstr "studio d'édition"
+
+#: journal/templates/article_edit.html:32 journal/templates/review_edit.html:31
+msgid "Write"
+msgstr ""
+
+#: journal/templates/article_edit.html:33
+#: journal/templates/article_edit.html:35 journal/templates/review_edit.html:32
+#: journal/templates/review_edit.html:34
+#, fuzzy
+#| msgid "review"
+msgid "Preview"
+msgstr "avis"
+
+#: journal/templates/article_edit.html:39
+#: journal/templates/article_edit.html:82 journal/templates/review_edit.html:38
+#: journal/templates/review_edit.html:74
+#, fuzzy
+#| msgid "Save sync settings"
+msgid "Save changes"
+msgstr "Enregistrer les paramètres de synchronisation"
+
+#: journal/templates/article_edit.html:39 journal/templates/review_edit.html:38
+msgid "Continue to publish"
+msgstr ""
+
+#: journal/templates/article_edit.html:49
+#, fuzzy
+#| msgid "Featured tag"
+msgid "Featured image"
+msgstr "Étiquette en vedette"
+
+#: journal/templates/article_edit.html:51
+#, fuzzy
+#| msgid "Add image"
+msgid "Add a cover image"
+msgstr "Ajouter une image"
+
+#: journal/templates/article_edit.html:63
+msgid "Markdown supported. Add images using the toolbar or paste them into your article."
+msgstr ""
+
+#: journal/templates/article_edit.html:68 journal/templates/review_edit.html:54
+#, fuzzy
+#| msgid "Publishing House"
+msgid "Publishing settings"
+msgstr "Maison d'édition"
+
+#: journal/templates/article_edit.html:78 journal/templates/review_edit.html:63
+#, fuzzy
+#| msgid "Poll options"
+msgid "More options"
+msgstr "Options du sondage"
+
+#: journal/templates/article_edit.html:84
+#, fuzzy
+#| msgid "Edit article"
+msgid "Publish article"
+msgstr "Modifier l'article"
+
+#: journal/templates/profile_articles.html:9
+#, fuzzy
+#| msgid "See all"
+msgid "View all"
+msgstr "Voir tout"
+
+#: journal/templates/review_edit.html:22
+#, fuzzy
+#| msgid "Write a review"
+msgid "Edit review"
+msgstr "Écrire un avis"
+
+#: journal/templates/review_edit.html:49
+msgid "Markdown supported. Add images using the toolbar or paste them into your review."
+msgstr ""
+
+#: journal/templates/review_edit.html:76
+#, fuzzy
+#| msgid "Publisher"
+msgid "Publish review"
+msgstr "Éditeur"
+
+#: journal/templates/user_article_list.html:43
+msgid "Browse by tag"
+msgstr ""
+
+#: journal/templates/user_article_list.html:45
+#, fuzzy
+#| msgid "All items"
+msgid "All tags"
+msgstr "Tout"
+
+#: journal/templates/user_article_list.html:56
+#, fuzzy
+#| msgid "All categories"
+msgid "All articles"
+msgstr "Toutes les catégories"
+
+#: journal/templates/user_article_list.html:59
+#, fuzzy
+#| msgid "Search filters"
+msgid "Clear filters"
+msgstr "Filtres de recherche"
+
+#: journal/templates/user_article_list.html:63
+#: journal/templates/user_article_list.html:66
+#, fuzzy
+#| msgid "All items"
+msgid "All dates"
+msgstr "Tout"
+
+#: journal/templates/user_article_list.html:64
+#, fuzzy
+#| msgid "release date"
+msgid "Browse by date"
+msgstr "date de sortie"
+
+#: journal/templates/user_article_list.html:72
+#, python-format
+msgid "Months in %(year)s"
+msgstr ""
+
+#: journal/templates/user_article_list.html:72
+msgid "Months"
+msgstr ""
+
+#: journal/templates/user_article_list.html:95
+#, fuzzy
+#| msgid "Edit article"
+msgid "Latest article"
+msgstr "Modifier l'article"
+
+#: journal/templates/user_article_list.html:125
+msgid "No articles match these filters."
+msgstr ""
+
+#: journal/templates/user_article_list.html:126
+#, fuzzy
+#| msgid "Write an article"
+msgid "View all articles"
+msgstr "Écrire un article"
+
+#: journal/templates/user_article_list.html:128
+msgid "A home for your words"
+msgstr ""
+
+#: journal/templates/user_article_list.html:129
+msgid "Write about a book, a film, or whatever is on your mind."
+msgstr ""
