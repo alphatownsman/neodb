@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-10-03 13:46-0400\n"
-"PO-Revision-Date: 2026-10-26 16:16+0000\n"
+"PO-Revision-Date: 2026-10-27 17:51+0000\n"
 "Last-Translator: Havokdan <havokdan@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/neodb/neodb/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -9938,163 +9938,123 @@ msgid "Choose a tag below, or type a new one and press Enter."
 msgstr "Escolha uma etiqueta abaixo ou digite uma nova e pressione Enter."
 
 #: journal/templates/article_edit.html:20
-#, fuzzy
-#| msgid "Articles"
 msgid "My articles"
-msgstr "Artigos"
+msgstr "Meus artigos"
 
 #: journal/templates/article_edit.html:25 journal/templates/review_edit.html:24
-#, fuzzy
-#| msgid "publisher"
 msgid "Not published"
-msgstr "editora"
+msgstr "Não publicado"
 
 #: journal/templates/article_edit.html:32 journal/templates/review_edit.html:31
 msgid "Write"
-msgstr ""
+msgstr "Escrever"
 
 #: journal/templates/article_edit.html:33
 #: journal/templates/article_edit.html:35 journal/templates/review_edit.html:32
 #: journal/templates/review_edit.html:34
-#, fuzzy
-#| msgid "review"
 msgid "Preview"
-msgstr "análise"
+msgstr "Prever"
 
 #: journal/templates/article_edit.html:39
 #: journal/templates/article_edit.html:82 journal/templates/review_edit.html:38
 #: journal/templates/review_edit.html:74
-#, fuzzy
-#| msgid "Save sync settings"
 msgid "Save changes"
-msgstr "Salvar configurações de sincronização"
+msgstr "Salvar alterações"
 
 #: journal/templates/article_edit.html:39 journal/templates/review_edit.html:38
 msgid "Continue to publish"
-msgstr ""
+msgstr "Continue a publicar"
 
 #: journal/templates/article_edit.html:49
-#, fuzzy
-#| msgid "Featured tag"
 msgid "Featured image"
-msgstr "etiqueta em destaque"
+msgstr "Imagem em destaque"
 
 #: journal/templates/article_edit.html:51
-#, fuzzy
-#| msgid "Add image"
 msgid "Add a cover image"
-msgstr "Adicionar imagem"
+msgstr "Adicionar uma imagem de capa"
 
 #: journal/templates/article_edit.html:63
 msgid "Markdown supported. Add images using the toolbar or paste them into your article."
-msgstr ""
+msgstr "Markdown suportado. Adicione imagens usando a barra de ferramentas ou cole-as em seu artigo."
 
 #: journal/templates/article_edit.html:68 journal/templates/review_edit.html:54
-#, fuzzy
-#| msgid "Publishing House"
 msgid "Publishing settings"
-msgstr "Editora"
+msgstr "Configurações de publicação"
 
 #: journal/templates/article_edit.html:78 journal/templates/review_edit.html:63
-#, fuzzy
-#| msgid "Poll options"
 msgid "More options"
-msgstr "Opções da enquete"
+msgstr "Mais opções"
 
 #: journal/templates/article_edit.html:84
-#, fuzzy
-#| msgid "Edit article"
 msgid "Publish article"
-msgstr "Editar Artigo"
+msgstr "Publicar artigo"
 
 #: journal/templates/profile_articles.html:9
-#, fuzzy
-#| msgid "See all"
 msgid "View all"
-msgstr "Ver tudo"
+msgstr "Exibir tudo"
 
 #: journal/templates/review_edit.html:22
-#, fuzzy
-#| msgid "Write a review"
 msgid "Edit review"
-msgstr "escrever uma análise"
+msgstr "Editar análise"
 
 #: journal/templates/review_edit.html:49
 msgid "Markdown supported. Add images using the toolbar or paste them into your review."
-msgstr ""
+msgstr "Markdown suportado. Adicione imagens usando a barra de ferramentas ou cole-as na sua análise."
 
 #: journal/templates/review_edit.html:76
-#, fuzzy
-#| msgid "Publisher"
 msgid "Publish review"
-msgstr "Editora"
+msgstr "Publicar análise"
 
 #: journal/templates/user_article_list.html:43
-#, fuzzy
-#| msgid "Filter by tag"
 msgid "Browse by tag"
-msgstr "filtrar por etiqueta"
+msgstr "Navegar por etiqueta"
 
 #: journal/templates/user_article_list.html:45
-#, fuzzy
-#| msgid "All items"
 msgid "All tags"
-msgstr "Todos os itens"
+msgstr "Todos as etiquetas"
 
 #: journal/templates/user_article_list.html:56
-#, fuzzy
-#| msgid "Articles"
 msgid "All articles"
-msgstr "Artigos"
+msgstr "Todos os artigos"
 
 #: journal/templates/user_article_list.html:59
-#, fuzzy
-#| msgid "Search filters"
 msgid "Clear filters"
-msgstr "Filtros de pesquisa"
+msgstr "Limpar filtros"
 
 #: journal/templates/user_article_list.html:63
 #: journal/templates/user_article_list.html:66
-#, fuzzy
-#| msgid "All items"
 msgid "All dates"
-msgstr "Todos os itens"
+msgstr "Todas as datas"
 
 #: journal/templates/user_article_list.html:64
-#, fuzzy
-#| msgid "Filter by date"
 msgid "Browse by date"
-msgstr "filtrar por data"
+msgstr "Navegar por data"
 
 #: journal/templates/user_article_list.html:72
 #, python-format
 msgid "Months in %(year)s"
-msgstr ""
+msgstr "Meses em %(year)s"
 
 #: journal/templates/user_article_list.html:72
 msgid "Months"
-msgstr ""
+msgstr "Meses"
 
 #: journal/templates/user_article_list.html:95
-#, fuzzy
-#| msgid "New article"
 msgid "Latest article"
-msgstr "Novo artigo"
+msgstr "Último artigo"
 
 #: journal/templates/user_article_list.html:125
 msgid "No articles match these filters."
-msgstr ""
+msgstr "Nenhum artigo corresponde a esses filtros."
 
 #: journal/templates/user_article_list.html:126
-#, fuzzy
-#| msgid "Write an article"
 msgid "View all articles"
-msgstr "Escrever um artigo"
+msgstr "Exibir todos os artigos"
 
 #: journal/templates/user_article_list.html:128
 msgid "A home for your words"
-msgstr ""
+msgstr "Um lar para suas palavras"
 
 #: journal/templates/user_article_list.html:129
 msgid "Write about a book, a film, or whatever is on your mind."
-msgstr ""
+msgstr "Escreva sobre um livro, um filme ou qualquer coisa que esteja na sua mente."
