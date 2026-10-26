@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-10-03 13:46-0400\n"
-"PO-Revision-Date: 2026-10-26 02:45+0000\n"
+"PO-Revision-Date: 2026-10-26 16:16+0000\n"
 "Last-Translator: Havokdan <havokdan@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/neodb/neodb/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -9884,75 +9884,58 @@ msgid "Search categories"
 msgstr "Pesquisar categorias"
 
 #: journal/forms.py:117
-#, fuzzy
-#| msgid "Review"
 msgid "Review date"
-msgstr "Análise"
+msgstr "Data da análise"
 
 #: journal/forms.py:152
-#, fuzzy
-#| msgid "Change review date"
 msgid "Please choose a review date."
-msgstr "alterar data da análise"
+msgstr "Por favor, escolha uma data de análise."
 
 #: journal/forms.py:154
 msgid "Choose a date between 1900 and today."
-msgstr ""
+msgstr "Escolha uma data entre 1900 e hoje."
 
 #: journal/templates/_article_reading.html:8
 #: journal/templates/user_article_list.html:24
-#, fuzzy, python-format
-#| msgid "by %(name)s"
+#, python-format
 msgid "Articles by %(name)s"
-msgstr "por %(name)s"
+msgstr "Artigos de %(name)s"
 
 #: journal/templates/_article_reading.html:52
-#, fuzzy
-#| msgid "Content"
 msgid "Contents"
-msgstr "Conteúdo"
+msgstr "Conteúdos"
 
 #: journal/templates/_article_reading.html:79
-#, fuzzy
-#| msgid "Link invalid"
 msgid "Link copied"
-msgstr "Link inválido"
+msgstr "Link copiado"
 
 #: journal/templates/_article_reading.html:79
-#, fuzzy
-#| msgid "Update link"
 msgid "Copy link"
-msgstr "Atualizar link"
+msgstr "Copiar link"
 
 #: journal/templates/_article_reading.html:83
-#, fuzzy
-#| msgid "My review"
 msgid "More reviews"
-msgstr "minha análise"
+msgstr "Mais análises"
 
 #: journal/templates/_article_reading.html:85
-#, fuzzy
-#| msgid "New article"
 msgid "More articles"
-msgstr "Novo artigo"
+msgstr "Mais artigos"
 
 #: journal/templates/_article_tag_picker.html:4
-#, fuzzy
-#| msgid "Remove item"
 msgid "Remove tag"
-msgstr "remover item"
+msgstr "Remover etiqueta"
 
 #: journal/templates/_article_tag_picker.html:5
 msgid "Too many tags or too much text. Remove a tag to continue."
-msgstr ""
+msgstr "Muitas etiquetas ou muito texto. Remova uma etiqueta para continuar."
 
 #: journal/templates/_article_tag_picker.html:13
 msgid "Find or add a tag"
-msgstr ""
+msgstr "Encontrar ou adicionar uma etiqueta"
 
 #: journal/templates/_article_tag_picker.html:18
 msgid "Choose a tag below, or type a new one and press Enter."
-msgstr ""
+msgstr "Escolha uma etiqueta abaixo ou digite uma nova e pressione Enter."
 
 #: journal/templates/article_edit.html:20
 #, fuzzy
