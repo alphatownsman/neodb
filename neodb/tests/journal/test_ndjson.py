@@ -2164,6 +2164,53 @@ def test_ndjson_unknown_shelf_status_is_rejected_before_insert(caplog) -> None:
 
 
 @pytest.mark.django_db(databases="__all__")
+def test_ndjson_unresolved_item_fails_pieces_with_one_warning(caplog) -> None:
+    """An item the catalog could not resolve is a warning, not an error.
+
+    Every piece on it used to raise KeyError into logger.exception, so one
+    unresolvable catalog entry (a peer Work, say) produced an error event
+    with a traceback per mark, log, comment and tag on it.
+    """
+    user = User.register(email="ndjson_missing@test.com", username="ndjson_missing")
+    importer = NdjsonImporter.create(user=user, file="x.zip", visibility=0)
+    url = "https://peer.example/book/work/gone"
+    importer.items = {url: None}
+    content = {"withRegardTo": url, "published": "2019-07-22T20:17:18Z"}
+
+    with caplog.at_level(logging.WARNING, logger="journal.importers.ndjson"):
+        assert (
+            importer.import_shelf_member({"content": content, "visibility": 0})
+            == "failed"
+        )
+        assert (
+            importer.import_shelf_log(
+                {"item": url, "status": "complete", "timestamp": "2019-07-22T20:17:18Z"}
+            )
+            == "failed"
+        )
+        assert importer.import_rating({"content": content, "value": 8}) == "failed"
+        assert (
+            importer.import_comment({"content": dict(content, content="x")}) == "failed"
+        )
+        assert importer.import_review({"content": dict(content, name="r")}) == "failed"
+        assert importer.import_note({"content": dict(content, content="n")}) == "failed"
+        assert (
+            importer.import_tag_member({"content": dict(content, tag="t")}) == "failed"
+        )
+
+    records = [r for r in caplog.records if r.name == "journal.importers.ndjson"]
+    assert [r.levelno for r in records] == [logging.WARNING]
+    assert records[0].getMessage() == f"Could not find item: {url}"
+    assert "Traceback" not in caplog.text
+    assert (
+        importer.import_shelf_member({"content": content, "visibility": 0}) == "failed"
+    )
+    assert [
+        r for r in caplog.records if r.name == "journal.importers.ndjson"
+    ] == records
+
+
+@pytest.mark.django_db(databases="__all__")
 def test_ndjson_clamps_archive_values(caplog) -> None:
     user = User.register(email="ndjson_clamp@test.com", username="ndjson_clamp")
     game = Game.objects.create(title="Clamp Game")
